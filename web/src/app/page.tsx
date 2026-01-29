@@ -50,10 +50,12 @@ function LiveStats({
   );
 }
 
-// 标题组件
-function CyberTitle() {
+// 标题组件 - 支持滚动隐藏
+function CyberTitle({ isScrolling }: { isScrolling: boolean }) {
   return (
-    <div className="fixed top-12 left-0 right-0 z-30 text-center pointer-events-none">
+    <div className={`fixed top-12 left-0 right-0 z-30 text-center pointer-events-none transition-all duration-300 ${
+      isScrolling ? 'opacity-0 -translate-y-20' : 'opacity-100 translate-y-0'
+    }`}>
       <h1 className="text-6xl md:text-8xl font-cyber font-bold tracking-wider">
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-primary via-neon-secondary to-neon-purple animate-glow drop-shadow-lg">
           DEMAND OS
@@ -116,16 +118,20 @@ export default function Home() {
   const [demandCount, setDemandCount] = useState(0);
   const [connectionCount] = useState(1);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 自动滚动功能
+  // 自动滚动功能 - 支持悬停暂停
   useEffect(() => {
     if (!scrollContainerRef.current) return;
     
     const scrollContainer = scrollContainerRef.current;
     let scrollSpeed = 2; // 像素/毫秒
-    let scrollInterval: NodeJS.Timeout;
     
     const autoScroll = () => {
+      if (isPaused) return; // 暂停时不滚动
+      
       if (scrollContainer.scrollHeight - scrollContainer.scrollTop > scrollContainer.clientHeight + 500) {
         scrollContainer.scrollTop += scrollSpeed;
       } else {
@@ -134,8 +140,48 @@ export default function Home() {
       }
     };
     
-    scrollInterval = setInterval(autoScroll, 50);
-    return () => clearInterval(scrollInterval);
+    scrollIntervalRef.current = setInterval(autoScroll, 50);
+    return () => {
+      if (scrollIntervalRef.current) clearInterval(scrollIntervalRef.current);
+    };
+  }, [isPaused]);
+
+  // 滚动事件处理 - 检测滚动方向和距离
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    
+    const scrollContainer = scrollContainerRef.current;
+    let lastScrollTop = 0;
+    let scrollTimer: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      const currentScroll = scrollContainer.scrollTop;
+      
+      // 如果滚动距离超过 50px，显示隐藏效果
+      if (currentScroll > 50) {
+        setIsScrolling(true);
+      } else {
+        setIsScrolling(false);
+      }
+      
+      lastScrollTop = currentScroll;
+      
+      // 清除之前的计时器
+      clearTimeout(scrollTimer);
+      
+      // 滚动停止后 2 秒重新显示顶部控件
+      scrollTimer = setTimeout(() => {
+        if (currentScroll < 30) {
+          setIsScrolling(false);
+        }
+      }, 2000);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
   }, []);
 
   return (
@@ -150,13 +196,19 @@ export default function Home() {
       <CornerDecorations />
       
       {/* 标题 */}
-      <CyberTitle />
+      <CyberTitle isScrolling={isScrolling} />
       
       {/* 实时统计 */}
       <LiveStats demands={demandCount} connections={connectionCount} />
       
       {/* 3D 舞台 - 瀑布流 */}
-      <div ref={scrollContainerRef} className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
+      <div 
+        ref={scrollContainerRef}
+        className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide transition-all duration-300"
+        style={{ perspective: "2000px" }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <div 
           className="transition-all duration-700 ease-out w-full px-4"
           style={{ 

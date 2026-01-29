@@ -64,22 +64,22 @@ const cardVariants = {
   },
 };
 
-// 新需求弹入动画
+// 新需求弹入动画 - 修复版本
 const newItemVariants = {
   initial: {
     opacity: 0,
-    scale: 0,
-    rotateY: 180,
+    scale: 0.8,
+    y: -50,
   },
   animate: {
     opacity: 1,
     scale: 1,
-    rotateY: 0,
+    y: 0,
     transition: {
       type: "spring",
-      stiffness: 200,
+      stiffness: 150,
       damping: 20,
-      duration: 0.8,
+      duration: 0.5,
     },
   },
 };
