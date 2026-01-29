@@ -20,26 +20,26 @@ function LiveStats({
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-3">
+    <div className="fixed bottom-8 right-8 z-40 flex flex-col gap-2 max-w-xs">
       {/* 实时时间 */}
-      <div className="px-4 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-primary/20 rounded-lg">
+      <div className="px-3 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-primary/20 rounded-lg">
         <div className="text-xs text-neon-primary/60 uppercase tracking-wider mb-1">System Time</div>
-        <div className="text-2xl font-mono text-neon-primary animate-pulse-subtle">
+        <div className="text-xl md:text-2xl font-mono text-neon-primary animate-pulse-subtle">
           {currentTime.toLocaleTimeString('zh-CN', { hour12: false })}
         </div>
       </div>
       
       {/* 实时数据 */}
-      <div className="px-4 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-secondary/20 rounded-lg">
-        <div className="flex items-center gap-4">
+      <div className="px-3 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-secondary/20 rounded-lg">
+        <div className="flex items-center gap-3">
           <div>
             <div className="text-xs text-neon-secondary/60 uppercase tracking-wider">Live Demands</div>
-            <div className="text-xl font-mono text-neon-secondary">{demands}</div>
+            <div className="text-lg md:text-xl font-mono text-neon-secondary">{demands}</div>
           </div>
-          <div className="w-px h-8 bg-white/10" />
+          <div className="w-px h-6 bg-white/10" />
           <div>
             <div className="text-xs text-neon-secondary/60 uppercase tracking-wider">Connections</div>
-            <div className="text-xl font-mono text-neon-secondary flex items-center gap-1">
+            <div className="text-lg md:text-xl font-mono text-neon-secondary flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-neon-primary animate-pulse" />
               {connections}
             </div>
@@ -53,16 +53,16 @@ function LiveStats({
 // 标题组件
 function CyberTitle() {
   return (
-    <div className="fixed top-24 left-0 right-0 z-30 text-center pointer-events-none">
-      <h1 className="text-5xl md:text-7xl font-cyber font-bold tracking-wider">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-primary via-neon-secondary to-neon-purple animate-glow">
+    <div className="fixed top-12 left-0 right-0 z-30 text-center pointer-events-none">
+      <h1 className="text-6xl md:text-8xl font-cyber font-bold tracking-wider">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-primary via-neon-secondary to-neon-purple animate-glow drop-shadow-lg">
           DEMAND OS
         </span>
       </h1>
-      <p className="mt-4 text-lg text-white/40 font-mono tracking-widest uppercase">
+      <p className="mt-3 text-sm md:text-base text-white/40 font-mono tracking-widest uppercase">
         Global Demand Intelligence · Real-time Stream
       </p>
-      <div className="mt-2 flex items-center justify-center gap-4 text-sm">
+      <div className="mt-2 flex items-center justify-center gap-3 text-xs md:text-sm flex-wrap px-4">
         <span className="text-neon-primary/60">Amazon VC</span>
         <span className="text-white/20">|</span>
         <span className="text-neon-secondary/60">Walmart DSV</span>
@@ -134,12 +134,12 @@ export default function Home() {
       <LiveStats demands={demandCount} connections={connectionCount} />
       
       {/* 3D 舞台 - 瀑布流 */}
-      <div className="pt-64 pb-8 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
+      <div className="pt-40 pb-12 h-full overflow-y-auto scrollbar-hide flex items-center justify-center px-4" style={{ perspective: "2000px" }}>
         <div 
-          className="transition-all duration-700 ease-out"
+          className="transition-all duration-700 ease-out w-full max-w-6xl"
           style={{ 
             transformStyle: "preserve-3d",
-            transform: "rotateX(5deg) scale(0.95)",
+            transform: "rotateX(3deg) scale(0.98)",
           }}
         >
           <DemandWaterfallEnhanced 

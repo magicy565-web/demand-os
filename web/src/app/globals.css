@@ -748,16 +748,29 @@ body.light {
   background: #dc2626;
 }
 
-/* 瀑布流布局（保留用于可能场景） */
+/* 瀑布流布局 */
 .masonry-grid {
   display: flex;
-  margin-left: -16px;
+  margin-left: -12px;
   width: auto;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .masonry-grid-column {
-  padding-left: 16px;
+  padding-left: 12px;
   background-clip: padding-box;
+  @apply mb-6;
+}
+
+@media (max-width: 768px) {
+  .masonry-grid {
+    margin-left: -8px;
+  }
+  
+  .masonry-grid-column {
+    padding-left: 8px;
+  }
 }
 
 /* 浅色主题覆盖 */
