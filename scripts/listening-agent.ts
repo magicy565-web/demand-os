@@ -1,10 +1,11 @@
 /**
- * Demand OS - AI 智能体脚本
+ * Demand OS - AI 智能体脚本 v2.0 (工业园区专业版)
  * 
  * 功能: 
- * 1. 模拟/生成全球电商平台的需求数据
- * 2. 调用 LLM 进行商业价值分析
- * 3. 格式化数据并写入 Directus
+ * 1. 生成专业化的B2B采购需求数据
+ * 2. 包含完整的贸易术语、付款条件、认证要求
+ * 3. 自动计算利润预估
+ * 4. 智能匹配园区内供应商
  * 
  * 运行方式: npx tsx scripts/listening-agent.ts
  */
@@ -29,9 +30,25 @@ const CONFIG = {
   BATCH_SIZE: 5, // 每批生成的需求数量
   INTERVAL_MS: 30000, // 生成间隔 (毫秒)
   MAX_ITERATIONS: 100, // 最大迭代次数 (0 = 无限)
+  
+  // 汇率配置
+  EXCHANGE_RATE: 7.25, // USD to CNY
 };
 
 // ==================== 类型定义 ====================
+type Incoterm = "EXW" | "FOB" | "CIF" | "CFR" | "DDP" | "DAP" | "FCA";
+type PaymentTerm = "T/T 100% advance" | "T/T 30/70" | "T/T 30% deposit" | "L/C at sight" | "L/C 30 days" | "L/C 60 days" | "L/C 90 days" | "OA 30 days" | "OA 60 days" | "OA 90 days" | "D/P" | "D/A";
+type Certification = "CE" | "FCC" | "UL" | "RoHS" | "REACH" | "FDA" | "ISO9001" | "ISO14001" | "GOTS" | "OEKO-TEX" | "BSCI" | "SA8000" | "GS" | "CB" | "ETL" | "CCC";
+
+interface ProfitEstimate {
+  target_price_usd: number;
+  suggested_cost_cny: number;
+  estimated_margin: number;
+  exchange_rate: number;
+  shipping_cost_estimate: number;
+  certification_cost: number;
+}
+
 interface Demand {
   title: string;
   description: string;
@@ -45,58 +62,142 @@ interface Demand {
   business_value: number;
   tags: string[];
   status: "active";
+  
+  // 新增专业字段
+  incoterm?: Incoterm;
+  incoterm_location?: string;
+  payment_term?: PaymentTerm;
+  certifications_required?: Certification[];
+  moq?: number;
+  moq_unit?: string;
+  lead_time_days?: number;
+  sample_required?: boolean;
+  buyer_type?: "brand" | "retailer" | "wholesaler" | "agent" | "platform";
+  buyer_region?: string;
+  profit_estimate?: ProfitEstimate;
 }
 
-// ==================== 模拟数据生成器 ====================
+// ==================== 专业化数据库 ====================
 const MOCK_DATA = {
   categories: [
     "消费电子", "服装纺织", "工业材料", "新能源", 
-    "医疗器械", "物流服务", "食品饮料", "家居用品", "汽车配件"
+    "医疗器械", "家居用品", "汽车配件", "户外运动", "美妆个护"
   ],
-  regions: ["北美", "欧洲", "亚太", "中国", "东南亚", "中东", "全球"],
-  platforms: ["Amazon", "阿里巴巴", "独立站", "eBay", "政府采购", "行业展会", "Walmart"],
+  
+  regions: ["北美", "欧洲", "英国", "澳洲", "东南亚", "中东", "日本", "韩国"],
+  
+  // 更专业的来源平台
+  platforms: [
+    "Amazon Vendor Central",
+    "Amazon FBA",
+    "Walmart DSV",
+    "Costco 2025 Sourcing Plan",
+    "Target Direct Import",
+    "TikTok Shop US (爆品返单)",
+    "TikTok Shop UK",
+    "Temu 平台招商",
+    "SHEIN 供应链",
+    "Alibaba RFQ",
+    "Global Sources",
+    "Canton Fair 2025",
+    "Brand Direct Sourcing"
+  ],
+  
+  incoterms: ["FOB", "CIF", "DDP", "EXW", "DAP"] as Incoterm[],
+  
+  incotermLocations: {
+    "FOB": ["Shenzhen", "Ningbo", "Shanghai", "Guangzhou", "Qingdao"],
+    "CIF": ["Los Angeles", "New York", "Hamburg", "Rotterdam", "Felixstowe"],
+    "DDP": ["Los Angeles", "Chicago", "Dallas", "Atlanta", "Frankfurt"],
+    "EXW": ["Factory"],
+    "DAP": ["Amazon FBA Warehouse", "Walmart DC"]
+  },
+  
+  paymentTerms: [
+    "T/T 30/70",
+    "T/T 30% deposit", 
+    "L/C at sight",
+    "L/C 60 days",
+    "OA 30 days",
+    "OA 60 days"
+  ] as PaymentTerm[],
+  
+  certificationsByCategory: {
+    "消费电子": ["CE", "FCC", "UL", "RoHS", "REACH"] as Certification[],
+    "服装纺织": ["OEKO-TEX", "GOTS", "BSCI", "ISO9001"] as Certification[],
+    "工业材料": ["ISO9001", "ISO14001", "CE", "RoHS"] as Certification[],
+    "新能源": ["CE", "UL", "CB", "ISO9001", "ISO14001"] as Certification[],
+    "医疗器械": ["FDA", "CE", "ISO9001", "ISO14001"] as Certification[],
+    "家居用品": ["CE", "FCC", "RoHS", "REACH", "BSCI"] as Certification[],
+    "汽车配件": ["ISO9001", "IATF16949", "CE", "RoHS"] as Certification[],
+    "户外运动": ["CE", "GS", "BSCI", "ISO9001"] as Certification[],
+    "美妆个护": ["FDA", "CE", "ISO9001", "REACH"] as Certification[]
+  },
+  
   urgencyLevels: ["low", "medium", "high", "critical"] as ("low" | "medium" | "high" | "critical")[],
   
-  titles: {
+  buyerTypes: ["brand", "retailer", "wholesaler", "agent", "platform"] as const,
+  
+  // 专业化的需求标题模板
+  titleTemplates: {
     "消费电子": [
-      "智能手表配件批量采购", "蓝牙耳机OEM代工需求", "手机保护壳定制",
-      "无线充电器供应商寻找", "智能家居控制器采购"
+      "TWS蓝牙耳机OEM订单 - {platform}",
+      "智能手表代工需求 - CE/FCC认证",
+      "无线充电器批量采购 - UL认证必备",
+      "手机保护壳定制 - {quantity}万件/月",
+      "智能家居控制器 - Zigbee/Matter协议",
+      "便携式储能电源 - 户外品类爆品",
+      "电动牙刷ODM - 北美渠道返单"
     ],
     "服装纺织": [
-      "有机棉T恤代工", "运动服面料采购", "童装OEM生产",
-      "牛仔裤批量定制", "瑜伽服品牌代工"
-    ],
-    "工业材料": [
-      "工业级3D打印耗材", "精密轴承批量采购", "特种钢材供应",
-      "工业润滑油采购", "碳纤维材料定制"
-    ],
-    "新能源": [
-      "锂电池组件采购", "充电桩模块供应", "太阳能板组件",
-      "储能系统集成", "新能源汽车配件"
-    ],
-    "医疗器械": [
-      "医用硅胶制品定制", "康复器械代工", "一次性医疗耗材",
-      "诊断试剂原料", "医用包装材料"
-    ],
-    "物流服务": [
-      "海外仓储服务", "跨境物流方案", "冷链运输服务",
-      "FBA转运服务", "大件货物运输"
-    ],
-    "食品饮料": [
-      "有机茶叶出口", "坚果原料采购", "功能饮料代工",
-      "调味品OEM", "冻干食品加工"
+      "有机棉T恤代工 - GOTS认证工厂",
+      "运动瑜伽裤 - {platform}供应商招募",
+      "儿童服装OEM - OEKO-TEX必备",
+      "冲锋衣ODM - 功能性面料",
+      "快时尚女装 - 7天翻单能力",
+      "工装裤定制 - Carhartt同款"
     ],
     "家居用品": [
-      "智能家具定制", "收纳用品批发", "厨房用具代工",
-      "床上用品采购", "装饰品批量定制"
+      "LED灯具供应商 - ETL/UL认证",
+      "收纳用品批发 - Amazon FBA卖家",
+      "厨房小家电OEM - FDA认证",
+      "智能扫地机 - {platform}选品",
+      "户外家具代工 - 欧洲市场"
     ],
-    "汽车配件": [
-      "汽车座椅配件", "车载电子设备", "汽车照明系统",
-      "刹车片批量采购", "汽车内饰定制"
+    "新能源": [
+      "便携式电站OEM - 户外储能",
+      "太阳能板组件 - 欧洲项目",
+      "锂电池Pack - UL1973认证",
+      "电动滑板车代工 - 共享出行",
+      "充电桩模块 - 北美市场"
+    ],
+    "户外运动": [
+      "露营帐篷ODM - {platform}爆品",
+      "登山包代工 - 70L大容量",
+      "折叠桌椅批量 - 户外品类",
+      "渔具套装 - 北美市场",
+      "滑雪装备OEM - 欧洲品牌"
+    ],
+    "美妆个护": [
+      "面膜OEM - FDA工厂",
+      "护肤品代工 - 清洁美妆",
+      "美容仪ODM - 红光/射频",
+      "洗护用品批发 - 酒店渠道",
+      "化妆刷套装 - TikTok爆品"
     ]
-  }
+  },
+  
+  // 专业描述模板
+  descriptionTemplates: [
+    "寻找具备{certifications}认证能力的供应商，要求月产能{capacity}以上。付款条件: {payment}，贸易条款: {incoterm} {location}。",
+    "品牌方长期合作需求，年采购量约{annual_volume}，需具备{certifications}认证。样品审核后签订框架协议。",
+    "平台选品返单需求，首单{quantity}，后续每月稳定{monthly_volume}。要求{lead_time}天内交货，{payment}付款。",
+    "渠道商紧急补货需求，{deadline}前必须出货。需具备{certifications}，接受{inspection}验货。",
+    "新品开发需求，需要ODM能力。目标单价{target_price}，含{incoterm}报价。通过审核后年采购量预估{annual_volume}。"
+  ]
 };
 
+// ==================== 工具函数 ====================
 function randomChoice<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -105,76 +206,175 @@ function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateMockDemand(): Demand {
-  const category = randomChoice(MOCK_DATA.categories);
-  const titles = MOCK_DATA.titles[category as keyof typeof MOCK_DATA.titles] || ["通用需求"];
-  const title = randomChoice(titles);
-  
-  const minPrice = randomInt(1, 50) * 1000;
-  const maxPrice = minPrice + randomInt(1, 100) * 1000;
-  
-  const descriptions: Record<string, string[]> = {
-    "消费电子": [
-      "寻找具备CE/FCC认证能力的供应商，要求品质稳定，交期准时。",
-      "需要月产能10万件以上的代工厂，有出口经验优先。",
-      "采购高品质电子元器件，需提供完整测试报告。"
-    ],
-    "服装纺织": [
-      "需要具备GOTS/OEKO-TEX认证的工厂，月产能5万件以上。",
-      "要求提供打样服务，面料需通过AZO测试。",
-      "寻找有欧美品牌代工经验的服装工厂。"
-    ],
-    default: [
-      "寻找优质供应商长期合作，要求品质稳定可靠。",
-      "需要提供样品和详细报价，交期需在30天内。",
-      "欢迎有实力的工厂主动联系，量大优先。"
-    ]
+function randomFloat(min: number, max: number, decimals: number = 2): number {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+}
+
+// 计算利润预估
+function calculateProfitEstimate(targetPriceUSD: number, category: string): ProfitEstimate {
+  // 基于品类的成本系数
+  const costFactors: Record<string, number> = {
+    "消费电子": 0.55,
+    "服装纺织": 0.50,
+    "家居用品": 0.45,
+    "新能源": 0.60,
+    "户外运动": 0.48,
+    "美妆个护": 0.35,
+    "default": 0.50
   };
   
-  const descList = descriptions[category] || descriptions.default;
+  const costFactor = costFactors[category] || costFactors.default;
+  const variance = randomFloat(-0.05, 0.05);
+  const actualCostFactor = costFactor + variance;
+  
+  const suggestedCostCNY = Math.round(targetPriceUSD * CONFIG.EXCHANGE_RATE * actualCostFactor);
+  const shippingCost = randomFloat(0.5, 2.5);
+  const certCost = randomFloat(0.1, 0.5);
+  
+  const totalCostUSD = suggestedCostCNY / CONFIG.EXCHANGE_RATE + shippingCost + certCost;
+  const margin = ((targetPriceUSD - totalCostUSD) / targetPriceUSD) * 100;
+  
+  return {
+    target_price_usd: targetPriceUSD,
+    suggested_cost_cny: suggestedCostCNY,
+    estimated_margin: Math.round(margin * 10) / 10,
+    exchange_rate: CONFIG.EXCHANGE_RATE,
+    shipping_cost_estimate: shippingCost,
+    certification_cost: certCost
+  };
+}
+
+// ==================== 模拟数据生成器 ====================
+function generateMockDemand(): Demand {
+  const category = randomChoice(MOCK_DATA.categories);
+  const platform = randomChoice(MOCK_DATA.platforms);
+  const incoterm = randomChoice(MOCK_DATA.incoterms);
+  const incotermLocations = MOCK_DATA.incotermLocations[incoterm];
+  const incotermLocation = randomChoice(incotermLocations);
+  const paymentTerm = randomChoice(MOCK_DATA.paymentTerms);
+  const urgency = randomChoice(MOCK_DATA.urgencyLevels);
+  const buyerType = randomChoice(MOCK_DATA.buyerTypes);
+  const region = randomChoice(MOCK_DATA.regions);
+  
+  // 获取品类对应的认证要求
+  const availableCerts = MOCK_DATA.certificationsByCategory[category as keyof typeof MOCK_DATA.certificationsByCategory] 
+    || ["ISO9001", "CE"] as Certification[];
+  const certCount = randomInt(2, Math.min(4, availableCerts.length));
+  const certifications = availableCerts.slice(0, certCount);
+  
+  // 生成价格和数量
+  const quantity = randomInt(500, 50000);
+  const targetPriceUSD = randomFloat(5, 150);
+  const minPrice = Math.round(targetPriceUSD * 0.85 * 100) / 100;
+  const maxPrice = Math.round(targetPriceUSD * 1.15 * 100) / 100;
+  
+  // 生成标题
+  const titleTemplates = MOCK_DATA.titleTemplates[category as keyof typeof MOCK_DATA.titleTemplates] 
+    || [`${category}产品采购需求`];
+  let title = randomChoice(titleTemplates);
+  title = title
+    .replace("{platform}", platform.split(" ")[0])
+    .replace("{quantity}", String(Math.round(quantity / 10000)));
+  
+  // 生成专业描述
+  const leadTime = urgency === "critical" ? randomInt(7, 14) : 
+                   urgency === "high" ? randomInt(14, 21) : 
+                   urgency === "medium" ? randomInt(21, 30) : randomInt(30, 45);
+  
+  const description = `【${platform}】${title}。贸易条款: ${incoterm} ${incotermLocation}，付款方式: ${paymentTerm}。` +
+    `认证要求: ${certifications.join("/")}。交期${leadTime}天，MOQ ${Math.round(quantity * 0.2)} ${randomChoice(["件", "套", "PCS"])}。` +
+    `通过审核后预计年采购量 ${randomInt(5, 50)}万${randomChoice(["件", "套", "USD"])}。`;
+  
+  // 计算利润预估
+  const profitEstimate = calculateProfitEstimate(targetPriceUSD, category);
+  
+  // 计算商业价值评分
+  let businessValue = 50;
+  if (profitEstimate.estimated_margin >= 25) businessValue += 20;
+  else if (profitEstimate.estimated_margin >= 18) businessValue += 15;
+  else if (profitEstimate.estimated_margin >= 12) businessValue += 10;
+  
+  if (quantity >= 10000) businessValue += 15;
+  else if (quantity >= 5000) businessValue += 10;
+  
+  if (urgency === "critical" || urgency === "high") businessValue += 10;
+  if (platform.includes("Amazon") || platform.includes("Walmart") || platform.includes("Costco")) businessValue += 10;
+  
+  businessValue = Math.min(98, Math.max(40, businessValue + randomInt(-5, 5)));
   
   return {
     title,
-    description: `${title}。${randomChoice(descList)}`,
+    description,
     category,
-    region: randomChoice(MOCK_DATA.regions),
-    price_range: `$${minPrice.toLocaleString()} - $${maxPrice.toLocaleString()}`,
-    urgency: randomChoice(MOCK_DATA.urgencyLevels),
-    quantity: randomInt(100, 50000),
-    unit: randomChoice(["件", "套", "批", "吨", "箱"]),
-    source_platform: randomChoice(MOCK_DATA.platforms),
-    business_value: randomInt(40, 98),
+    region,
+    price_range: `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`,
+    urgency,
+    quantity,
+    unit: randomChoice(["件", "套", "PCS", "组"]),
+    source_platform: platform,
+    business_value: businessValue,
     tags: [
       category,
-      randomChoice(["B2B", "OEM", "ODM", "批发", "定制"]),
-      randomChoice(["紧急", "长期合作", "样品先行", "大单优先"])
+      incoterm,
+      buyerType === "brand" ? "品牌直采" : 
+      buyerType === "retailer" ? "零售商" : 
+      buyerType === "platform" ? "平台订单" : "批发商",
+      profitEstimate.estimated_margin >= 18 ? "高利润" : "标准利润"
     ],
-    status: "active"
+    status: "active",
+    
+    // 专业字段
+    incoterm,
+    incoterm_location: `${incoterm} ${incotermLocation}`,
+    payment_term: paymentTerm,
+    certifications_required: certifications,
+    moq: Math.round(quantity * 0.2),
+    moq_unit: "PCS",
+    lead_time_days: leadTime,
+    sample_required: Math.random() > 0.3,
+    buyer_type: buyerType,
+    buyer_region: region,
+    profit_estimate: profitEstimate
   };
 }
 
 // ==================== AI 生成器 ====================
 async function generateAIDemand(openai: OpenAI): Promise<Demand | null> {
-  const prompt = `你是一个全球贸易需求模拟器。请生成一条真实的B2B采购需求数据。
+  const prompt = `你是一个专业的全球B2B贸易需求模拟器。请生成一条真实的工厂采购需求数据。
 
 要求:
-1. 需求必须具体、专业，像真实的采购商发布的
-2. 价格范围要合理
-3. 商业价值评分 (0-100) 要根据需求金额、紧急程度、市场前景综合评估
+1. 需求必须专业、具体，像真实的品牌商/零售商发布的采购需求
+2. 必须包含完整的贸易术语(Incoterms)、付款条件(Payment Terms)、认证要求
+3. 价格范围要合理，并给出利润预估
+4. 来源平台要具体，如 "Amazon Vendor Central"、"Walmart DSV"、"Costco 2025 Sourcing Plan"
 
 请直接返回 JSON 格式 (不要 markdown):
 {
-  "title": "标题 (20字以内)",
-  "description": "详细描述 (100字以内)",
-  "category": "分类 (消费电子/服装纺织/工业材料/新能源/医疗器械/物流服务/食品饮料/家居用品/汽车配件)",
-  "region": "地区 (北美/欧洲/亚太/中国/东南亚/中东/全球)",
-  "price_range": "预算范围 (如 $10,000 - $50,000)",
+  "title": "标题 (包含产品+采购方式，如 'TWS蓝牙耳机OEM - Amazon VC订单')",
+  "description": "专业描述 (包含贸易条款、认证、交期等硬性要求)",
+  "category": "分类 (消费电子/服装纺织/新能源/家居用品/户外运动/美妆个护)",
+  "region": "目标市场 (北美/欧洲/英国/澳洲/东南亚)",
+  "price_range": "目标单价范围 (如 $12.50 - $15.00)",
   "urgency": "紧急度 (low/medium/high/critical)",
   "quantity": 数量(数字),
-  "unit": "单位 (件/套/批/吨)",
-  "source_platform": "来源平台",
-  "business_value": 商业价值评分(0-100的数字),
-  "tags": ["标签1", "标签2", "标签3"]
+  "unit": "单位 (PCS/套/组)",
+  "source_platform": "具体来源 (如 'Amazon Vendor Central'/'Walmart DSV'/'TikTok Shop US')",
+  "business_value": 商业价值评分(40-98的数字),
+  "tags": ["品类标签", "贸易术语", "买家类型", "利润标签"],
+  "incoterm": "贸易术语 (FOB/CIF/DDP/EXW)",
+  "incoterm_location": "贸易术语+地点 (如 'FOB Shenzhen'/'CIF Los Angeles')",
+  "payment_term": "付款方式 (T/T 30/70/L/C at sight/OA 60 days)",
+  "certifications_required": ["认证1", "认证2"] (如 ["CE", "FCC", "UL"]),
+  "moq": 最小起订量(数字),
+  "lead_time_days": 交期天数(数字),
+  "sample_required": 是否需要样品(true/false),
+  "buyer_type": "买家类型 (brand/retailer/platform/wholesaler)",
+  "profit_estimate": {
+    "target_price_usd": 目标价美元(数字),
+    "suggested_cost_cny": 建议出厂价人民币(数字),
+    "estimated_margin": 预估毛利率%(数字),
+    "exchange_rate": 7.25
+  }
 }`;
 
   try {
@@ -182,7 +382,7 @@ async function generateAIDemand(openai: OpenAI): Promise<Demand | null> {
       model: CONFIG.MODEL_NAME,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.9,
-      max_tokens: 500,
+      max_tokens: 800,
     });
 
     const content = completion.choices[0]?.message?.content;
@@ -198,6 +398,10 @@ async function generateAIDemand(openai: OpenAI): Promise<Demand | null> {
       status: "active"
     };
   } catch (error) {
+    console.error("[AI] 生成失败:", error);
+    return null;
+  }
+}
     console.error("[AI] 生成失败:", error);
     return null;
   }

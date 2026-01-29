@@ -1,188 +1,202 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Demand } from "@/types/demand";
-import { formatRelativeTime, formatNumber, getUrgencyLabel } from "@/lib/utils";
+import type { Demand, MatchedSupplier, Certification } from "@/types/demand";
+import { formatRelativeTime, formatNumber } from "@/lib/utils";
 
-// 模拟获取需求详情
+// 模拟获取需求详情（包含专业贸易字段）
 async function getDemandById(id: string): Promise<Demand | null> {
-  // 实际项目中这里调用 API
   const MOCK_DEMANDS: Record<string, Demand> = {
     "1": {
       id: "1",
-      title: "高端智能手表配件供应商",
-      description: "寻找能够提供高质量智能手表表带、充电器和保护壳的供应商，要求具备CE/FCC认证能力。我们是一家跨境电商公司，在Amazon北美站有稳定的销售渠道，月销量超过10万件。现寻求长期合作的供应商，要求：\n\n1. 具备完整的质量管理体系\n2. 能够提供CE/FCC等认证文件\n3. 月产能不低于10万件\n4. 支持OEM/ODM定制\n5. 有跨境电商供货经验优先",
+      title: "TWS蓝牙耳机OEM订单 - Amazon VC",
+      description: "【Amazon Vendor Central】TWS蓝牙耳机OEM订单。贸易条款: FOB Shenzhen，付款方式: T/T 30/70。认证要求: CE/FCC/RoHS/REACH。交期21天，MOQ 5000 PCS。通过审核后预计年采购量 30万USD。",
       category: "消费电子",
       region: "北美",
-      price_range: "$10,000 - $50,000",
+      price_range: "$8.50 - $12.00",
       urgency: "high",
-      quantity: 10000,
-      unit: "件",
-      source_platform: "Amazon",
+      quantity: 20000,
+      unit: "PCS",
+      source_platform: "Amazon Vendor Central",
       business_value: 85,
-      tags: ["智能穿戴", "配件", "B2B", "OEM", "跨境电商"],
+      tags: ["消费电子", "FOB", "品牌直采", "高利润"],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       status: "active",
+      incoterm: "FOB",
+      incoterm_location: "FOB Shenzhen",
+      payment_term: "T/T 30/70",
+      certifications_required: ["CE", "FCC", "RoHS", "REACH"] as Certification[],
+      moq: 5000,
+      moq_unit: "PCS",
+      lead_time_days: 21,
+      sample_required: true,
+      buyer_type: "retailer",
+      buyer_region: "美国",
+      profit_estimate: {
+        target_price_usd: 10.25,
+        suggested_cost_cny: 45,
+        estimated_margin: 22.5,
+        exchange_rate: 7.25,
+        shipping_cost_estimate: 1.2,
+        certification_cost: 0.3
+      },
+      matched_suppliers: [
+        {
+          supplier_id: "s1",
+          supplier_name: "深圳市华声电子有限公司",
+          match_score: 95,
+          match_reasons: ["认证齐全", "产能充足", "有Amazon供货经验"],
+          capacity_available: true,
+          certifications_matched: ["CE", "FCC", "RoHS"] as Certification[],
+          estimated_quote: 44
+        },
+        {
+          supplier_id: "s2",
+          supplier_name: "东莞市声科电子科技有限公司",
+          match_score: 88,
+          match_reasons: ["价格优势", "交期快", "产能充足"],
+          capacity_available: true,
+          certifications_matched: ["CE", "FCC"] as Certification[],
+          estimated_quote: 42
+        },
+        {
+          supplier_id: "s3",
+          supplier_name: "惠州市创音科技有限公司",
+          match_score: 82,
+          match_reasons: ["品质稳定", "有大客户经验"],
+          capacity_available: true,
+          certifications_matched: ["CE", "FCC", "RoHS", "REACH"] as Certification[],
+          estimated_quote: 48
+        }
+      ]
     },
     "2": {
       id: "2",
-      title: "有机棉婴儿服装OEM代工",
-      description: "需要具备GOTS认证的有机棉婴儿服装生产商，月产能需达到5万件以上。我们是欧洲婴童服装品牌，主打环保有机概念，现寻求中国优质代工厂合作。",
+      title: "有机棉T恤代工 - Walmart DSV",
+      description: "【Walmart DSV】有机棉T恤代工需求。贸易条款: DDP Los Angeles，付款方式: OA 60 days。认证要求: GOTS/OEKO-TEX/BSCI。交期30天，MOQ 10000 PCS。通过审核后预计年采购量 50万件。",
       category: "服装纺织",
-      region: "欧洲",
-      price_range: "$30,000 - $100,000",
+      region: "北美",
+      price_range: "$4.50 - $6.00",
       urgency: "medium",
       quantity: 50000,
-      unit: "件",
-      source_platform: "独立站",
-      business_value: 72,
-      tags: ["母婴", "有机", "OEM", "GOTS认证"],
+      unit: "PCS",
+      source_platform: "Walmart DSV",
+      business_value: 78,
+      tags: ["服装纺织", "DDP", "零售商", "标准利润"],
       created_at: new Date(Date.now() - 3600000).toISOString(),
       updated_at: new Date(Date.now() - 3600000).toISOString(),
       status: "active",
-    },
-    "3": {
-      id: "3",
-      title: "工业级3D打印耗材批量采购",
-      description: "采购PLA/ABS/PETG等工业级3D打印耗材，要求直径精度±0.02mm，需提供材料测试报告。",
-      category: "工业材料",
-      region: "亚太",
-      price_range: "$5,000 - $20,000",
-      urgency: "low",
-      quantity: 5000,
-      unit: "卷",
-      source_platform: "阿里巴巴",
-      business_value: 65,
-      tags: ["3D打印", "工业", "耗材"],
-      created_at: new Date(Date.now() - 7200000).toISOString(),
-      updated_at: new Date(Date.now() - 7200000).toISOString(),
-      status: "active",
-    },
-    "4": {
-      id: "4",
-      title: "新能源汽车直流快充桩组件",
-      description: "寻求新能源汽车直流快充桩核心模块供应商，包括功率模块、控制板等，需通过车规级认证。这是政府新能源基础设施建设项目，付款有保障，需求量大且稳定。",
-      category: "新能源",
-      region: "中国",
-      price_range: "$100,000 - $500,000",
-      urgency: "critical",
-      quantity: 1000,
-      unit: "套",
-      source_platform: "政府采购",
-      business_value: 95,
-      tags: ["新能源", "充电桩", "汽车配件", "政府项目"],
-      created_at: new Date(Date.now() - 1800000).toISOString(),
-      updated_at: new Date(Date.now() - 1800000).toISOString(),
-      status: "active",
-    },
-    "5": {
-      id: "5",
-      title: "跨境电商海外仓储服务",
-      description: "需要在美西地区的海外仓服务商，支持FBA转运、一件代发，日处理能力3000单以上。",
-      category: "物流服务",
-      region: "北美",
-      price_range: "$20,000 - $80,000/月",
-      urgency: "high",
-      quantity: 1,
-      unit: "服务",
-      source_platform: "行业展会",
-      business_value: 78,
-      tags: ["跨境", "仓储", "物流", "FBA"],
-      created_at: new Date(Date.now() - 5400000).toISOString(),
-      updated_at: new Date(Date.now() - 5400000).toISOString(),
-      status: "active",
-    },
-    "6": {
-      id: "6",
-      title: "医疗级硅胶制品定制",
-      description: "采购医疗级硅胶产品，包括手术器械手柄、导管接头等，需符合FDA和ISO 13485标准。长期稳定订单。",
-      category: "医疗器械",
-      region: "欧洲",
-      price_range: "$50,000 - $200,000",
-      urgency: "medium",
-      quantity: 20000,
-      unit: "件",
-      source_platform: "Medica展会",
-      business_value: 88,
-      tags: ["医疗", "硅胶", "定制", "FDA"],
-      created_at: new Date(Date.now() - 10800000).toISOString(),
-      updated_at: new Date(Date.now() - 10800000).toISOString(),
-      status: "active",
-    },
-    "7": {
-      id: "7",
-      title: "智能家居语音控制模块",
-      description: "采购支持Alexa和Google Assistant的智能家居语音控制模块，需要SDK支持和技术文档。",
-      category: "消费电子",
-      region: "全球",
-      price_range: "$15,000 - $60,000",
-      urgency: "medium",
-      quantity: 8000,
-      unit: "件",
-      source_platform: "Amazon",
-      business_value: 76,
-      tags: ["智能家居", "语音控制", "IoT"],
-      created_at: new Date(Date.now() - 14400000).toISOString(),
-      updated_at: new Date(Date.now() - 14400000).toISOString(),
-      status: "active",
-    },
-    "8": {
-      id: "8",
-      title: "户外运动防水透气面料",
-      description: "需要防水透气面料，用于户外冲锋衣生产，要求耐水压10000mm以上，透气性8000g/m²/24h。",
-      category: "服装纺织",
-      region: "亚太",
-      price_range: "$25,000 - $80,000",
-      urgency: "high",
-      quantity: 30000,
-      unit: "米",
-      source_platform: "Canton Fair",
-      business_value: 82,
-      tags: ["户外", "面料", "防水"],
-      created_at: new Date(Date.now() - 18000000).toISOString(),
-      updated_at: new Date(Date.now() - 18000000).toISOString(),
-      status: "active",
-    },
+      incoterm: "DDP",
+      incoterm_location: "DDP Los Angeles",
+      payment_term: "OA 60 days",
+      certifications_required: ["GOTS", "OEKO-TEX", "BSCI"] as Certification[],
+      moq: 10000,
+      moq_unit: "PCS",
+      lead_time_days: 30,
+      sample_required: true,
+      buyer_type: "retailer",
+      buyer_region: "美国",
+      profit_estimate: {
+        target_price_usd: 5.25,
+        suggested_cost_cny: 22,
+        estimated_margin: 15.8,
+        exchange_rate: 7.25,
+        shipping_cost_estimate: 0.8,
+        certification_cost: 0.2
+      }
+    }
   };
-
   return MOCK_DEMANDS[id] || null;
 }
 
 // 紧急度配置
-const urgencyConfig = {
-  critical: {
-    bg: "bg-red-500/20",
-    border: "border-red-500",
-    text: "text-red-400",
-    label: "紧急",
-  },
-  high: {
-    bg: "bg-cyber-pink/20",
-    border: "border-cyber-pink",
-    text: "text-cyber-pink",
-    label: "较急",
-  },
-  medium: {
-    bg: "bg-cyber-yellow/20",
-    border: "border-cyber-yellow",
-    text: "text-cyber-yellow",
-    label: "一般",
-  },
-  low: {
-    bg: "bg-cyber-green/20",
-    border: "border-cyber-green",
-    text: "text-cyber-green",
-    label: "不急",
-  },
+const URGENCY_CONFIG = {
+  critical: { label: "特急", color: "text-red-400", bg: "bg-red-500/15", border: "border-red-500/30" },
+  high: { label: "紧急", color: "text-orange-400", bg: "bg-orange-500/15", border: "border-orange-500/30" },
+  medium: { label: "中等", color: "text-yellow-400", bg: "bg-yellow-500/15", border: "border-yellow-500/30" },
+  low: { label: "一般", color: "text-green-400", bg: "bg-green-500/15", border: "border-green-500/30" },
 };
+
+// 信息卡片组件
+function InfoCard({ label, value, subValue, highlight = false }: { 
+  label: string; 
+  value: string | number; 
+  subValue?: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="stat-card">
+      <div className="stat-label">{label}</div>
+      <div className={`stat-value text-xl ${highlight ? "text-green-400" : ""}`}>{value}</div>
+      {subValue && <div className="text-xs text-gray-500 mt-1">{subValue}</div>}
+    </div>
+  );
+}
+
+// 匹配供应商卡片
+function SupplierCard({ supplier, rank }: { supplier: MatchedSupplier; rank: number }) {
+  const scoreColor = supplier.match_score >= 90 ? "text-green-400" : 
+                     supplier.match_score >= 80 ? "text-yellow-400" : "text-gray-400";
+  
+  return (
+    <div className="card-professional p-4 hover:border-blue-500/50 transition-colors">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+            {rank}
+          </div>
+          <div>
+            <div className="font-medium text-white">{supplier.supplier_name}</div>
+            <div className="text-xs text-gray-500">
+              {supplier.capacity_available ? "✅ 产能可用" : "⚠️ 产能紧张"}
+            </div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className={`text-xl font-bold font-mono ${scoreColor}`}>
+            {supplier.match_score}
+          </div>
+          <div className="text-xs text-gray-500">匹配分</div>
+        </div>
+      </div>
+      
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {supplier.match_reasons.map((reason, i) => (
+          <span key={i} className="tag tag-green text-xs">{reason}</span>
+        ))}
+      </div>
+      
+      <div className="flex items-center justify-between pt-3 border-t border-[#21262d]">
+        <div>
+          <span className="text-xs text-gray-500">已匹配认证: </span>
+          <span className="text-sm text-gray-300">
+            {supplier.certifications_matched.join(" / ")}
+          </span>
+        </div>
+        {supplier.estimated_quote && (
+          <div className="text-right">
+            <div className="text-lg font-bold font-mono text-blue-400">
+              ¥{supplier.estimated_quote}
+            </div>
+            <div className="text-xs text-gray-500">预估报价</div>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-3 flex gap-2">
+        <button className="btn-primary flex-1 text-sm py-2">发起询价</button>
+        <button className="btn-secondary flex-1 text-sm py-2">查看详情</button>
+      </div>
+    </div>
+  );
+}
 
 export default function DemandDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [demand, setDemand] = useState<Demand | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<"detail" | "suppliers" | "cost">("detail");
 
   useEffect(() => {
     async function loadDemand() {
@@ -196,269 +210,317 @@ export default function DemandDetailPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cyber-black flex items-center justify-center">
-        <div className="loader-cyber" />
+      <div className="min-h-screen bg-[#0d1117] flex items-center justify-center">
+        <div className="loader" />
       </div>
     );
   }
 
   if (!demand) {
     return (
-      <div className="min-h-screen bg-cyber-black flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl text-white font-cyber">需求不存在</h1>
-        <Link href="/" className="text-cyber-cyan hover:underline">
-          返回首页
-        </Link>
+      <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center gap-4">
+        <h1 className="text-2xl text-white">需求不存在</h1>
+        <Link href="/" className="btn-primary">返回首页</Link>
       </div>
     );
   }
 
-  const config = urgencyConfig[demand.urgency] || urgencyConfig.low;
+  const urgencyConfig = URGENCY_CONFIG[demand.urgency] || URGENCY_CONFIG.low;
+  const profitMargin = demand.profit_estimate?.estimated_margin || 0;
 
   return (
-    <div className="min-h-screen bg-cyber-black">
-      {/* 背景效果 */}
-      <div className="fixed inset-0 cyber-grid-animated opacity-30 pointer-events-none" />
-      
+    <div className="min-h-screen bg-[#0d1117]">
       {/* 顶部导航 */}
-      <nav className="sticky top-0 z-50 bg-cyber-black/80 backdrop-blur-md border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-cyber-cyan hover:text-white transition-colors">
+      <nav className="navbar">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <span className="font-mono text-sm">返回需求列表</span>
+            <span className="text-sm">返回列表</span>
           </Link>
-          <div className="text-sm font-mono text-gray-500">
-            需求 ID: {demand.id}
-          </div>
+          <div className="h-4 w-px bg-[#30363d]" />
+          <span className="text-sm text-gray-500 font-mono">ID: {demand.id}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`tag ${urgencyConfig.bg} ${urgencyConfig.color} ${urgencyConfig.border}`}>
+            {urgencyConfig.label}
+          </span>
+          <span className="status-indicator status-active" />
+          <span className="text-sm text-gray-400">实时更新</span>
         </div>
       </nav>
 
       {/* 主内容 */}
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          {/* 状态标签 */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 mb-6"
-          >
-            <span className={`px-3 py-1.5 rounded-full text-sm font-mono border ${config.bg} ${config.border} ${config.text}`}>
-              {getUrgencyLabel(demand.urgency)}
-            </span>
-            <span className="text-gray-500 font-mono text-sm">
-              发布于 {formatRelativeTime(demand.created_at)}
-            </span>
-            <span className="text-gray-500 font-mono text-sm">
-              来源: {demand.source_platform}
-            </span>
-          </motion.div>
-
-          {/* 标题 */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-bold text-white mb-6 font-cyber"
-          >
-            {demand.title}
-          </motion.h1>
-
-          {/* 关键指标 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-          >
-            <div className="bg-cyber-dark/50 rounded-xl p-4 border border-gray-800">
-              <div className="text-xs text-gray-500 mb-1 font-mono">预算范围</div>
-              <div className="text-xl font-bold text-cyber-green font-mono">{demand.price_range}</div>
-            </div>
-            <div className="bg-cyber-dark/50 rounded-xl p-4 border border-gray-800">
-              <div className="text-xs text-gray-500 mb-1 font-mono">采购数量</div>
-              <div className="text-xl font-bold text-cyber-cyan font-mono">
-                {formatNumber(demand.quantity)} {demand.unit}
-              </div>
-            </div>
-            <div className="bg-cyber-dark/50 rounded-xl p-4 border border-gray-800">
-              <div className="text-xs text-gray-500 mb-1 font-mono">目标地区</div>
-              <div className="text-xl font-bold text-cyber-purple font-mono">{demand.region}</div>
-            </div>
-            <div className="bg-cyber-dark/50 rounded-xl p-4 border border-gray-800">
-              <div className="text-xs text-gray-500 mb-1 font-mono">商业价值</div>
-              <div className="text-xl font-bold text-white font-mono flex items-center gap-2">
-                {demand.business_value}
-                <span className="text-xs text-gray-500">/ 100</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 标签 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-wrap gap-2 mb-8"
-          >
-            {demand.tags?.map((tag, index) => (
-              <span
-                key={index}
-                className="px-3 py-1.5 bg-cyber-purple/10 border border-cyber-purple/30 rounded-full text-sm text-cyber-purple font-mono"
-              >
-                #{tag}
-              </span>
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        {/* 标题区 */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="tag tag-blue">{demand.source_platform}</span>
+            <span className="text-gray-500">·</span>
+            <span className="text-sm text-gray-400">{formatRelativeTime(demand.created_at)}</span>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-3">{demand.title}</h1>
+          <div className="flex flex-wrap gap-2">
+            {demand.tags?.map((tag, i) => (
+              <span key={i} className="tag">{tag}</span>
             ))}
-          </motion.div>
+          </div>
+        </div>
 
-          {/* 详细描述 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-cyber-dark/50 rounded-xl p-6 border border-gray-800 mb-8"
-          >
-            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-cyber-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              需求详情
-            </h2>
-            <div className="text-gray-300 whitespace-pre-wrap leading-relaxed">
-              {demand.description}
-            </div>
-          </motion.div>
+        {/* 关键指标 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
+          <InfoCard label="目标单价" value={demand.price_range} />
+          <InfoCard label="采购数量" value={`${formatNumber(demand.quantity)} ${demand.unit}`} />
+          <InfoCard label="目标市场" value={demand.region} />
+          <InfoCard label="贸易条款" value={demand.incoterm_location || "待确认"} />
+          <InfoCard label="付款方式" value={demand.payment_term || "待确认"} />
+          <InfoCard 
+            label="预估毛利" 
+            value={`${profitMargin}%`} 
+            highlight={profitMargin >= 18}
+            subValue={profitMargin >= 18 ? "高利润" : profitMargin >= 12 ? "标准" : "低利润"}
+          />
+        </div>
 
-          {/* 对接按钮区 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <motion.button
-              onClick={() => setShowContactForm(true)}
-              className={`flex-1 py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 border-2 ${config.border} ${config.bg} ${config.text} hover:shadow-lg hover:shadow-${demand.urgency === 'critical' ? 'red' : demand.urgency === 'high' ? 'pink' : 'cyan'}-500/30`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+        {/* Tab 导航 */}
+        <div className="flex gap-1 mb-4 border-b border-[#21262d]">
+          {[
+            { key: "detail", label: "需求详情" },
+            { key: "suppliers", label: `匹配工厂 (${demand.matched_suppliers?.length || 0})` },
+            { key: "cost", label: "成本核算" }
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === tab.key 
+                  ? "border-blue-500 text-white" 
+                  : "border-transparent text-gray-400 hover:text-gray-200"
+              }`}
             >
-              <span className="flex items-center justify-center gap-3">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                立即对接此需求
-              </span>
-            </motion.button>
-            
-            <motion.button
-              className="flex-1 py-4 px-8 rounded-xl font-semibold text-lg bg-gray-800 text-gray-300 border-2 border-gray-700 hover:border-gray-600 transition-all"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="flex items-center justify-center gap-3">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                </svg>
-                收藏需求
-              </span>
-            </motion.button>
-          </motion.div>
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* 提示信息 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="mt-8 p-4 bg-cyber-cyan/5 border border-cyber-cyan/20 rounded-xl"
-          >
-            <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-cyber-cyan mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div className="text-sm text-gray-400">
-                <p className="text-cyber-cyan font-semibold mb-1">温馨提示</p>
-                <p>对接需求后，系统将自动发送您的企业资料给需求方。请确保您的企业资料完整、准确，以提高对接成功率。</p>
+        {/* Tab 内容 */}
+        {activeTab === "detail" && (
+          <div className="space-y-6">
+            {/* 需求描述 */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">📋 需求描述</div>
+              </div>
+              <div className="panel-body">
+                <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  {demand.description}
+                </p>
               </div>
             </div>
-          </motion.div>
+
+            {/* 贸易条款 */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">📦 贸易条款</div>
+              </div>
+              <div className="panel-body">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Incoterm</div>
+                    <div className="font-medium text-white">{demand.incoterm_location || "-"}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">付款方式</div>
+                    <div className="font-medium text-white">{demand.payment_term || "-"}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">MOQ</div>
+                    <div className="font-medium text-white">{demand.moq ? `${formatNumber(demand.moq)} ${demand.moq_unit}` : "-"}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">交期要求</div>
+                    <div className="font-medium text-white">{demand.lead_time_days ? `${demand.lead_time_days} 天` : "-"}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 认证要求 */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">🏅 认证要求</div>
+              </div>
+              <div className="panel-body">
+                <div className="flex flex-wrap gap-2">
+                  {demand.certifications_required?.map((cert, i) => (
+                    <span key={i} className="tag tag-blue">{cert}</span>
+                  )) || <span className="text-gray-500">无特殊认证要求</span>}
+                </div>
+                {demand.sample_required && (
+                  <div className="mt-4 pt-4 border-t border-[#21262d]">
+                    <span className="tag tag-orange">⚠️ 需要提供样品</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 采购商信息 */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">🏢 采购商信息</div>
+              </div>
+              <div className="panel-body">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">买家类型</div>
+                    <div className="font-medium text-white">
+                      {demand.buyer_type === "brand" ? "品牌商" :
+                       demand.buyer_type === "retailer" ? "零售商" :
+                       demand.buyer_type === "platform" ? "平台" :
+                       demand.buyer_type === "wholesaler" ? "批发商" : "其他"}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">买家地区</div>
+                    <div className="font-medium text-white">{demand.buyer_region || "-"}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">来源渠道</div>
+                    <div className="font-medium text-white">{demand.source_platform}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "suppliers" && (
+          <div className="space-y-4">
+            {demand.matched_suppliers && demand.matched_suppliers.length > 0 ? (
+              <>
+                <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-400">
+                    <span className="text-xl">✅</span>
+                    <span className="font-medium">
+                      系统已为您匹配到 {demand.matched_suppliers.length} 家园区工厂
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-1">
+                    以下工厂均已通过资质审核，产能和认证满足此订单要求
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {demand.matched_suppliers.map((supplier, index) => (
+                    <SupplierCard key={supplier.supplier_id} supplier={supplier} rank={index + 1} />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">
+                <div className="empty-state-icon">🔍</div>
+                <div className="empty-state-title">暂无匹配工厂</div>
+                <div className="empty-state-description">
+                  系统正在为您寻找合适的供应商，请稍后查看
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "cost" && demand.profit_estimate && (
+          <div className="space-y-6">
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">💰 利润核算</div>
+              </div>
+              <div className="panel-body">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">目标单价 (USD)</div>
+                    <div className="text-2xl font-bold font-mono text-blue-400">
+                      ${demand.profit_estimate.target_price_usd.toFixed(2)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">建议出厂价 (CNY)</div>
+                    <div className="text-2xl font-bold font-mono text-white">
+                      ¥{demand.profit_estimate.suggested_cost_cny.toFixed(0)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">预估毛利率</div>
+                    <div className={`text-2xl font-bold font-mono ${
+                      demand.profit_estimate.estimated_margin >= 18 ? "profit-positive" : 
+                      demand.profit_estimate.estimated_margin >= 12 ? "text-yellow-400" : "profit-negative"
+                    }`}>
+                      {demand.profit_estimate.estimated_margin}%
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="divider" />
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <div className="text-gray-500">当前汇率</div>
+                    <div className="font-mono text-white">1 USD = {demand.profit_estimate.exchange_rate} CNY</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500">预估运费</div>
+                    <div className="font-mono text-white">${demand.profit_estimate.shipping_cost_estimate}/件</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500">认证成本</div>
+                    <div className="font-mono text-white">${demand.profit_estimate.certification_cost}/件</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500">订单总值</div>
+                    <div className="font-mono text-white">
+                      ${(demand.profit_estimate.target_price_usd * demand.quantity).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">💡</span>
+                <div>
+                  <div className="font-medium text-white mb-1">利润优化建议</div>
+                  <ul className="text-sm text-gray-400 space-y-1">
+                    <li>• 争取 FOB 条款可节省运费成本约 8%</li>
+                    <li>• 批量采购认证可分摊成本至 $0.15/件</li>
+                    <li>• 建议报价区间: ¥{Math.round(demand.profit_estimate.suggested_cost_cny * 0.95)} - ¥{Math.round(demand.profit_estimate.suggested_cost_cny * 1.05)}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 操作按钮 */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-3">
+          <button className="btn-success flex-1 py-3 text-base">
+            📋 一键核算成本
+          </button>
+          <button className="btn-primary flex-1 py-3 text-base">
+            📄 下载 RFQ 报价请求书
+          </button>
+          <button className="btn-secondary flex-1 py-3 text-base">
+            🔒 锁定产能
+          </button>
+        </div>
+
+        {/* 底部提示 */}
+        <div className="mt-6 p-4 bg-[#161b22] border border-[#30363d] rounded-lg text-sm text-gray-400">
+          <strong className="text-white">⚠️ 重要提示：</strong>
+          本平台所有需求数据均经过初步审核，但实际交易前请务必核实采购商资质。
+          建议使用平台担保交易服务，保障您的权益。
         </div>
       </main>
-
-      {/* 联系表单弹窗 */}
-      {showContactForm && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowContactForm(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-cyber-dark border border-gray-800 rounded-2xl p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <svg className="w-6 h-6 text-cyber-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              提交对接申请
-            </h3>
-            
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">联系人姓名</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 bg-cyber-black border border-gray-700 rounded-lg text-white focus:border-cyber-cyan focus:outline-none transition-colors"
-                  placeholder="请输入您的姓名"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">联系电话</label>
-                <input
-                  type="tel"
-                  className="w-full px-4 py-3 bg-cyber-black border border-gray-700 rounded-lg text-white focus:border-cyber-cyan focus:outline-none transition-colors"
-                  placeholder="请输入您的电话"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">公司名称</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 bg-cyber-black border border-gray-700 rounded-lg text-white focus:border-cyber-cyan focus:outline-none transition-colors"
-                  placeholder="请输入公司名称"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">留言 (可选)</label>
-                <textarea
-                  className="w-full px-4 py-3 bg-cyber-black border border-gray-700 rounded-lg text-white focus:border-cyber-cyan focus:outline-none transition-colors resize-none"
-                  rows={3}
-                  placeholder="简要说明您的供货能力..."
-                />
-              </div>
-              
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowContactForm(false)}
-                  className="flex-1 py-3 px-4 rounded-lg bg-gray-800 text-gray-300 font-semibold hover:bg-gray-700 transition-colors"
-                >
-                  取消
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-3 px-4 rounded-lg bg-cyber-cyan text-cyber-black font-semibold hover:bg-cyber-cyan/90 transition-colors"
-                >
-                  提交申请
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 }

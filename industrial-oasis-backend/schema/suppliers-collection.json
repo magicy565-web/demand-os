@@ -1,0 +1,344 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Suppliers Collection Schema",
+  "description": "园区工厂/供应商数据表结构 - Demand OS 工业园区版",
+  "collection": "suppliers",
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "meta": {
+        "primary_key": true,
+        "auto_generate": true
+      }
+    },
+    {
+      "field": "name",
+      "type": "string",
+      "meta": {
+        "required": true,
+        "interface": "input",
+        "options": {
+          "placeholder": "工厂全称"
+        }
+      },
+      "schema": {
+        "max_length": 200
+      }
+    },
+    {
+      "field": "short_name",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "工厂简称"
+        }
+      },
+      "schema": {
+        "max_length": 50
+      }
+    },
+    {
+      "field": "location",
+      "type": "string",
+      "meta": {
+        "required": true,
+        "interface": "input",
+        "options": {
+          "placeholder": "所在地 (如: 广东深圳)"
+        }
+      }
+    },
+    {
+      "field": "park_name",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "所属园区名称"
+        }
+      }
+    },
+    {
+      "field": "established_year",
+      "type": "integer",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "min": 1980,
+          "max": 2030
+        }
+      }
+    },
+    {
+      "field": "employee_count",
+      "type": "integer",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "员工人数"
+        }
+      }
+    },
+    {
+      "field": "factory_area",
+      "type": "integer",
+      "meta": {
+        "interface": "input",
+        "note": "厂房面积（平方米）"
+      }
+    },
+    {
+      "field": "core_processes",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "options": {
+          "presets": [
+            "注塑",
+            "冲压",
+            "CNC加工",
+            "激光切割",
+            "焊接",
+            "喷涂",
+            "电镀",
+            "丝印",
+            "缝纫",
+            "印花",
+            "绣花",
+            "裁剪",
+            "SMT贴片",
+            "组装",
+            "包装",
+            "测试"
+          ]
+        },
+        "note": "核心工艺能力"
+      }
+    },
+    {
+      "field": "categories",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "options": {
+          "presets": [
+            "消费电子",
+            "服装纺织",
+            "家居用品",
+            "新能源",
+            "户外运动",
+            "美妆个护",
+            "汽车配件",
+            "医疗器械",
+            "工业材料"
+          ]
+        },
+        "note": "主营品类"
+      }
+    },
+    {
+      "field": "monthly_capacity",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "如: 50万件/月"
+        },
+        "note": "月产能"
+      }
+    },
+    {
+      "field": "current_load_percent",
+      "type": "integer",
+      "meta": {
+        "interface": "slider",
+        "options": {
+          "min": 0,
+          "max": 100,
+          "step": 5
+        },
+        "note": "当前产能负荷 (%)"
+      }
+    },
+    {
+      "field": "available_capacity",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "可用产能描述"
+      }
+    },
+    {
+      "field": "certifications",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "options": {
+          "presets": [
+            "ISO9001",
+            "ISO14001",
+            "CE",
+            "FCC",
+            "UL",
+            "RoHS",
+            "REACH",
+            "FDA",
+            "GOTS",
+            "OEKO-TEX",
+            "BSCI",
+            "SA8000",
+            "GS",
+            "CB",
+            "ETL",
+            "CCC",
+            "IATF16949"
+          ]
+        },
+        "note": "已获得的资质认证"
+      }
+    },
+    {
+      "field": "main_clients",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "note": "主要客户（脱敏显示）"
+      }
+    },
+    {
+      "field": "export_regions",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "options": {
+          "presets": [
+            "北美",
+            "欧洲",
+            "英国",
+            "澳洲",
+            "日本",
+            "韩国",
+            "东南亚",
+            "中东",
+            "南美"
+          ]
+        },
+        "note": "出口地区"
+      }
+    },
+    {
+      "field": "annual_export_value",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "如: 500万美元/年"
+        },
+        "note": "年出口额"
+      }
+    },
+    {
+      "field": "quality_score",
+      "type": "integer",
+      "meta": {
+        "interface": "slider",
+        "options": {
+          "min": 0,
+          "max": 100,
+          "step": 1
+        },
+        "note": "质量评分 (0-100)"
+      }
+    },
+    {
+      "field": "on_time_delivery_rate",
+      "type": "float",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "如: 95.5"
+        },
+        "note": "准时交货率 (%)"
+      }
+    },
+    {
+      "field": "defect_rate",
+      "type": "float",
+      "meta": {
+        "interface": "input",
+        "options": {
+          "placeholder": "如: 0.5"
+        },
+        "note": "次品率 (%)"
+      }
+    },
+    {
+      "field": "contact_name",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "联系人姓名"
+      }
+    },
+    {
+      "field": "contact_phone",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "联系电话"
+      }
+    },
+    {
+      "field": "contact_email",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "联系邮箱"
+      }
+    },
+    {
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "活跃", "value": "active" },
+            { "text": "暂停", "value": "inactive" },
+            { "text": "待审核", "value": "pending" }
+          ]
+        },
+        "default_value": "active"
+      }
+    },
+    {
+      "field": "verified",
+      "type": "boolean",
+      "meta": {
+        "interface": "boolean",
+        "default_value": false,
+        "note": "是否已验证"
+      }
+    },
+    {
+      "field": "created_at",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "readonly": true,
+        "special": ["date-created"]
+      }
+    },
+    {
+      "field": "updated_at",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "readonly": true,
+        "special": ["date-updated"]
+      }
+    }
+  ]
+}

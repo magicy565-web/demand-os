@@ -1,96 +1,73 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative py-12 mt-20 border-t border-gray-800">
-      {/* 背景渐变 */}
-      <div className="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent opacity-50" />
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
+    <footer className="relative py-8 mt-12 border-t border-[#21262d] bg-[#0d1117]">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Logo & 描述 */}
           <div className="md:col-span-2">
-            <motion.h3
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="font-cyber text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-cyber-purple mb-4"
-            >
-              DEMAND OS
-            </motion.h3>
+            <h3 className="text-lg font-bold text-white mb-3">
+              Industrial<span className="text-blue-500">OS</span>
+            </h3>
             <p className="text-gray-400 text-sm mb-4">
-              AI 驱动的全球需求实时对接系统，连接供应链与全球市场需求。
+              专业外贸订单对接平台 · 连接全球采购商与中国优质工厂
             </p>
             <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
-              <span className="w-2 h-2 bg-cyber-green rounded-full animate-pulse" />
-              System Status: Online
+              <span className="status-indicator status-active" />
+              系统正常运行中
             </div>
           </div>
 
           {/* 快速链接 */}
           <div>
-            <h4 className="font-cyber text-sm text-cyber-cyan mb-4">快速链接</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">快速链接</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyber-cyan transition-colors">
-                  探索需求
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  需求大厅
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyber-cyan transition-colors">
-                  发布需求
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  工厂入驻
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyber-cyan transition-colors">
-                  API 文档
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  API 开发文档
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyber-cyan transition-colors">
-                  关于我们
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  关于平台
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* 技术栈 */}
+          {/* 支持 */}
           <div>
-            <h4 className="font-cyber text-sm text-cyber-purple mb-4">技术栈</h4>
-            <ul className="space-y-2 text-sm text-gray-500 font-mono">
-              <li>Next.js 15</li>
-              <li>Directus CMS</li>
-              <li>PostgreSQL</li>
-              <li>OpenAI API</li>
+            <h4 className="text-sm font-semibold text-white mb-4">支持服务</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>客服: support@industrialos.com</li>
+              <li>工作时间: 9:00 - 18:00 (周一至周五)</li>
+              <li>商务合作: bd@industrialos.com</li>
             </ul>
           </div>
         </div>
 
         {/* 底部版权 */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-gray-800">
-          <p className="text-xs text-gray-500 font-mono">
-            © {currentYear} Demand OS. All rights reserved.
+        <div className="flex flex-col md:flex-row items-center justify-between pt-6 border-t border-[#21262d]">
+          <p className="text-xs text-gray-500">
+            © {currentYear} Industrial OS. All rights reserved.
           </p>
-          <p className="text-xs text-gray-600 font-mono mt-2 md:mt-0">
-            Powered by <span className="text-cyber-cyan">Industrial Oasis</span> · 工业绿洲
+          <p className="text-xs text-gray-600 mt-2 md:mt-0">
+            Powered by <span className="text-blue-400">Industrial Oasis</span> · 工业绿洲跨境电商产业园
           </p>
         </div>
-
-        {/* 装饰性代码 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-8 text-center"
-        >
-          <code className="text-xs text-gray-700 font-mono">
-            {"/* "} connecting global supply chains since 2024 {" */"}
-          </code>
-        </motion.div>
       </div>
     </footer>
   );
