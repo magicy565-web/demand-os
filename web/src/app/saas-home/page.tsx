@@ -1,104 +1,116 @@
 "use client";
 
-import SaaSHero from "@/components/SaaSHero";
-import FeatureSection from "@/components/FeatureSection";
-import PricingSection from "@/components/PricingSection";
-import FAQSection from "@/components/FAQSection";
-import CTASection from "@/components/CTASection";
-import Link from "next/link";
+import McKinseyNav from "@/components/McKinseyNav";
+import McKinseyHero from "@/components/McKinseyHero";
+import ImpactStats from "@/components/ImpactStats";
+import TrustedEcosystem from "@/components/TrustedEcosystem";
+import ThoughtLeadership from "@/components/ThoughtLeadership";
+import CustomerSuccess from "@/components/CustomerSuccess";
 
 export default function SaaSHome() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* 导航栏 */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-2xl font-bold">
-            <span className="text-blue-400">⚡</span>
-            <span>Demand-OS</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="#features" className="hover:text-blue-400 transition">
-              产品特性
-            </a>
-            <a href="#pricing" className="hover:text-blue-400 transition">
-              定价方案
-            </a>
-            <a href="#faq" className="hover:text-blue-400 transition">
-              常见问题
-            </a>
-            <Link
-              href="/"
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition"
-            >
-              进入系统
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-white">
+      {/* McKinsey 风格导航栏 */}
+      <McKinseyNav />
 
-      {/* Hero Section with Bento Grid */}
-      <div className="pt-20 pb-20">
-        <SaaSHero />
-      </div>
+      {/* Hero Section with 9-Module Bento Grid */}
+      <McKinseyHero />
 
-      {/* 特性区 */}
-      <div id="features">
-        <FeatureSection />
-      </div>
+      {/* 影响力统计 */}
+      <ImpactStats />
 
-      {/* 定价区 */}
-      <div id="pricing">
-        <PricingSection />
-      </div>
+      {/* 生态系统 Logos */}
+      <TrustedEcosystem />
 
-      {/* FAQ 区 */}
-      <div id="faq">
-        <FAQSection />
-      </div>
+      {/* 思想领导力 */}
+      <ThoughtLeadership />
 
-      {/* CTA 区 */}
-      <CTASection />
+      {/* 客户成功案例 */}
+      <CustomerSuccess />
 
       {/* Footer */}
-      <footer className="border-t border-slate-700 py-12 px-4 bg-slate-900/50">
-        <div className="max-w-6xl mx-auto">
+      <footer className="border-t border-slate-200 py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h4 className="font-bold mb-4">产品</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">特性</a></li>
-                <li><a href="#" className="hover:text-white transition">定价</a></li>
-                <li><a href="#" className="hover:text-white transition">安全</a></li>
+              <h4 className="font-serif font-bold mb-4 text-slate-900">
+                解决方案
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    企业规划
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    Demand-OS
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    TikTok孵化器
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4">公司</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">关于我们</a></li>
-                <li><a href="#" className="hover:text-white transition">博客</a></li>
-                <li><a href="#" className="hover:text-white transition">招聘</a></li>
+              <h4 className="font-serif font-bold mb-4 text-slate-900">
+                服务
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    展览
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    仓库
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    会员俱乐部
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4">法律</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">隐私政策</a></li>
-                <li><a href="#" className="hover:text-white transition">服务条款</a></li>
-                <li><a href="#" className="hover:text-white transition">联系我们</a></li>
+              <h4 className="font-serif font-bold mb-4 text-slate-900">
+                资讯
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    活动
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    新闻
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#00509d] transition">
+                    招聘
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4">社交媒体</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">Twitter</a></li>
-                <li><a href="#" className="hover:text-white transition">LinkedIn</a></li>
-                <li><a href="#" className="hover:text-white transition">WeChat</a></li>
+              <h4 className="font-serif font-bold mb-4 text-slate-900">
+                联系我们
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li>info@hongyihong.com</li>
+                <li>+86 400-888-8888</li>
+                <li>广东省中山市</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-700 pt-8 text-center text-gray-400">
-            <p>&copy; 2026 Demand-OS. All rights reserved.</p>
+          <div className="border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
+            <p>&copy; 2026 HONGYIHONG. All rights reserved.</p>
           </div>
         </div>
       </footer>
