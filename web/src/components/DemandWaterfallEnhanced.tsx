@@ -149,12 +149,12 @@ const MOCK_DEMANDS: Demand[] = [
   },
 ];
 
-// 瀑布流断点配置
+// 瀑布流断点配置 - 单列竖向瀑布流
 const breakpointColumns = {
-  default: 3,
-  1280: 3,
-  1024: 2,
-  768: 2,
+  default: 1,
+  1280: 1,
+  1024: 1,
+  768: 1,
   640: 1,
 };
 

@@ -134,12 +134,12 @@ export default function Home() {
       <LiveStats demands={demandCount} connections={connectionCount} />
       
       {/* 3D 舞台 - 瀑布流 */}
-      <div className="pt-40 pb-12 h-full overflow-y-auto scrollbar-hide flex items-center justify-center px-4" style={{ perspective: "2000px" }}>
+      <div className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
         <div 
-          className="transition-all duration-700 ease-out w-full max-w-6xl"
+          className="transition-all duration-700 ease-out w-full px-4"
           style={{ 
             transformStyle: "preserve-3d",
-            transform: "rotateX(3deg) scale(0.98)",
+            transform: "rotateX(2deg)",
           }}
         >
           <DemandWaterfallEnhanced 

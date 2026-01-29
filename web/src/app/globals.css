@@ -748,28 +748,32 @@ body.light {
   background: #dc2626;
 }
 
-/* 瀑布流布局 */
+/* 瀑布流布局 - 竖向单列信息流 */
 .masonry-grid {
   display: flex;
-  margin-left: -12px;
-  width: auto;
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .masonry-grid-column {
-  padding-left: 12px;
+  padding: 0;
   background-clip: padding-box;
-  @apply mb-6;
+  width: 100% !important;
+}
+
+.masonry-grid-column > div {
+  margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {
   .masonry-grid {
-    margin-left: -8px;
+    max-width: 100%;
   }
   
-  .masonry-grid-column {
-    padding-left: 8px;
+  .masonry-grid-column > div {
+    margin-bottom: 16px;
   }
 }
 
