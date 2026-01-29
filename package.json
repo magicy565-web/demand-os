@@ -1,0 +1,27 @@
+{
+  "name": "demand-os",
+  "version": "1.0.0",
+  "description": "Demand OS (工业绿洲) - AI 驱动的全球需求实时对接系统",
+  "private": true,
+  "workspaces": [
+    "web",
+    "scripts"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=web",
+    "build": "npm run build --workspace=web",
+    "start": "npm run start --workspace=web",
+    "agent": "npm run start --workspace=scripts",
+    "docker:up": "cd industrial-oasis-backend && docker-compose up -d",
+    "docker:down": "cd industrial-oasis-backend && docker-compose down"
+  },
+  "keywords": [
+    "demand-os",
+    "industrial-oasis",
+    "ai-agent",
+    "directus",
+    "nextjs"
+  ],
+  "author": "",
+  "license": "MIT"
+}
