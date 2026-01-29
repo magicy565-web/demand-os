@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ModeSwitch } from "@/components/ModeSwitch";
+import { GlobalNav } from "@/components/GlobalNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen">
         {/* 全局模式切换导航 */}
         <ModeSwitch />
+        <GlobalNav />
         
         {/* 主内容区 */}
         <main className="relative">

@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { DemandWaterfallEnhanced } from "@/components/DemandWaterfallEnhanced";
 import { ParticleBackground } from "@/components/ParticleBackground";
+import { ModeIndicator } from "@/components/ModeIndicator";
+import Link from "next/link";
 
 // 实时统计数据组件
 function LiveStats({ 
@@ -208,6 +210,9 @@ export default function Home() {
       
       {/* 角落装饰 */}
       <CornerDecorations />
+      
+      {/* 模式指示器 */}
+      <ModeIndicator />
       
       {/* 标题 */}
       <CyberTitle isScrolling={isScrolling} />
