@@ -37,8 +37,8 @@ export default function SaaSHome() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="pt-32">
+      {/* Hero Section with Bento Grid */}
+      <div className="pt-20 pb-20">
         <SaaSHero />
       </div>
 
