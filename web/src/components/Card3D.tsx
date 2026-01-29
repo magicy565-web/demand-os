@@ -8,6 +8,7 @@ interface Card3DProps {
   className?: string;
   glowColor?: string;
   intensity?: number;
+  disableInteractive?: boolean;
 }
 
 export function Card3D({
@@ -15,6 +16,7 @@ export function Card3D({
   className = "",
   glowColor = "rgba(0, 245, 255, 0.4)",
   intensity = 15,
+  disableInteractive = true,
 }: Card3DProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -44,11 +46,15 @@ export function Card3D({
     [mouseX, mouseY]
   );
 
-  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseEnter = () => {
+    if (!disableInteractive) setIsHovered(true);
+  };
   const handleMouseLeave = () => {
     setIsHovered(false);
-    mouseX.set(0);
-    mouseY.set(0);
+    if (!disableInteractive) {
+      mouseX.set(0);
+      mouseY.set(0);
+    }
   };
 
   return (
@@ -59,12 +65,14 @@ export function Card3D({
         perspective: 1000,
         transformStyle: "preserve-3d",
       }}
-      onMouseMove={handleMouseMove}
+      onMouseMove={disableInteractive ? undefined : handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <motion.div
-        style={{
+        style={disableInteractive ? {
+          transformStyle: "preserve-3d",
+        } : {
           rotateX,
           rotateY,
           transformStyle: "preserve-3d",

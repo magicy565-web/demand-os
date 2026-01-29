@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Demand } from "@/types/demand";
 import { Card3D } from "./Card3D";
 import {
@@ -84,9 +85,33 @@ const newItemVariants = {
 };
 
 export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
+  const router = useRouter();
   const valueColor = getBusinessValueColor(demand.business_value);
   const glowColor = getGlowColor(demand.urgency);
   const isNew = Date.now() - new Date(demand.created_at).getTime() < 60000; // 1分钟内的是新数据
+
+  // 联系供应商
+  const handleContact = () => {
+    // 打开联系表单或跳转到联系页
+    const whatsappLink = `https://wa.me/?text=Hi, I'm interested in: ${demand.title}`;
+    window.open(whatsappLink, "_blank");
+  };
+
+  // 收藏需求
+  const handleSave = () => {
+    const saved = JSON.parse(localStorage.getItem("savedDemands") || "[]") as string[];
+    if (saved.includes(demand.id)) {
+      const updated = saved.filter(id => id !== demand.id);
+      localStorage.setItem("savedDemands", JSON.stringify(updated));
+    } else {
+      localStorage.setItem("savedDemands", JSON.stringify([...saved, demand.id]));
+    }
+  };
+
+  // 查看详情
+  const handleViewDetails = () => {
+    router.push(`/demand/${demand.id}`);
+  };
 
   return (
     <motion.div
@@ -285,6 +310,7 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
           >
             {/* 主行动按钮 - 联系供应商 */}
             <motion.button
+              onClick={handleContact}
               className="flex-1 relative px-4 py-3 bg-gradient-to-r from-neon-primary to-neon-secondary text-black font-bold text-sm rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-xl hover:shadow-neon-primary/60 uppercase tracking-wider"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97, y: 0 }}
@@ -301,6 +327,7 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
 
             {/* 次行动按钮 - 收藏 */}
             <motion.button
+              onClick={handleSave}
               className="relative px-4 py-3 border-2 border-neon-secondary text-neon-secondary rounded-lg hover:bg-neon-secondary/10 transition-all duration-300 font-semibold uppercase tracking-wider"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95, y: 0 }}
@@ -312,6 +339,7 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
 
             {/* 详情按钮 */}
             <motion.button
+              onClick={handleViewDetails}
               className="relative px-4 py-3 border-2 border-neon-purple text-neon-purple rounded-lg hover:bg-neon-purple/10 transition-all duration-300 font-semibold"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95, y: 0 }}

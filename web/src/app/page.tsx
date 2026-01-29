@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DemandWaterfallEnhanced } from "@/components/DemandWaterfallEnhanced";
 import { ParticleBackground } from "@/components/ParticleBackground";
 
@@ -115,6 +115,28 @@ function CornerDecorations() {
 export default function Home() {
   const [demandCount, setDemandCount] = useState(0);
   const [connectionCount] = useState(1);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // 自动滚动功能
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    
+    const scrollContainer = scrollContainerRef.current;
+    let scrollSpeed = 2; // 像素/毫秒
+    let scrollInterval: NodeJS.Timeout;
+    
+    const autoScroll = () => {
+      if (scrollContainer.scrollHeight - scrollContainer.scrollTop > scrollContainer.clientHeight + 500) {
+        scrollContainer.scrollTop += scrollSpeed;
+      } else {
+        // 到达底部，重新开始
+        scrollContainer.scrollTop = 0;
+      }
+    };
+    
+    scrollInterval = setInterval(autoScroll, 50);
+    return () => clearInterval(scrollInterval);
+  }, []);
 
   return (
     <div className="h-screen overflow-hidden bg-cyber-bg selection:bg-neon-primary selection:text-black">
@@ -134,7 +156,7 @@ export default function Home() {
       <LiveStats demands={demandCount} connections={connectionCount} />
       
       {/* 3D 舞台 - 瀑布流 */}
-      <div className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
+      <div ref={scrollContainerRef} className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
         <div 
           className="transition-all duration-700 ease-out w-full px-4"
           style={{ 
