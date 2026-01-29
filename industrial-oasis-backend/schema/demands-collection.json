@@ -1,0 +1,285 @@
+{
+  "collection": "demands",
+  "meta": {
+    "collection": "demands",
+    "icon": "shopping_cart",
+    "note": "全球需求数据集合",
+    "display_template": "{{title}}",
+    "hidden": false,
+    "singleton": false,
+    "translations": [
+      {
+        "language": "zh-CN",
+        "translation": "需求"
+      }
+    ],
+    "accountability": "all",
+    "color": "#00f5ff"
+  },
+  "schema": {
+    "name": "demands"
+  },
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "meta": {
+        "hidden": true,
+        "readonly": true,
+        "interface": "input",
+        "special": ["uuid"]
+      },
+      "schema": {
+        "is_primary_key": true,
+        "has_auto_increment": false
+      }
+    },
+    {
+      "field": "title",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "full",
+        "required": true,
+        "note": "需求标题"
+      },
+      "schema": {
+        "max_length": 255,
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "description",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "display": "raw",
+        "width": "full",
+        "note": "详细描述"
+      }
+    },
+    {
+      "field": "category",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "消费电子", "value": "消费电子" },
+            { "text": "服装纺织", "value": "服装纺织" },
+            { "text": "工业材料", "value": "工业材料" },
+            { "text": "新能源", "value": "新能源" },
+            { "text": "医疗器械", "value": "医疗器械" },
+            { "text": "物流服务", "value": "物流服务" },
+            { "text": "食品饮料", "value": "食品饮料" },
+            { "text": "家居用品", "value": "家居用品" },
+            { "text": "汽车配件", "value": "汽车配件" },
+            { "text": "其他", "value": "其他" }
+          ]
+        },
+        "display": "labels",
+        "width": "half"
+      },
+      "schema": {
+        "max_length": 100
+      }
+    },
+    {
+      "field": "region",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "北美", "value": "北美" },
+            { "text": "欧洲", "value": "欧洲" },
+            { "text": "亚太", "value": "亚太" },
+            { "text": "中国", "value": "中国" },
+            { "text": "东南亚", "value": "东南亚" },
+            { "text": "中东", "value": "中东" },
+            { "text": "非洲", "value": "非洲" },
+            { "text": "南美", "value": "南美" },
+            { "text": "全球", "value": "全球" }
+          ]
+        },
+        "display": "labels",
+        "width": "half"
+      },
+      "schema": {
+        "max_length": 50
+      }
+    },
+    {
+      "field": "price_range",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "half",
+        "note": "预算范围，如 $10,000 - $50,000"
+      },
+      "schema": {
+        "max_length": 100
+      }
+    },
+    {
+      "field": "urgency",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "常规", "value": "low" },
+            { "text": "中等", "value": "medium" },
+            { "text": "紧急", "value": "high" },
+            { "text": "极紧急", "value": "critical" }
+          ]
+        },
+        "display": "labels",
+        "width": "half"
+      },
+      "schema": {
+        "max_length": 20,
+        "default_value": "medium"
+      }
+    },
+    {
+      "field": "quantity",
+      "type": "integer",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "half",
+        "note": "需求数量"
+      },
+      "schema": {
+        "default_value": 0
+      }
+    },
+    {
+      "field": "unit",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "half",
+        "note": "单位 (件/套/服务)"
+      },
+      "schema": {
+        "max_length": 20,
+        "default_value": "件"
+      }
+    },
+    {
+      "field": "source_platform",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "half",
+        "note": "需求来源平台"
+      },
+      "schema": {
+        "max_length": 100
+      }
+    },
+    {
+      "field": "business_value",
+      "type": "integer",
+      "meta": {
+        "interface": "slider",
+        "options": {
+          "min": 0,
+          "max": 100,
+          "step": 1
+        },
+        "display": "raw",
+        "width": "half",
+        "note": "商业价值评分 (0-100)"
+      },
+      "schema": {
+        "default_value": 50
+      }
+    },
+    {
+      "field": "tags",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "display": "labels",
+        "width": "full",
+        "note": "标签列表"
+      }
+    },
+    {
+      "field": "image_url",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "display": "raw",
+        "width": "full",
+        "note": "图片 URL"
+      },
+      "schema": {
+        "max_length": 500
+      }
+    },
+    {
+      "field": "contact_info",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "display": "raw",
+        "width": "full",
+        "hidden": true,
+        "note": "联系方式"
+      }
+    },
+    {
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "活跃", "value": "active" },
+            { "text": "待审核", "value": "pending" },
+            { "text": "已完成", "value": "fulfilled" },
+            { "text": "已过期", "value": "expired" }
+          ]
+        },
+        "display": "labels",
+        "width": "half"
+      },
+      "schema": {
+        "max_length": 20,
+        "default_value": "active"
+      }
+    },
+    {
+      "field": "date_created",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "display": "datetime",
+        "readonly": true,
+        "hidden": true,
+        "width": "half",
+        "special": ["date-created"]
+      }
+    },
+    {
+      "field": "date_updated",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "display": "datetime",
+        "readonly": true,
+        "hidden": true,
+        "width": "half",
+        "special": ["date-updated"]
+      }
+    }
+  ]
+}

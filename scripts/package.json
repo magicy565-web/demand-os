@@ -1,0 +1,19 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx listening-agent.ts",
+    "dev": "tsx watch listening-agent.ts",
+    "test": "tsx test-connection.ts"
+  },
+  "dependencies": {
+    "openai": "^4.73.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2"
+  }
+}

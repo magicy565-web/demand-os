@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:14-alpine
+    container_name: demand-os-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-directus_secret_2024}
+      POSTGRES_DB: demand_os
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - demand-os-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U directus -d demand_os"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存 (可选，用于提升性能)
+  redis:
+    image: redis:7-alpine
+    container_name: demand-os-redis
+    restart: unless-stopped
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - demand-os-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Directus CMS
+  directus:
+    image: directus/directus:11.1.1
+    container_name: demand-os-directus
+    restart: unless-stopped
+    ports:
+      - "8055:8055"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # 基础配置
+      PUBLIC_URL: "https://admin.cnsubscribe.xyz"
+      SECRET: ${DIRECTUS_SECRET:-your-super-secret-key-change-in-production}
+      
+      # 数据库连接
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: demand_os
+      DB_USER: directus
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-directus_secret_2024}
+      
+      # Redis 缓存
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      REDIS: redis://redis:6379
+      
+      # Admin 账户 (首次启动时创建)
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@cnsubscribe.xyz}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@2024!}
+      
+      # CORS 配置 - 允许前端跨域
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "https://demand.cnsubscribe.xyz,http://localhost:3000"
+      CORS_METHODS: "GET,POST,PATCH,DELETE,OPTIONS"
+      CORS_ALLOWED_HEADERS: "Content-Type,Authorization"
+      CORS_CREDENTIALS: "true"
+      
+      # WebSocket 配置 (实时数据推送)
+      WEBSOCKETS_ENABLED: "true"
+      WEBSOCKETS_REST_ENABLED: "true"
+      WEBSOCKETS_GRAPHQL_ENABLED: "false"
+      
+      # 文件存储
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+      
+      # 日志配置
+      LOG_LEVEL: info
+      LOG_STYLE: pretty
+      
+      # 限流配置
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_STORE: redis
+      RATE_LIMITER_POINTS: 100
+      RATE_LIMITER_DURATION: 1
+      
+    volumes:
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
+    networks:
+      - demand-os-network
+
+networks:
+  demand-os-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  directus-uploads:
