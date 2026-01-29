@@ -14,6 +14,7 @@ import {
 interface DemandCardEnhancedProps {
   demand: Demand;
   index: number;
+  isMobile?: boolean;
 }
 
 // 根据紧急程度返回光效颜色
@@ -84,11 +85,16 @@ const newItemVariants = {
   },
 };
 
-export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
+export function DemandCardEnhanced({ demand, index, isMobile = false }: DemandCardEnhancedProps) {
   const router = useRouter();
   const valueColor = getBusinessValueColor(demand.business_value);
   const glowColor = getGlowColor(demand.urgency);
   const isNew = Date.now() - new Date(demand.created_at).getTime() < 60000; // 1分钟内的是新数据
+
+  // 移动端禁用动画的辅助函数
+  const getAnimationProps = (animationConfig: any) => {
+    return isMobile ? { initial: "visible", animate: "visible" } : animationConfig;
+  };
 
   // 联系供应商
   const handleContact = () => {
@@ -117,13 +123,13 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
     <motion.div
       custom={index}
       variants={isNew ? newItemVariants : cardVariants}
-      initial={isNew ? "initial" : "hidden"}
-      animate={isNew ? "animate" : "visible"}
-      whileHover="hover"
+      initial={isMobile ? "visible" : (isNew ? "initial" : "hidden")}
+      animate="visible"
+      whileHover={isMobile ? undefined : "hover"}
       layout
       layoutId={demand.id}
     >
-      <Card3D glowColor={glowColor} intensity={12}>
+      <Card3D glowColor={glowColor} intensity={12} disableInteractive={isMobile ? true : true}>
         <div className="p-6 relative">
           {/* 新需求标记 */}
           {isNew && (
@@ -144,17 +150,17 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
           <div className="flex items-center justify-between mb-3">
             <motion.span
               className="text-xs font-mono text-gray-500"
-              initial={{ opacity: 0, x: -20 }}
+              initial={isMobile ? "visible" : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.08 + 0.2 }}
+              transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.2 }}
             >
               {formatRelativeTime(demand.created_at)}
             </motion.span>
             <motion.div
               className="flex items-center gap-2"
-              initial={{ opacity: 0, x: 20 }}
+              initial={isMobile ? "visible" : { opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.08 + 0.2 }}
+              transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.2 }}
             >
               <span
                 className={`text-xs font-mono px-2.5 py-1 rounded-full border backdrop-blur-sm ${
@@ -175,9 +181,9 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
           {/* 标题 */}
           <motion.h3
             className="text-xl font-bold text-white mb-2 group-hover:text-cyber-cyan transition-colors line-clamp-2"
-            initial={{ opacity: 0 }}
+            initial={isMobile ? "visible" : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.08 + 0.3 }}
+            transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.3 }}
           >
             {demand.title}
           </motion.h3>
@@ -185,9 +191,9 @@ export function DemandCardEnhanced({ demand, index }: DemandCardEnhancedProps) {
           {/* 描述 */}
           <motion.p
             className="text-sm text-gray-300 mb-4 line-clamp-3 leading-relaxed"
-            initial={{ opacity: 0 }}
+            initial={isMobile ? "visible" : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.08 + 0.4 }}
+            transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.4 }}
           >
             {demand.description}
           </motion.p>

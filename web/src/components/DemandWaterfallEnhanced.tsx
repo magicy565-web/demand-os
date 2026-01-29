@@ -161,11 +161,13 @@ const breakpointColumns = {
 interface DemandWaterfallEnhancedProps {
   mode?: "cyber" | "corp";
   onDemandCountChange?: (count: number) => void;
+  isMobile?: boolean;
 }
 
 export function DemandWaterfallEnhanced({ 
   mode = "cyber",
-  onDemandCountChange 
+  onDemandCountChange,
+  isMobile = false
 }: DemandWaterfallEnhancedProps) {
   const [demands, setDemands] = useState<Demand[]>([]);
   const [loading, setLoading] = useState(true);
@@ -322,6 +324,7 @@ export function DemandWaterfallEnhanced({
               <DemandCardEnhanced
                 demand={demand}
                 index={index}
+                isMobile={isMobile}
               />
             </div>
           ))}

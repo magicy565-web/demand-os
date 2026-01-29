@@ -120,7 +120,21 @@ export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 检测移动端
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        || window.innerWidth < 768;
+      setIsMobile(isMobileDevice);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // 自动滚动功能 - 支持悬停暂停
   useEffect(() => {
@@ -206,8 +220,15 @@ export default function Home() {
         ref={scrollContainerRef}
         className="pt-40 pb-20 h-full overflow-y-auto scrollbar-hide transition-all duration-300"
         style={{ perspective: "2000px" }}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        onMouseEnter={() => {
+          if (!isMobile) setIsPaused(true);
+        }}
+        onMouseLeave={() => {
+          if (!isMobile) {
+            // 延迟 100ms 确保状态更新
+            setTimeout(() => setIsPaused(false), 100);
+          }
+        }}
       >
         <div 
           className="transition-all duration-700 ease-out w-full px-4"
@@ -219,6 +240,7 @@ export default function Home() {
           <DemandWaterfallEnhanced 
             mode="cyber"
             onDemandCountChange={setDemandCount}
+            isMobile={isMobile}
           />
         </div>
       </div>
