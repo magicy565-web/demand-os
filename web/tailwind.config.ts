@@ -10,59 +10,57 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // 工业科技配色方案 - 参考阿里云/华为云/Wind终端
-        industrial: {
-          // 深色主题
-          dark: {
-            bg: "#0d1117",        // 深蓝黑背景
-            surface: "#161b22",   // 卡片背景
-            border: "#30363d",    // 边框色
-            hover: "#21262d",     // 悬停背景
-          },
-          // 浅色主题
-          light: {
-            bg: "#f6f8fa",        // 浅灰背景
-            surface: "#ffffff",   // 卡片背景
-            border: "#d0d7de",    // 边框色
-            hover: "#f3f4f6",     // 悬停背景
-          },
-          // 功能色
-          blue: "#2563eb",        // 主蓝色 - 专业稳重
-          navy: "#1e40af",        // 深蓝 - 头部/强调
-          slate: "#64748b",       // 灰蓝 - 次要文字
-          steel: "#475569",       // 钢灰 - 图标/边框
-          // 状态色
-          success: "#16a34a",     // 绿色 - 成功/盈利
-          warning: "#d97706",     // 橙色 - 警告/中等
-          danger: "#dc2626",      // 红色 - 紧急/亏损
-          info: "#0891b2",        // 青色 - 信息
-          // 数据可视化
-          profit: "#22c55e",      // 利润正
-          loss: "#ef4444",        // 利润负
-          neutral: "#6b7280",     // 中性
-        },
-        // 保留部分cyber色用于兼容（将逐步移除）
-        cyber: {
-          black: "#0d1117",
-          dark: "#161b22",
-          cyan: "#2563eb",
-          blue: "#2563eb",
-          green: "#16a34a",
-          red: "#dc2626",
-          yellow: "#d97706",
-        },
+        // ============================================
+        // 🎮 Cyber Theme (用于首页大屏模式)
+        // ============================================
+        "cyber-bg": "#020617",                    // 深渊黑背景
+        "cyber-glass": "rgba(2, 6, 23, 0.6)",    // 磨砂玻璃背景
+        "neon-primary": "#00ff9d",               // 主色-黑客绿
+        "neon-secondary": "#00f3ff",             // 辅色-赛博蓝
+        "neon-alert": "#ff0055",                 // 警示-故障红
+        "neon-purple": "#a855f7",                // 紫色装饰
+        "neon-yellow": "#fbbf24",                // 黄色警告
+
+        // ============================================
+        // 💼 Corp Theme (用于控制台业务模式)
+        // ============================================
+        "corp-bg": "#f8fafc",                    // Slate-50, 极浅灰背景
+        "corp-surface": "#ffffff",               // 纯白卡片背景
+        "corp-border": "#e2e8f0",                // Slate-200, 极细边框
+        "corp-text-main": "#0f172a",             // Slate-900, 主要文字
+        "corp-text-sub": "#64748b",              // Slate-500, 次要文字
+        "corp-accent": "#2563eb",                // Royal Blue, 强调色
+        "corp-success": "#16a34a",               // 成功绿
+        "corp-warning": "#d97706",               // 警告橙
+        "corp-danger": "#dc2626",                // 危险红
+
+        // ============================================
+        // 🎯 通用功能色
+        // ============================================
+        profit: "#22c55e",                       // 利润正
+        loss: "#ef4444",                         // 利润负
+        neutral: "#6b7280",                      // 中性灰
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
         mono: ["JetBrains Mono", "Menlo", "monospace"],
-        display: ["Inter", "system-ui", "sans-serif"],
+        display: ["Orbitron", "Inter", "system-ui", "sans-serif"],
+        cyber: ["Orbitron", "monospace"],
       },
       animation: {
+        "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
         "fade-in": "fade-in 0.3s ease-out",
         "slide-up": "slide-up 0.3s ease-out",
+        "glow": "glow 2s ease-in-out infinite alternate",
+        "scan-line": "scan-line 4s linear infinite",
+        "float": "float 6s ease-in-out infinite",
       },
       keyframes: {
+        "pulse-slow": {
+          "0%, 100%": { opacity: "1", boxShadow: "0 0 20px rgba(0, 255, 157, 0.3)" },
+          "50%": { opacity: "0.8", boxShadow: "0 0 40px rgba(0, 255, 157, 0.5)" },
+        },
         "pulse-subtle": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.7" },
@@ -75,11 +73,29 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "glow": {
+          "from": { textShadow: "0 0 10px #00ff9d, 0 0 20px #00ff9d" },
+          "to": { textShadow: "0 0 20px #00ff9d, 0 0 40px #00ff9d" },
+        },
+        "scan-line": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100vh)" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
       },
       boxShadow: {
         "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
         "card-hover": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
         "panel": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        "neon": "0 0 20px rgba(0, 255, 157, 0.4)",
+        "neon-strong": "0 0 30px rgba(0, 255, 157, 0.6), 0 0 60px rgba(0, 255, 157, 0.3)",
+        "cyber": "0 0 40px rgba(0, 243, 255, 0.3)",
+      },
+      backdropBlur: {
+        xs: "2px",
       },
     },
   },

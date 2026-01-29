@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -14,6 +14,22 @@
   --warning: #d97706;
   --danger: #dc2626;
   --info: #0891b2;
+  
+  /* Cyber 主题色系 */
+  --cyber-bg: #020617;
+  --cyber-glass: rgba(2, 6, 23, 0.6);
+  --neon-primary: #00ff9d;
+  --neon-secondary: #00f3ff;
+  --neon-alert: #ff0055;
+  --neon-purple: #a855f7;
+  
+  /* Corp 主题色系 */
+  --corp-bg: #f8fafc;
+  --corp-surface: #ffffff;
+  --corp-border: #e2e8f0;
+  --corp-text-main: #0f172a;
+  --corp-text-sub: #64748b;
+  --corp-accent: #2563eb;
 }
 
 * {
@@ -32,13 +48,118 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
+/* 隐藏滚动条但保持功能 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* 浅色主题 */
 body.light {
   background: #f6f8fa;
   color: #1f2937;
 }
 
-/* 专业滚动条 */
+/* ========================================
+   🎮 CYBER THEME STYLES (首页大屏模式)
+   ======================================== */
+
+/* Cyber 背景网格 */
+.cyber-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 157, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 157, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Cyber 卡片样式 */
+.cyber-card {
+  background: var(--cyber-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 157, 0.1);
+  border-left: 2px solid var(--neon-primary);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+  border-color: rgba(0, 255, 157, 0.3);
+  box-shadow: 0 0 30px rgba(0, 255, 157, 0.15);
+}
+
+/* Neon 文字发光 */
+.neon-text {
+  text-shadow: 
+    0 0 10px var(--neon-primary),
+    0 0 20px var(--neon-primary),
+    0 0 40px var(--neon-primary);
+}
+
+/* Cyber 按钮 */
+.cyber-button {
+  background: transparent;
+  border: 1px solid var(--neon-primary);
+  color: var(--neon-primary);
+  padding: 12px 24px;
+  font-family: 'Orbitron', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+.cyber-button:hover {
+  background: rgba(0, 255, 157, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+}
+
+/* ========================================
+   💼 CORP THEME STYLES (控制台业务模式)
+   ======================================== */
+
+/* Corp 滚动条 */
+.corp-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.corp-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.corp-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.corp-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ========================================
+   通用专业UI样式
+   ======================================== */
+
+/* 专业滚动条 (深色) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

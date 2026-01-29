@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ModeSwitch } from "@/components/ModeSwitch";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,12 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className="antialiased min-h-screen bg-cyber-black">
-        {/* 全局背景网格 */}
-        <div className="fixed inset-0 bg-cyber-grid bg-cyber-grid opacity-30 pointer-events-none z-0" />
+      <body className="antialiased min-h-screen">
+        {/* 全局模式切换导航 */}
+        <ModeSwitch />
         
         {/* 主内容区 */}
-        <main className="relative z-10">
+        <main className="relative">
           {children}
         </main>
       </body>

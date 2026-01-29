@@ -1,243 +1,156 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { DemandTable } from "@/components/DemandTable";
-import { Footer } from "@/components/Footer";
-import type { Demand } from "@/types/demand";
-import { fetchDemands } from "@/lib/api";
+import { DemandWaterfallEnhanced } from "@/components/DemandWaterfallEnhanced";
+import { ParticleBackground } from "@/components/ParticleBackground";
 
-// 统计卡片组件
-function StatCard({ 
-  title, 
-  value, 
-  change, 
-  changeType = "positive",
-  icon 
+// 实时统计数据组件
+function LiveStats({ 
+  demands, 
+  connections 
 }: { 
-  title: string; 
-  value: string | number; 
-  change?: string;
-  changeType?: "positive" | "negative" | "neutral";
-  icon: string;
+  demands: number; 
+  connections: number;
 }) {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="stat-card">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="stat-value">{value}</div>
-          <div className="stat-label">{title}</div>
-          {change && (
-            <div className={`stat-change ${
-              changeType === "positive" ? "stat-change-positive" : 
-              changeType === "negative" ? "stat-change-negative" : 
-              "text-gray-400"
-            }`}>
-              {changeType === "positive" ? "↑" : changeType === "negative" ? "↓" : "→"} {change}
-            </div>
-          )}
+    <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-3">
+      {/* 实时时间 */}
+      <div className="px-4 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-primary/20 rounded-lg">
+        <div className="text-xs text-neon-primary/60 uppercase tracking-wider mb-1">System Time</div>
+        <div className="text-2xl font-mono text-neon-primary animate-pulse-subtle">
+          {currentTime.toLocaleTimeString('zh-CN', { hour12: false })}
         </div>
-        <div className="text-3xl opacity-50">{icon}</div>
+      </div>
+      
+      {/* 实时数据 */}
+      <div className="px-4 py-2 bg-cyber-glass backdrop-blur-xl border border-neon-secondary/20 rounded-lg">
+        <div className="flex items-center gap-4">
+          <div>
+            <div className="text-xs text-neon-secondary/60 uppercase tracking-wider">Live Demands</div>
+            <div className="text-xl font-mono text-neon-secondary">{demands}</div>
+          </div>
+          <div className="w-px h-8 bg-white/10" />
+          <div>
+            <div className="text-xs text-neon-secondary/60 uppercase tracking-wider">Connections</div>
+            <div className="text-xl font-mono text-neon-secondary flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-neon-primary animate-pulse" />
+              {connections}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-// 快速筛选按钮
-function QuickFilter({ 
-  label, 
-  active, 
-  onClick,
-  count
-}: { 
-  label: string; 
-  active: boolean; 
-  onClick: () => void;
-  count?: number;
-}) {
+// 标题组件
+function CyberTitle() {
   return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-        active 
-          ? "bg-blue-600 text-white" 
-          : "bg-[#21262d] text-gray-400 hover:bg-[#30363d] hover:text-gray-200"
-      }`}
-    >
-      {label}
-      {count !== undefined && (
-        <span className={`ml-1.5 px-1.5 py-0.5 rounded text-xs ${
-          active ? "bg-blue-500" : "bg-[#30363d]"
-        }`}>
-          {count}
+    <div className="fixed top-24 left-0 right-0 z-30 text-center pointer-events-none">
+      <h1 className="text-5xl md:text-7xl font-cyber font-bold tracking-wider">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-primary via-neon-secondary to-neon-purple animate-glow">
+          DEMAND OS
         </span>
-      )}
-    </button>
+      </h1>
+      <p className="mt-4 text-lg text-white/40 font-mono tracking-widest uppercase">
+        Global Demand Intelligence · Real-time Stream
+      </p>
+      <div className="mt-2 flex items-center justify-center gap-4 text-sm">
+        <span className="text-neon-primary/60">Amazon VC</span>
+        <span className="text-white/20">|</span>
+        <span className="text-neon-secondary/60">Walmart DSV</span>
+        <span className="text-white/20">|</span>
+        <span className="text-neon-purple/60">Costco</span>
+        <span className="text-white/20">|</span>
+        <span className="text-neon-yellow/60">TikTok Shop</span>
+      </div>
+    </div>
+  );
+}
+
+// 扫描线效果
+function ScanLine() {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
+      <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neon-primary/30 to-transparent animate-scan-line" />
+    </div>
+  );
+}
+
+// 角落装饰
+function CornerDecorations() {
+  return (
+    <>
+      {/* 左上角 */}
+      <div className="fixed top-0 left-0 w-32 h-32 pointer-events-none z-20">
+        <div className="absolute top-4 left-4 w-16 h-px bg-gradient-to-r from-neon-primary to-transparent" />
+        <div className="absolute top-4 left-4 w-px h-16 bg-gradient-to-b from-neon-primary to-transparent" />
+      </div>
+      {/* 右上角 */}
+      <div className="fixed top-0 right-0 w-32 h-32 pointer-events-none z-20">
+        <div className="absolute top-4 right-4 w-16 h-px bg-gradient-to-l from-neon-primary to-transparent" />
+        <div className="absolute top-4 right-4 w-px h-16 bg-gradient-to-b from-neon-primary to-transparent" />
+      </div>
+      {/* 左下角 */}
+      <div className="fixed bottom-0 left-0 w-32 h-32 pointer-events-none z-20">
+        <div className="absolute bottom-4 left-4 w-16 h-px bg-gradient-to-r from-neon-secondary to-transparent" />
+        <div className="absolute bottom-4 left-4 w-px h-16 bg-gradient-to-t from-neon-secondary to-transparent" />
+      </div>
+      {/* 右下角 */}
+      <div className="fixed bottom-0 right-0 w-32 h-32 pointer-events-none z-20">
+        <div className="absolute bottom-4 right-4 w-16 h-px bg-gradient-to-l from-neon-secondary to-transparent" />
+        <div className="absolute bottom-4 right-4 w-px h-16 bg-gradient-to-t from-neon-secondary to-transparent" />
+      </div>
+    </>
   );
 }
 
 export default function Home() {
-  const [demands, setDemands] = useState<Demand[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  useEffect(() => {
-    async function loadDemands() {
-      try {
-        const result = await fetchDemands();
-        setDemands(result.data || []);
-      } catch (error) {
-        console.error("Failed to fetch demands:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadDemands();
-
-    // 定时刷新数据（30秒）
-    const interval = setInterval(loadDemands, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 根据过滤器筛选需求
-  const filteredDemands = demands.filter(d => {
-    switch (activeFilter) {
-      case "urgent":
-        return d.urgency === "critical" || d.urgency === "high";
-      case "high-value":
-        return d.business_value >= 70;
-      case "electronics":
-        return d.category === "消费电子";
-      case "textile":
-        return d.category === "服装纺织";
-      default:
-        return true;
-    }
-  });
-
-  // 计算统计数据
-  const stats = {
-    totalDemands: demands.length,
-    urgentDemands: demands.filter(d => d.urgency === "critical" || d.urgency === "high").length,
-    highValueDemands: demands.filter(d => d.business_value >= 70).length,
-    avgBusinessValue: demands.length > 0 
-      ? Math.round(demands.reduce((sum, d) => sum + d.business_value, 0) / demands.length)
-      : 0,
-  };
+  const [demandCount, setDemandCount] = useState(0);
+  const [connectionCount] = useState(1);
 
   return (
-    <div className="min-h-screen bg-[#0d1117]">
-      {/* 顶部导航 */}
-      <nav className="navbar">
-        <div className="nav-brand">
-          <span className="text-2xl">🏭</span>
-          Demand OS
-          <span className="tag tag-blue ml-2">工业园区版</span>
-        </div>
-        <div className="nav-links">
-          <Link href="/" className="nav-link active">需求大厅</Link>
-          <Link href="/factory" className="nav-link">工厂中心</Link>
-          <Link href="/analytics" className="nav-link">数据分析</Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="status-indicator status-active" />
-          <span className="text-sm text-gray-400">系统运行中</span>
-        </div>
-      </nav>
-
-      {/* 主内容区 */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* 页面标题 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white mb-2">全球采购需求实时看板</h1>
-          <p className="text-gray-400">
-            聚合 Amazon Vendor Central、Walmart DSV、Costco 采购计划等渠道的真实采购需求
-          </p>
-        </div>
-
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard 
-            title="活跃需求" 
-            value={stats.totalDemands} 
-            change="今日 +12"
-            changeType="positive"
-            icon="📊"
-          />
-          <StatCard 
-            title="紧急订单" 
-            value={stats.urgentDemands} 
-            change="需优先处理"
-            changeType="negative"
-            icon="⚡"
-          />
-          <StatCard 
-            title="高利润机会" 
-            value={stats.highValueDemands} 
-            change="毛利 >18%"
-            changeType="positive"
-            icon="💰"
-          />
-          <StatCard 
-            title="平均商业价值" 
-            value={stats.avgBusinessValue} 
-            change="评分"
-            changeType="neutral"
-            icon="📈"
+    <div className="h-screen overflow-hidden bg-cyber-bg selection:bg-neon-primary selection:text-black">
+      {/* 粒子背景 */}
+      <ParticleBackground />
+      
+      {/* 扫描线效果 */}
+      <ScanLine />
+      
+      {/* 角落装饰 */}
+      <CornerDecorations />
+      
+      {/* 标题 */}
+      <CyberTitle />
+      
+      {/* 实时统计 */}
+      <LiveStats demands={demandCount} connections={connectionCount} />
+      
+      {/* 3D 舞台 - 瀑布流 */}
+      <div className="pt-64 pb-8 h-full overflow-y-auto scrollbar-hide" style={{ perspective: "2000px" }}>
+        <div 
+          className="transition-all duration-700 ease-out"
+          style={{ 
+            transformStyle: "preserve-3d",
+            transform: "rotateX(5deg) scale(0.95)",
+          }}
+        >
+          <DemandWaterfallEnhanced 
+            mode="cyber"
+            onDemandCountChange={setDemandCount}
           />
         </div>
-
-        {/* 快速筛选 */}
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
-          <span className="text-sm text-gray-500 mr-2">快速筛选:</span>
-          <QuickFilter 
-            label="全部" 
-            active={activeFilter === "all"} 
-            onClick={() => setActiveFilter("all")}
-            count={demands.length}
-          />
-          <QuickFilter 
-            label="紧急订单" 
-            active={activeFilter === "urgent"} 
-            onClick={() => setActiveFilter("urgent")}
-            count={stats.urgentDemands}
-          />
-          <QuickFilter 
-            label="高利润" 
-            active={activeFilter === "high-value"} 
-            onClick={() => setActiveFilter("high-value")}
-            count={stats.highValueDemands}
-          />
-          <QuickFilter 
-            label="消费电子" 
-            active={activeFilter === "electronics"} 
-            onClick={() => setActiveFilter("electronics")}
-          />
-          <QuickFilter 
-            label="服装纺织" 
-            active={activeFilter === "textile"} 
-            onClick={() => setActiveFilter("textile")}
-          />
-        </div>
-
-        {/* 需求数据表格 */}
-        <DemandTable demands={filteredDemands} loading={loading} />
-
-        {/* 底部提示 */}
-        <div className="mt-6 p-4 bg-[#161b22] border border-[#30363d] rounded-lg">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">💡</span>
-            <div>
-              <h3 className="font-medium text-white mb-1">如何使用需求看板？</h3>
-              <p className="text-sm text-gray-400">
-                1. 点击表头可按字段排序 · 2. 使用搜索框快速筛选 · 3. 点击「查看」进入详情页获取完整信息 · 4. 高利润订单标记为绿色，建议优先关注
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <Footer />
+      </div>
+      
+      {/* 底部渐变遮罩 */}
+      <div className="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-cyber-bg to-transparent pointer-events-none z-10" />
     </div>
   );
 }

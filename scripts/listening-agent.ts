@@ -36,7 +36,7 @@ const CONFIG = {
 };
 
 // ==================== 类型定义 ====================
-type Incoterm = "EXW" | "FOB" | "CIF" | "CFR" | "DDP" | "DAP" | "FCA";
+type Incoterm = "EXW" | "FOB" | "CIF" | "DDP" | "DAP";
 type PaymentTerm = "T/T 100% advance" | "T/T 30/70" | "T/T 30% deposit" | "L/C at sight" | "L/C 30 days" | "L/C 60 days" | "L/C 90 days" | "OA 30 days" | "OA 60 days" | "OA 90 days" | "D/P" | "D/A";
 type Certification = "CE" | "FCC" | "UL" | "RoHS" | "REACH" | "FDA" | "ISO9001" | "ISO14001" | "GOTS" | "OEKO-TEX" | "BSCI" | "SA8000" | "GS" | "CB" | "ETL" | "CCC";
 
@@ -248,12 +248,12 @@ function calculateProfitEstimate(targetPriceUSD: number, category: string): Prof
 function generateMockDemand(): Demand {
   const category = randomChoice(MOCK_DATA.categories);
   const platform = randomChoice(MOCK_DATA.platforms);
-  const incoterm = randomChoice(MOCK_DATA.incoterms);
+  const incoterm = randomChoice([...MOCK_DATA.incoterms]) as Incoterm;
   const incotermLocations = MOCK_DATA.incotermLocations[incoterm];
   const incotermLocation = randomChoice(incotermLocations);
-  const paymentTerm = randomChoice(MOCK_DATA.paymentTerms);
-  const urgency = randomChoice(MOCK_DATA.urgencyLevels);
-  const buyerType = randomChoice(MOCK_DATA.buyerTypes);
+  const paymentTerm = randomChoice([...MOCK_DATA.paymentTerms]) as PaymentTerm;
+  const urgency = randomChoice([...MOCK_DATA.urgencyLevels]) as "low" | "medium" | "high" | "critical";
+  const buyerType = randomChoice([...MOCK_DATA.buyerTypes]) as "brand" | "retailer" | "wholesaler" | "agent" | "platform";
   const region = randomChoice(MOCK_DATA.regions);
   
   // 获取品类对应的认证要求
@@ -340,49 +340,57 @@ function generateMockDemand(): Demand {
 
 // ==================== AI 生成器 ====================
 async function generateAIDemand(openai: OpenAI): Promise<Demand | null> {
-  const prompt = `你是一个专业的全球B2B贸易需求模拟器。请生成一条真实的工厂采购需求数据。
+  const prompt = `你是一个国际贸易专家和全球B2B采购需求生成器。请生成一条针对中国工厂的真实B2B采购需求RFQ。
 
-要求:
-1. 需求必须专业、具体，像真实的品牌商/零售商发布的采购需求
-2. 必须包含完整的贸易术语(Incoterms)、付款条件(Payment Terms)、认证要求
-3. 价格范围要合理，并给出利润预估
-4. 来源平台要具体，如 "Amazon Vendor Central"、"Walmart DSV"、"Costco 2025 Sourcing Plan"
+【核心要求】
+1. 这是给中国工厂老板看的采购需求，必须专业、具体、可操作
+2. 必须包含完整的国际贸易术语，让工厂能够准确核算成本
+3. 所有字段都必须填写，不能为空
 
-请直接返回 JSON 格式 (不要 markdown):
+【必须返回JSON格式，包含以下字段】:
 {
-  "title": "标题 (包含产品+采购方式，如 'TWS蓝牙耳机OEM - Amazon VC订单')",
-  "description": "专业描述 (包含贸易条款、认证、交期等硬性要求)",
-  "category": "分类 (消费电子/服装纺织/新能源/家居用品/户外运动/美妆个护)",
-  "region": "目标市场 (北美/欧洲/英国/澳洲/东南亚)",
-  "price_range": "目标单价范围 (如 $12.50 - $15.00)",
-  "urgency": "紧急度 (low/medium/high/critical)",
-  "quantity": 数量(数字),
-  "unit": "单位 (PCS/套/组)",
-  "source_platform": "具体来源 (如 'Amazon Vendor Central'/'Walmart DSV'/'TikTok Shop US')",
-  "business_value": 商业价值评分(40-98的数字),
-  "tags": ["品类标签", "贸易术语", "买家类型", "利润标签"],
-  "incoterm": "贸易术语 (FOB/CIF/DDP/EXW)",
-  "incoterm_location": "贸易术语+地点 (如 'FOB Shenzhen'/'CIF Los Angeles')",
-  "payment_term": "付款方式 (T/T 30/70/L/C at sight/OA 60 days)",
-  "certifications_required": ["认证1", "认证2"] (如 ["CE", "FCC", "UL"]),
-  "moq": 最小起订量(数字),
-  "lead_time_days": 交期天数(数字),
-  "sample_required": 是否需要样品(true/false),
-  "buyer_type": "买家类型 (brand/retailer/platform/wholesaler)",
+  "title": "专业采购标题 (产品名+采购方式，如 'TWS蓝牙耳机OEM订单 - Amazon Vendor Central')",
+  "description": "详细需求描述 (包含：产品规格要求、贸易条款、认证要求、品质标准、交期要求)",
+  "category": "行业分类 (选择: 消费电子/服装纺织/新能源/家居用品/户外运动/美妆个护/医疗器械/汽车配件)",
+  "region": "目标市场 (选择: 北美/欧洲/英国/澳洲/东南亚/日本/韩国/中东)",
+  "price_range": "目标单价范围美元 (如 '$12.50 - $15.00')",
+  "urgency": "紧急度 (选择: low/medium/high/critical)",
+  "quantity": 采购数量(纯数字，如 20000),
+  "unit": "单位 (选择: PCS/SET/KG/M/PAIR)",
+  "source_platform": "来源平台 (选择: Amazon Vendor Central/Walmart DSV/Costco Sourcing/Target Direct/TikTok Shop US/SHEIN供应链/Alibaba RFQ/Canton Fair)",
+  "business_value": 商业价值评分(40-98之间的整数),
+  "tags": ["产品标签", "贸易术语", "认证标签", "利润标签"],
+  "incoterms": "贸易术语 (选择: FOB Shanghai/FOB Ningbo/FOB Shenzhen/CIF Hamburg/CIF Los Angeles/DDP Los Angeles/EXW Guangzhou)",
+  "payment_terms": "付款方式 (选择: 30% T/T Deposit/L/C at sight/OA 60 Days/100% T/T Advance)",
+  "target_price": "具体目标单价美元 (如 '$12.50')",
+  "suggested_margin": "预估利润率 (如 '18%')",
+  "certifications_required": ["认证要求数组，如 CE, FCC, UL, RoHS, GOTS, BSCI"],
+  "moq": 最小起订量(纯数字),
+  "lead_time_days": 交期天数(纯数字),
+  "sample_required": 是否需样品(true/false),
+  "buyer_type": "买家类型 (选择: brand/retailer/platform/wholesaler)",
   "profit_estimate": {
-    "target_price_usd": 目标价美元(数字),
-    "suggested_cost_cny": 建议出厂价人民币(数字),
-    "estimated_margin": 预估毛利率%(数字),
-    "exchange_rate": 7.25
+    "target_price_usd": 目标价美元(数字，如 12.5),
+    "suggested_cost_cny": 建议出厂价人民币(数字，如 55),
+    "estimated_margin": 预估毛利率百分比(数字，如 18.5),
+    "exchange_rate": 7.25,
+    "shipping_cost_estimate": 预估运费美元每件(数字，如 1.2),
+    "certification_cost": 认证成本分摊美元每件(数字，如 0.3)
   }
-}`;
+}
+
+【重要提示】
+- incoterms 和 payment_terms 是必填的核心业务字段
+- target_price 和 suggested_margin 必须是具体数值
+- 生成的内容要真实可信，像真实的国际采购需求
+- 只返回JSON，不要任何其他文字`;
 
   try {
     const completion = await openai.chat.completions.create({
       model: CONFIG.MODEL_NAME,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.9,
-      max_tokens: 800,
+      max_tokens: 1000,
     });
 
     const content = completion.choices[0]?.message?.content;
@@ -393,16 +401,17 @@ async function generateAIDemand(openai: OpenAI): Promise<Demand | null> {
     if (!jsonMatch) return null;
 
     const data = JSON.parse(jsonMatch[0]);
+    
+    // 标准化字段名称（兼容新旧格式）
     return {
       ...data,
+      incoterm: data.incoterms?.split(" ")[0] || data.incoterm,
+      incoterm_location: data.incoterms || data.incoterm_location,
+      payment_term: data.payment_terms || data.payment_term,
       status: "active"
     };
   } catch (error) {
-    console.error("[AI] 生成失败:", error);
-    return null;
-  }
-}
-    console.error("[AI] 生成失败:", error);
+    console.error("[AI] 生成失败:", error instanceof Error ? error.message : String(error));
     return null;
   }
 }

@@ -158,7 +158,15 @@ const breakpointColumns = {
   640: 1,
 };
 
-export function DemandWaterfallEnhanced() {
+interface DemandWaterfallEnhancedProps {
+  mode?: "cyber" | "corp";
+  onDemandCountChange?: (count: number) => void;
+}
+
+export function DemandWaterfallEnhanced({ 
+  mode = "cyber",
+  onDemandCountChange 
+}: DemandWaterfallEnhancedProps) {
   const [demands, setDemands] = useState<Demand[]>([]);
   const [loading, setLoading] = useState(true);
   const [useMock, setUseMock] = useState(false);
@@ -174,19 +182,22 @@ export function DemandWaterfallEnhanced() {
         if (result.data.length > 0) {
           setDemands(result.data);
           setUseMock(false);
+          onDemandCountChange?.(result.data.length);
         } else {
           setDemands(MOCK_DEMANDS);
           setUseMock(true);
+          onDemandCountChange?.(MOCK_DEMANDS.length);
         }
       } catch (error) {
         console.error("Failed to load demands, using mock data:", error);
         setDemands(MOCK_DEMANDS);
         setUseMock(true);
+        onDemandCountChange?.(MOCK_DEMANDS.length);
       }
       setLoading(false);
     }
     loadDemands();
-  }, []);
+  }, [onDemandCountChange]);
 
   // WebSocket 实时更新处理
   const handleWebSocketMessage = useCallback(
