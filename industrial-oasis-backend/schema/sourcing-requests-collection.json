@@ -1,0 +1,164 @@
+{
+  "collection": "sourcing_requests",
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "schema": {
+        "is_primary_key": true,
+        "is_generated": true
+      }
+    },
+    {
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "草稿", "value": "draft" },
+            { "text": "处理中", "value": "processing" },
+            { "text": "已报价", "value": "quoted" },
+            { "text": "已完成", "value": "completed" },
+            { "text": "已取消", "value": "cancelled" }
+          ]
+        },
+        "display": "labels",
+        "display_options": {
+          "choices": [
+            { "text": "草稿", "value": "draft", "background": "#6B7280" },
+            { "text": "处理中", "value": "processing", "background": "#F59E0B" },
+            { "text": "已报价", "value": "quoted", "background": "#3B82F6" },
+            { "text": "已完成", "value": "completed", "background": "#10B981" },
+            { "text": "已取消", "value": "cancelled", "background": "#EF4444" }
+          ]
+        }
+      },
+      "schema": {
+        "default_value": "draft"
+      }
+    },
+    {
+      "field": "platform",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            { "text": "Discord", "value": "Discord" },
+            { "text": "TikTok", "value": "TikTok" },
+            { "text": "Web", "value": "Web" },
+            { "text": "API", "value": "API" }
+          ]
+        }
+      }
+    },
+    {
+      "field": "user_id",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "Discord 用户 ID 或其他平台用户标识"
+      }
+    },
+    {
+      "field": "user_name",
+      "type": "string",
+      "meta": {
+        "interface": "input"
+      }
+    },
+    {
+      "field": "product_name",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "AI 识别出的产品名称"
+      }
+    },
+    {
+      "field": "video_url",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "原始 TikTok/视频链接"
+      }
+    },
+    {
+      "field": "visual_analysis",
+      "type": "json",
+      "meta": {
+        "interface": "input-code",
+        "options": {
+          "language": "json"
+        },
+        "note": "GPT-4o 视觉分析结果"
+      }
+    },
+    {
+      "field": "quote_price_usd",
+      "type": "float",
+      "meta": {
+        "interface": "input",
+        "note": "FOB 报价 (USD)"
+      }
+    },
+    {
+      "field": "matched_factories",
+      "type": "json",
+      "meta": {
+        "interface": "input-code",
+        "options": {
+          "language": "json"
+        },
+        "note": "匹配的工厂列表"
+      }
+    },
+    {
+      "field": "quote_pdf",
+      "type": "uuid",
+      "meta": {
+        "interface": "file",
+        "note": "报价单 PDF 文件"
+      },
+      "schema": {
+        "foreign_key_table": "directus_files"
+      }
+    },
+    {
+      "field": "notes",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "note": "备注信息"
+      }
+    },
+    {
+      "field": "date_created",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "readonly": true,
+        "special": ["date-created"]
+      }
+    },
+    {
+      "field": "date_updated",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "readonly": true,
+        "special": ["date-updated"]
+      }
+    }
+  ],
+  "meta": {
+    "collection": "sourcing_requests",
+    "icon": "shopping_cart",
+    "note": "Discord/TikTok 询盘请求",
+    "display_template": "{{product_name}} - {{status}}",
+    "archive_field": "status",
+    "archive_value": "cancelled",
+    "sort_field": "date_created"
+  }
+}

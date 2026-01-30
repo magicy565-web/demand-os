@@ -1,0 +1,24 @@
+# Discord Bot Dependencies
+discord.py>=2.3.0
+
+# OpenAI for GPT-4o Vision Analysis
+openai>=1.12.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# HTTP Client (Async)
+httpx>=0.26.0
+
+# TikTok Video Downloader
+yt-dlp>=2024.1.0
+
+# Computer Vision
+opencv-python-headless>=4.9.0
+numpy>=1.26.0
+
+# Image Processing
+Pillow>=10.2.0
+
+# PDF Generation (for quotes)
+reportlab>=4.0.0

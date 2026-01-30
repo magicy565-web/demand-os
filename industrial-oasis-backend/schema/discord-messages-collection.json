@@ -1,0 +1,109 @@
+{
+  "collection": "discord_messages",
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "schema": {
+        "is_primary_key": true,
+        "is_generated": true
+      }
+    },
+    {
+      "field": "channel_id",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "Discord 频道 ID"
+      }
+    },
+    {
+      "field": "server_id",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "Discord 服务器 ID"
+      }
+    },
+    {
+      "field": "user_id",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "note": "发送者 Discord ID"
+      }
+    },
+    {
+      "field": "user_name",
+      "type": "string",
+      "meta": {
+        "interface": "input"
+      }
+    },
+    {
+      "field": "content",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "note": "消息内容 (支持 Markdown)"
+      }
+    },
+    {
+      "field": "is_bot",
+      "type": "boolean",
+      "meta": {
+        "interface": "boolean",
+        "note": "是否为 Bot 消息"
+      },
+      "schema": {
+        "default_value": false
+      }
+    },
+    {
+      "field": "embed_data",
+      "type": "json",
+      "meta": {
+        "interface": "input-code",
+        "options": {
+          "language": "json"
+        },
+        "note": "Embed 卡片数据 (报价单等)"
+      }
+    },
+    {
+      "field": "attachments",
+      "type": "json",
+      "meta": {
+        "interface": "files",
+        "note": "附件列表"
+      }
+    },
+    {
+      "field": "reply_to",
+      "type": "uuid",
+      "meta": {
+        "interface": "select-dropdown-m2o",
+        "note": "回复的消息 ID"
+      },
+      "schema": {
+        "foreign_key_table": "discord_messages"
+      }
+    },
+    {
+      "field": "date_created",
+      "type": "timestamp",
+      "meta": {
+        "interface": "datetime",
+        "readonly": true,
+        "special": ["date-created"]
+      }
+    }
+  ],
+  "meta": {
+    "collection": "discord_messages",
+    "icon": "chat",
+    "note": "Discord 消息存档",
+    "display_template": "{{user_name}}: {{content}}",
+    "sort_field": "date_created"
+  }
+}
