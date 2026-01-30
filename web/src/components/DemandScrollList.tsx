@@ -189,7 +189,7 @@ function DemandCard({ demand, onClick }: { demand: Demand; onClick: () => void }
       {/* 紧急度标签 */}
       <div className="flex items-center justify-between mb-3">
         <span className={`text-xs font-mono px-2 py-1 rounded-full border ${config.bg} ${config.border} ${config.text}`}>
-          {getUrgencyLabel(demand.urgency)}
+          {getUrgencyLabel(demand.urgency).label}
         </span>
         <span className="text-xs text-gray-500 font-mono">
           {formatRelativeTime(demand.created_at)}

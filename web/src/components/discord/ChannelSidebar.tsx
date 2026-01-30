@@ -42,6 +42,7 @@ const channelGroups: ChannelGroup[] = [
     channels: [
       { id: "tiktok-hunter", name: "tiktok-hunter", type: "text", unread: true, mentions: 2 },
       { id: "quick-rfq", name: "quick-rfq", type: "text" },
+      { id: "ai-auto-request", name: "ai-auto-request ⚡BETA", type: "text", unread: true, mentions: 1 },
       { id: "market-trends", name: "market-trends", type: "text" },
       { id: "ai-voice", name: "AI Voice Chat", type: "voice" },
     ]

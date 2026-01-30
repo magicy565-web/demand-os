@@ -189,6 +189,7 @@ export function ShowroomGallery() {
                     src={img.src}
                     alt={img.title}
                     fill
+                    sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   
@@ -248,6 +249,7 @@ export function ShowroomGallery() {
                   src={selectedImage.src}
                   alt={selectedImage.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 90vw"
                   className="object-contain"
                 />
               </div>

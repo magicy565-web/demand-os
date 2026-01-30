@@ -38,7 +38,7 @@ export function DemandCard({ demand }: DemandCardProps) {
                 : "border-cyber-green bg-cyber-green/10 text-cyber-green"
             }`}
           >
-            {getUrgencyLabel(demand.urgency)}
+            {getUrgencyLabel(demand.urgency).label}
           </span>
         </div>
       </div>

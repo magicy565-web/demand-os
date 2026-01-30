@@ -29,6 +29,7 @@ import {
   DollarSign,
   Package
 } from "lucide-react";
+import { DemoMessage, getCurrentTimestamp } from "@/lib/liveDemoData";
 
 // 消息数据类型
 interface Message {
@@ -43,6 +44,8 @@ interface Message {
   timestamp: string;
   embed?: EmbedData;
   reactions?: { emoji: string; count: number; reacted?: boolean }[];
+  isTyping?: boolean; // 新增：是否正在打字
+  typingText?: string; // 新增：当前打字内容
 }
 
 interface EmbedData {
@@ -59,20 +62,20 @@ interface EmbedData {
 const sampleMessages: Message[] = [
   {
     id: "1",
-    user: { name: "DropshipKing_99", avatar: "/avatars/user1.png" },
+    user: { name: "DropshipKing_99" },
     content: "Hey everyone! Just found this amazing product on TikTok 🔥",
     timestamp: "Today at 10:41 AM",
   },
   {
     id: "2",
-    user: { name: "DropshipKing_99", avatar: "/avatars/user1.png" },
+    user: { name: "DropshipKing_99" },
     content: "https://www.tiktok.com/@gadgetshop/video/7281234567890123456",
     timestamp: "Today at 10:42 AM",
   },
   {
     id: "3",
     user: { name: "Demand-OS Bot", avatar: "/images/logo.png", isBot: true, botTag: "APP" },
-    content: "🔄 正在分析 TikTok 视频...",
+    content: "🔄 Analyzing TikTok video...",
     timestamp: "Today at 10:42 AM",
   },
   {
@@ -82,17 +85,17 @@ const sampleMessages: Message[] = [
     timestamp: "Today at 10:43 AM",
     embed: {
       type: "quote",
-      title: "⚡ 极速报价单 | Instant Quote",
+      title: "⚡ Instant Quote",
       color: "#23A559",
       fields: [
-        { name: "📦 识别产品", value: "**Anti-Gravity Water Drop Humidifier**\n反重力水滴加湿器", inline: false },
-        { name: "💰 参考 FOB 价", value: "$4.85 / unit", inline: true },
-        { name: "📊 起订量", value: "MOQ 1,000 pcs", inline: true },
-        { name: "🚚 交期", value: "15-20 天", inline: true },
-        { name: "🏭 匹配工厂", value: "3 家认证供应商", inline: true },
-        { name: "🎯 AI 置信度", value: "🟢🟢🟢🟢🟢🟢🟢🟢🟢⚪ 92%", inline: false },
+        { name: "📦 Product", value: "**Anti-Gravity Water Drop Humidifier**", inline: false },
+        { name: "💰 FOB Price", value: "$4.85 / unit", inline: true },
+        { name: "📊 MOQ", value: "1,000 pcs", inline: true },
+        { name: "🚚 Lead Time", value: "15-20 days", inline: true },
+        { name: "🏭 Matched Factories", value: "3 certified suppliers", inline: true },
+        { name: "🎯 AI Confidence", value: "🟢🟢🟢🟢🟢🟢🟢🟢🟢⚪ 92%", inline: false },
       ],
-      footer: "询盘 ID: #SR-20240130-001 | Powered by Demand-OS",
+      footer: "RFQ ID: #SR-20240130-001 | Powered by Demand-OS",
     },
     reactions: [
       { emoji: "🔥", count: 5, reacted: true },
@@ -102,7 +105,7 @@ const sampleMessages: Message[] = [
   },
   {
     id: "5",
-    user: { name: "GlobalSourcer", avatar: "/avatars/user2.png" },
+    user: { name: "GlobalSourcer" },
     content: "Wow, that's a great price! Can you share the factory details?",
     timestamp: "Today at 10:45 AM",
   },
@@ -111,16 +114,26 @@ const sampleMessages: Message[] = [
 interface ChatAreaProps {
   channelName?: string;
   channelDescription?: string;
+  liveDemoMessages?: DemoMessage[]; // 新增：实时演示消息
+  isLiveDemoPlaying?: boolean; // 新增：是否正在播放演示
+  onDemoComplete?: () => void; // 新增：演示完成回调
 }
 
 export default function ChatArea({ 
   channelName = "tiktok-hunter",
-  channelDescription = "Paste TikTok links here to get instant factory quotes."
+  channelDescription = "Paste TikTok links here to get instant factory quotes.",
+  liveDemoMessages = [],
+  isLiveDemoPlaying = false,
+  onDemoComplete,
 }: ChatAreaProps) {
-  const [messages, setMessages] = useState(sampleMessages);
+  const [messages, setMessages] = useState<Message[]>(sampleMessages);
   const [inputValue, setInputValue] = useState("");
   const [showMemberList, setShowMemberList] = useState(true);
+  const [currentDemoStep, setCurrentDemoStep] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -129,6 +142,122 @@ export default function ChatArea({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // 实时演示逻辑
+  useEffect(() => {
+    if (!isLiveDemoPlaying || liveDemoMessages.length === 0) {
+      // 清理定时器
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      return;
+    }
+
+    if (currentDemoStep >= liveDemoMessages.length) {
+      // 演示完成
+      onDemoComplete?.();
+      return;
+    }
+
+    const currentMessage = liveDemoMessages[currentDemoStep];
+    const delay = currentMessage.delay || 1000;
+
+    // 延迟后开始处理消息
+    demoTimeoutRef.current = setTimeout(() => {
+      if (currentMessage.typingDuration && currentMessage.typingDuration > 0) {
+        // 显示打字中状态
+        const typingMessage: Message = {
+          id: `typing-${currentDemoStep}`,
+          user: currentMessage.user,
+          content: "",
+          timestamp: getCurrentTimestamp(),
+          isTyping: true,
+          typingText: "",
+        };
+        
+        setMessages(prev => [...prev, typingMessage]);
+        setIsTyping(true);
+
+        // 打字效果
+        const chars = currentMessage.content.split("");
+        let currentIndex = 0;
+        const charsPerTick = Math.max(1, Math.floor(chars.length / (currentMessage.typingDuration / 50)));
+
+        const typingInterval = setInterval(() => {
+          currentIndex += charsPerTick;
+          if (currentIndex >= chars.length) {
+            currentIndex = chars.length;
+            clearInterval(typingInterval);
+            
+            // 打字完成，添加完整消息
+            setMessages(prev => {
+              const filtered = prev.filter(m => m.id !== `typing-${currentDemoStep}`);
+              return [...filtered, {
+                id: currentMessage.id,
+                user: currentMessage.user,
+                content: currentMessage.content,
+                timestamp: getCurrentTimestamp(),
+                embed: currentMessage.embed,
+                reactions: currentMessage.reactions,
+              }];
+            });
+            setIsTyping(false);
+            
+            // 移动到下一步
+            setTimeout(() => {
+              setCurrentDemoStep(prev => prev + 1);
+            }, 500);
+          } else {
+            // 更新打字内容
+            setMessages(prev => prev.map(m => 
+              m.id === `typing-${currentDemoStep}` 
+                ? { ...m, typingText: chars.slice(0, currentIndex).join("") }
+                : m
+            ));
+          }
+        }, 50);
+
+        typingTimeoutRef.current = typingInterval as any;
+      } else {
+        // 没有打字效果，直接添加消息
+        const newMessage: Message = {
+          id: currentMessage.id,
+          user: currentMessage.user,
+          content: currentMessage.content,
+          timestamp: getCurrentTimestamp(),
+          embed: currentMessage.embed,
+          reactions: currentMessage.reactions,
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+        
+        // 移动到下一步
+        setTimeout(() => {
+          setCurrentDemoStep(prev => prev + 1);
+        }, 500);
+      }
+    }, delay);
+
+    return () => {
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [isLiveDemoPlaying, currentDemoStep, liveDemoMessages, onDemoComplete]);
+
+  // 重置演示
+  useEffect(() => {
+    if (!isLiveDemoPlaying && currentDemoStep > 0) {
+      setCurrentDemoStep(0);
+      setMessages(sampleMessages);
+    }
+  }, [isLiveDemoPlaying, currentDemoStep]);
 
   const handleSend = () => {
     if (!inputValue.trim()) return;
@@ -320,26 +449,46 @@ function MessageRow({ message, isCompact }: MessageRowProps) {
               </span>
             )}
             <span className="text-xs text-discord-text-muted">{message.timestamp}</span>
+            {message.isTyping && (
+              <span className="text-xs text-discord-text-muted italic">正在输入...</span>
+            )}
           </div>
         )}
 
         {/* 文本内容 */}
-        {message.content && (
+        {message.isTyping ? (
+          <div className="flex items-center gap-2">
+            <p className="text-discord-text-normal leading-relaxed break-words">
+              {message.typingText}
+              <span className="inline-block w-0.5 h-4 bg-discord-text-normal ml-0.5 animate-pulse" />
+            </p>
+          </div>
+        ) : message.content ? (
           <p className="text-discord-text-normal leading-relaxed break-words">
             {formatMessageContent(message.content)}
           </p>
-        )}
+        ) : null}
 
         {/* Embed 卡片 */}
-        {message.embed && (
-          <div className="mt-2 max-w-lg">
+        {!message.isTyping && message.embed && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-2 max-w-lg"
+          >
             <EmbedCard embed={message.embed} />
-          </div>
+          </motion.div>
         )}
 
         {/* 表情反应 */}
-        {message.reactions && message.reactions.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+        {!message.isTyping && message.reactions && message.reactions.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2, delay: 0.1 }}
+            className="flex flex-wrap gap-1 mt-2"
+          >
             {message.reactions.map((reaction, i) => (
               <button 
                 key={i}
@@ -357,13 +506,13 @@ function MessageRow({ message, isCompact }: MessageRowProps) {
             <button className="w-7 h-7 rounded-full bg-discord-server hover:bg-discord-hover flex items-center justify-center text-discord-text-muted hover:text-discord-text-normal transition">
               <Smile className="w-4 h-4" />
             </button>
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* 悬停操作按钮 */}
       <AnimatePresence>
-        {showActions && (
+        {showActions && !message.isTyping && (
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}

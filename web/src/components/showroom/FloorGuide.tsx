@@ -159,6 +159,7 @@ export function FloorGuide() {
                     src={activeFloor.image}
                     alt={activeFloor.name}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 75vw"
                     className="object-contain p-8"
                     priority
                   />

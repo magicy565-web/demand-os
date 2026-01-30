@@ -9,13 +9,23 @@ import {
   Bot,
   User,
   Sparkles,
+  Search,
+  Zap,
+  Package,
+  DollarSign,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
+import { AutoRequestResponse, ChatStatus, ProductMatch } from "@/types/auto-request";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  status?: ChatStatus;
+  products?: ProductMatch[];
+  ticketId?: string;
 }
 
 export default function AIChatBot() {
@@ -24,12 +34,13 @@ export default function AIChatBot() {
     {
       id: "1",
       role: "assistant",
-      content: "你好！我是 Demand OS AI 助手。我可以帮你：\n\n• 智能匹配供应商\n• 分析需求趋势\n• 预测价格走势\n• 优化采购策略\n\n有什么我可以帮您的吗？",
+      content: "你好！我是 Demand OS AI 采购助手 🚀\n\n我现在支持 **Beta 功能：Auto Request**！\n\n💡 **试试这样提问**：\n• \"帮我找一款 TWS 蓝牙耳机，带降噪，10 刀以内，支持一件代发\"\n• \"想要类似 Apple Watch 的智能手表，15 刀左右，500 件起订\"\n• \"找充电宝，支持无线充电，价格 $8-12\"\n\n我会：\n✅ 智能搜索产品库\n✅ 如果没有匹配，**自动创建人工寻源工单**\n✅ 2 小时内获得专业报价\n\n开始试试吧！",
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState<ChatStatus>("idle");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -51,43 +62,133 @@ export default function AIChatBot() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const userInput = input;
     setInput("");
     setIsTyping(true);
 
-    // 模拟AI响应
-    setTimeout(() => {
-      const response = generateAIResponse(input);
-      const assistantMessage: Message = {
+    try {
+      // 显示状态反馈
+      setCurrentStatus("analyzing");
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setCurrentStatus("searching");
+
+      // 调用 Auto Request API
+      const response = await fetch("/api/chat/auto-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userInput,
+          userId: "demo-user",
+          userName: "访客",
+        }),
+      });
+
+      const data: AutoRequestResponse = await response.json();
+
+      setCurrentStatus("idle");
+      setIsTyping(false);
+
+      // 根据响应类型生成不同的消息
+      if (data.type === "product_match") {
+        // 找到产品匹配
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: generateProductMatchMessage(data.data.matches, data.data.query),
+          timestamp: new Date(),
+          products: data.data.matches,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+
+        // 如果同时创建了工单（中等匹配情况）
+        if ((data as any).meta?.ticket_created) {
+          setTimeout(() => {
+            const ticketNotice: Message = {
+              id: (Date.now() + 2).toString(),
+              role: "assistant",
+              content: `💼 ${(data as any).meta.message}`,
+              timestamp: new Date(),
+              ticketId: (data as any).meta.ticket_id,
+            };
+            setMessages((prev) => [...prev, ticketNotice]);
+          }, 1000);
+        }
+
+      } else if (data.type === "auto_request_triggered") {
+        // 触发人工寻源
+        setCurrentStatus("escalating");
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setCurrentStatus("idle");
+
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: data.data.message,
+          timestamp: new Date(),
+          ticketId: data.data.ticket_id,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+
+      } else if (data.type === "parsing_error") {
+        // 解析错误
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: data.data.error,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
+
+    } catch (error) {
+      console.error("Auto Request error:", error);
+      setIsTyping(false);
+      setCurrentStatus("idle");
+
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: response,
+        content: "抱歉，系统暂时无法处理您的请求。请稍后重试。",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+
+      setMessages((prev) => [...prev, errorMessage]);
+    }
   };
 
-  const generateAIResponse = (userInput: string): string => {
-    const input = userInput.toLowerCase();
-
-    if (input.includes("供应商") || input.includes("推荐")) {
-      return "我为您找到了5家高匹配度供应商：\n\n1. 深圳鹏达电子 (匹配度: 92%)\n2. 东莞智能制造 (匹配度: 88%)\n3. 广州纺织集团 (匹配度: 85%)\n\n建议优先联系前2家，它们在产能、认证和交付时效上表现最佳。需要查看详细信息吗？";
+  // 生成产品匹配消息
+  const generateProductMatchMessage = (matches: ProductMatch[], query: any): string => {
+    if (matches.length === 0) {
+      return "未找到匹配的产品，正在为您创建人工寻源工单...";
     }
 
-    if (input.includes("价格") || input.includes("预测")) {
-      return "基于历史数据和市场趋势分析：\n\n• 建议采购价: $14.50\n• 价格区间: $13.00 - $16.00\n• 置信度: 78%\n\n当前市场供需平衡，建议在2周内锁定价格以避免旺季涨价。";
+    const topMatch = matches[0];
+    let message = `✅ 太好了！为您找到 **${matches.length}** 款匹配产品：\n\n`;
+    
+    message += `**🏆 最佳匹配 (${topMatch.match_score}分)**\n`;
+    message += `📦 ${topMatch.name}\n`;
+    message += `💰 FOB 价格: **$${topMatch.price}**/件\n`;
+    message += `📊 起订量: ${topMatch.moq} 件\n`;
+    message += `🏭 供应商: ${topMatch.supplier.name} (⭐ ${topMatch.supplier.rating})\n`;
+    
+    if (topMatch.supports_dropshipping) {
+      message += `✅ 支持一件代发\n`;
+    }
+    
+    message += `\n📝 匹配理由:\n`;
+    topMatch.match_reasons.slice(0, 3).forEach(reason => {
+      message += `• ${reason}\n`;
+    });
+
+    if (matches.length > 1) {
+      message += `\n还有 ${matches.length - 1} 个备选方案可供选择。`;
     }
 
-    if (input.includes("趋势") || input.includes("分析")) {
-      return "最近7天数据分析：\n\n• 需求量增长: +18.5%\n• 热门品类: 消费电子、家居用品\n• 主要区域: 北美 (45%)、欧洲 (32%)\n\n预计下周需求将继续增长，建议提前储备产能。";
-    }
-
-    if (input.includes("你好") || input.includes("hi") || input.includes("hello")) {
-      return "你好！很高兴为您服务。我可以帮您：\n\n• 智能匹配供应商\n• 预测价格趋势\n• 分析市场数据\n• 优化采购决策\n\n请告诉我您需要什么帮助？";
-    }
-
-    return "我理解您的问题。基于当前数据，我建议您：\n\n1. 查看控制台中的实时数据分析\n2. 使用AI推荐功能匹配供应商\n3. 关注紧急需求的优先处理\n\n还有其他问题吗？";
+    return message;
   };
 
   return (
@@ -147,6 +248,34 @@ export default function AIChatBot() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+              {/* Status Indicator */}
+              {currentStatus !== "idle" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg"
+                >
+                  {currentStatus === "analyzing" && (
+                    <>
+                      <Search className="w-4 h-4 text-blue-600 animate-pulse" />
+                      <span className="text-sm text-blue-700">正在解析您的采购需求...</span>
+                    </>
+                  )}
+                  {currentStatus === "searching" && (
+                    <>
+                      <Package className="w-4 h-4 text-blue-600 animate-bounce" />
+                      <span className="text-sm text-blue-700">正在检索内部供应商库...</span>
+                    </>
+                  )}
+                  {currentStatus === "escalating" && (
+                    <>
+                      <Zap className="w-4 h-4 text-orange-600 animate-pulse" />
+                      <span className="text-sm text-orange-700">库内未匹配，正在创建人工寻源工单...</span>
+                    </>
+                  )}
+                </motion.div>
+              )}
+
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -185,6 +314,74 @@ export default function AIChatBot() {
                         {message.content}
                       </p>
                     </div>
+                    
+                    {/* 产品卡片 */}
+                    {message.products && message.products.length > 0 && (
+                      <div className="mt-2 space-y-2 w-full">
+                        {message.products.slice(0, 3).map((product) => (
+                          <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="p-3 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-xl"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-sm text-slate-900">
+                                  {product.name}
+                                </h4>
+                                <div className="mt-1 space-y-1">
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <DollarSign className="w-3 h-3 text-green-600" />
+                                    <span className="font-bold text-green-600">
+                                      ${product.price}
+                                    </span>
+                                    <span className="text-slate-500">MOQ: {product.moq}</span>
+                                  </div>
+                                  <div className="text-xs text-slate-600">
+                                    🏭 {product.supplier.name}
+                                  </div>
+                                  {product.supports_dropshipping && (
+                                    <div className="flex items-center gap-1 text-xs text-blue-600">
+                                      <CheckCircle2 className="w-3 h-3" />
+                                      支持一件代发
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <div className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                                  {product.match_score}分
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 工单通知 */}
+                    {message.ticketId && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="mt-2 p-3 bg-gradient-to-br from-orange-50 to-purple-50 border border-orange-200 rounded-xl"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <Zap className="w-4 h-4 text-orange-600" />
+                          <span className="font-bold text-sm text-orange-900">
+                            Auto Request Beta
+                          </span>
+                        </div>
+                        <div className="text-xs text-slate-600 space-y-1">
+                          <div className="flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" />
+                            <span>工单: <code className="px-1 py-0.5 bg-white rounded text-orange-600 font-mono">#{message.ticketId}</code></span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
                     <span className="text-xs text-slate-500 px-2">
                       {message.timestamp.toLocaleTimeString("zh-CN", {
                         hour: "2-digit",
@@ -234,14 +431,14 @@ export default function AIChatBot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="输入消息..."
+                  placeholder="输入 '帮我找...' 开启自动寻源"
                   className="flex-1 px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSend}
-                  disabled={!input.trim()}
+                  disabled={!input.trim() || isTyping}
                   className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
@@ -249,7 +446,7 @@ export default function AIChatBot() {
               </div>
               <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                由 AI 驱动，可能存在误差
+                AI 驱动 + Auto Request Beta
               </p>
             </div>
           </motion.div>
