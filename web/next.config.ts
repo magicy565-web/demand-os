@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "admin.cnsubscribe.xyz",
         pathname: "/assets/**",
       },
+      {
+        protocol: "https",
+        hostname: "saas.cnsubscribe.xyz",
+        pathname: "/assets/**",
+      },
     ],
   },
   async rewrites() {
