@@ -36,7 +36,6 @@ if %errorLevel% equ 0 (
 
 echo.
 echo [添加中] 添加以下条目到 hosts 文件:
-echo   127.0.0.1  saas.cnsubscribe.com
 echo   127.0.0.1  saas.cnsubscribe.xyz
 echo   127.0.0.1  admin.cnsubscribe.xyz
 echo.
@@ -45,7 +44,6 @@ echo.
 (
     echo.
     echo # Demand OS Development Environment
-    echo 127.0.0.1  saas.cnsubscribe.com
     echo 127.0.0.1  saas.cnsubscribe.xyz
     echo 127.0.0.1  admin.cnsubscribe.xyz
 ) >> "%hostFile%"
@@ -60,8 +58,8 @@ type "%hostFile%" | findstr "cnsubscribe"
 echo.
 echo ======================================
 echo 完成！你现在可以使用以下域名访问:
-echo   http://saas.cnsubscribe.com:3000
 echo   http://saas.cnsubscribe.xyz:3000
+echo   http://admin.cnsubscribe.xyz:3000
 echo   http://admin.cnsubscribe.xyz:3000
 echo.
 echo 确保前端开发服务器运行在 localhost:3000
