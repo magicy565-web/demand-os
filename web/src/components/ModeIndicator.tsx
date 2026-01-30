@@ -12,7 +12,7 @@ export function ModeIndicator() {
         </div>
       </div>
       <Link
-        href="/saas-home"
+        href="/"
         className="px-3 py-2 text-xs font-mono text-neon-secondary border border-neon-secondary/30 rounded-lg hover:border-neon-secondary/60 hover:bg-neon-secondary/5 transition"
       >
         ← 返回主页

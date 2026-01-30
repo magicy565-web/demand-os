@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Quote } from "lucide-react";
 
 const fadeInUp = {
@@ -32,7 +33,7 @@ export default function CustomerSuccess() {
             </div>
           </motion.div>
 
-          {/* 右侧：黑白行业照片 */}
+          {/* 右侧：工厂照片 */}
           <motion.div
             className="relative h-96 bg-slate-200 rounded-sm overflow-hidden"
             initial="hidden"
@@ -47,11 +48,28 @@ export default function CustomerSuccess() {
               },
             }}
           >
-            {/* 占位图 - 实际项目中替换为真实图片 */}
+            {/* 实际图片 */}
+            <Image
+              src="/images/buyer-meeting.jpg"
+              alt="中山照明集团与沃尔玛采购商会议"
+              fill
+              className="object-cover"
+              onError={(e) => {
+                // 如果图片不存在，隐藏并显示占位符
+                e.currentTarget.style.display = "none";
+              }}
+            />
+
+            {/* 占位符（当没有实际图片时显示） */}
             <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center">
-              <p className="text-slate-500 text-lg font-medium">
-                工厂生产线照片
-              </p>
+              <div className="text-center p-8">
+                <p className="text-slate-500 text-lg font-medium mb-2">
+                  工厂生产线照片
+                </p>
+                <p className="text-slate-400 text-sm">
+                  工厂生产线视觉展示
+                </p>
+              </div>
             </div>
 
             {/* 灰度滤镜效果 */}

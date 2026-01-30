@@ -1,501 +1,452 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import type { Demand } from "@/types/demand";
-import { fetchDemands } from "@/lib/api";
-import { formatRelativeTime, formatNumber } from "@/lib/utils";
-
-// 模拟数据
-const MOCK_DEMANDS: Demand[] = [
-  {
-    id: "1",
-    title: "TWS蓝牙耳机OEM订单",
-    description: "Amazon Vendor Central 大客户订单",
-    category: "消费电子",
-    region: "北美",
-    price_range: "$8.50 - $12.00",
-    urgency: "high",
-    quantity: 20000,
-    unit: "PCS",
-    source_platform: "Amazon VC",
-    business_value: 85,
-    tags: ["CE", "FCC", "FOB"],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    status: "active",
-    incoterm: "FOB",
-    incoterm_location: "FOB Shenzhen",
-    payment_term: "T/T 30/70",
-    profit_estimate: {
-      target_price_usd: 10.25,
-      suggested_cost_cny: 45,
-      estimated_margin: 22.5,
-      exchange_rate: 7.25,
-      shipping_cost_estimate: 1.2,
-      certification_cost: 0.3
-    }
-  },
-  {
-    id: "2",
-    title: "有机棉T恤代工",
-    description: "Walmart DSV 季节性订单",
-    category: "服装纺织",
-    region: "北美",
-    price_range: "$4.50 - $6.00",
-    urgency: "medium",
-    quantity: 50000,
-    unit: "PCS",
-    source_platform: "Walmart DSV",
-    business_value: 78,
-    tags: ["GOTS", "BSCI", "DDP"],
-    created_at: new Date(Date.now() - 3600000).toISOString(),
-    updated_at: new Date(Date.now() - 3600000).toISOString(),
-    status: "active",
-    incoterm: "DDP",
-    incoterm_location: "DDP Los Angeles",
-    payment_term: "OA 60 days",
-    profit_estimate: {
-      target_price_usd: 5.25,
-      suggested_cost_cny: 22,
-      estimated_margin: 15.8,
-      exchange_rate: 7.25,
-      shipping_cost_estimate: 0.8,
-      certification_cost: 0.2
-    }
-  },
-  {
-    id: "3",
-    title: "智能手表配件套装",
-    description: "Costco 2025采购计划",
-    category: "消费电子",
-    region: "北美",
-    price_range: "$15.00 - $22.00",
-    urgency: "critical",
-    quantity: 100000,
-    unit: "SET",
-    source_platform: "Costco",
-    business_value: 92,
-    tags: ["CE", "FCC", "UL", "CIF"],
-    created_at: new Date(Date.now() - 1800000).toISOString(),
-    updated_at: new Date(Date.now() - 1800000).toISOString(),
-    status: "active",
-    incoterm: "CIF",
-    incoterm_location: "CIF Los Angeles",
-    payment_term: "L/C at sight",
-    profit_estimate: {
-      target_price_usd: 18.5,
-      suggested_cost_cny: 75,
-      estimated_margin: 25.2,
-      exchange_rate: 7.25,
-      shipping_cost_estimate: 2.1,
-      certification_cost: 0.5
-    }
-  },
-  {
-    id: "4",
-    title: "户外露营LED灯",
-    description: "TikTok Shop US 爆品返单",
-    category: "家居用品",
-    region: "北美",
-    price_range: "$6.00 - $9.00",
-    urgency: "high",
-    quantity: 30000,
-    unit: "PCS",
-    source_platform: "TikTok Shop",
-    business_value: 75,
-    tags: ["FCC", "ETL", "FOB"],
-    created_at: new Date(Date.now() - 7200000).toISOString(),
-    updated_at: new Date(Date.now() - 7200000).toISOString(),
-    status: "active",
-    incoterm: "FOB",
-    incoterm_location: "FOB Ningbo",
-    payment_term: "T/T 30/70",
-    profit_estimate: {
-      target_price_usd: 7.5,
-      suggested_cost_cny: 32,
-      estimated_margin: 18.5,
-      exchange_rate: 7.25,
-      shipping_cost_estimate: 0.9,
-      certification_cost: 0.25
-    }
-  },
-  {
-    id: "5",
-    title: "医疗级硅胶制品",
-    description: "欧洲医疗器械经销商",
-    category: "医疗器械",
-    region: "欧洲",
-    price_range: "$2.50 - $4.00",
-    urgency: "medium",
-    quantity: 200000,
-    unit: "PCS",
-    source_platform: "Medica展会",
-    business_value: 88,
-    tags: ["FDA", "CE", "ISO13485"],
-    created_at: new Date(Date.now() - 10800000).toISOString(),
-    updated_at: new Date(Date.now() - 10800000).toISOString(),
-    status: "active",
-    incoterm: "DDP",
-    incoterm_location: "DDP Hamburg",
-    payment_term: "L/C 60 days",
-    profit_estimate: {
-      target_price_usd: 3.25,
-      suggested_cost_cny: 12,
-      estimated_margin: 20.8,
-      exchange_rate: 7.25,
-      shipping_cost_estimate: 0.4,
-      certification_cost: 0.15
-    }
-  },
-];
-
-// 状态点组件
-function StatusDot({ urgency }: { urgency: string }) {
-  const colors: Record<string, string> = {
-    critical: "bg-red-500",
-    high: "bg-orange-500",
-    medium: "bg-yellow-500",
-    low: "bg-green-500",
-  };
-  return (
-    <span className={`inline-block w-2 h-2 rounded-full ${colors[urgency] || colors.low}`} />
-  );
-}
-
-// 表格行组件
-function DemandRow({ demand }: { demand: Demand }) {
-  const margin = demand.profit_estimate?.estimated_margin || 0;
-  
-  return (
-    <tr className="border-b border-corp-border hover:bg-blue-50/50 transition-colors">
-      {/* STATUS */}
-      <td className="px-4 py-3 whitespace-nowrap">
-        <div className="flex items-center gap-2">
-          <StatusDot urgency={demand.urgency} />
-          <span className="text-xs text-corp-text-sub uppercase">
-            {demand.urgency === "critical" ? "特急" : 
-             demand.urgency === "high" ? "紧急" :
-             demand.urgency === "medium" ? "一般" : "普通"}
-          </span>
-        </div>
-      </td>
-      
-      {/* DEMAND INFO */}
-      <td className="px-4 py-3">
-        <div>
-          <Link 
-            href={`/demand/${demand.id}`}
-            className="font-medium text-corp-text-main hover:text-corp-accent transition-colors"
-          >
-            {demand.title}
-          </Link>
-          <div className="text-xs text-corp-text-sub mt-0.5">
-            {demand.source_platform} · {demand.category}
-          </div>
-        </div>
-      </td>
-      
-      {/* TRADE TERMS */}
-      <td className="px-4 py-3 whitespace-nowrap">
-        <div className="flex flex-col gap-1">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-            {demand.incoterm || "TBD"}
-          </span>
-          <span className="text-xs text-corp-text-sub">
-            {demand.payment_term || "待确认"}
-          </span>
-        </div>
-      </td>
-      
-      {/* QUANTITY */}
-      <td className="px-4 py-3 whitespace-nowrap text-right">
-        <div className="font-mono text-sm text-corp-text-main">
-          {formatNumber(demand.quantity)}
-        </div>
-        <div className="text-xs text-corp-text-sub">{demand.unit}</div>
-      </td>
-      
-      {/* FINANCIALS */}
-      <td className="px-4 py-3 whitespace-nowrap text-right">
-        <div className="font-mono text-sm font-semibold text-corp-text-main">
-          {demand.price_range}
-        </div>
-        <div className={`text-xs font-medium ${
-          margin >= 18 ? "text-green-600" : 
-          margin >= 12 ? "text-yellow-600" : "text-red-600"
-        }`}>
-          {margin > 0 ? `+${margin}%` : "计算中"}
-        </div>
-      </td>
-      
-      {/* REGION */}
-      <td className="px-4 py-3 whitespace-nowrap">
-        <span className="text-sm text-corp-text-sub">{demand.region}</span>
-      </td>
-      
-      {/* TIME */}
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-corp-text-sub">
-        {formatRelativeTime(demand.created_at)}
-      </td>
-      
-      {/* ACTION */}
-      <td className="px-4 py-3 whitespace-nowrap">
-        <div className="flex items-center gap-3">
-          <button className="text-sm font-medium text-corp-accent hover:text-blue-700 transition-colors">
-            核算
-          </button>
-          <button className="text-sm font-medium text-corp-text-sub hover:text-corp-text-main transition-colors">
-            接单
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-}
+import Image from "next/image";
+import {
+  ArrowLeft,
+  Activity,
+  TrendingUp,
+  Package,
+  DollarSign,
+  Users,
+  Zap,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  ArrowUpRight,
+  Globe,
+  Warehouse,
+  Search,
+  Filter,
+} from "lucide-react";
+import TrendChart from "@/components/charts/TrendChart";
+import RegionPieChart from "@/components/charts/RegionPieChart";
+import UrgencyBarChart from "@/components/charts/UrgencyBarChart";
+import ProfitGauge from "@/components/charts/ProfitGauge";
+import LiveDataFeed from "@/components/charts/LiveDataFeed";
+import AIRecommendation from "@/components/AIRecommendation";
+import AIChatBot from "@/components/AIChatBot";
 
 export default function ConsolePage() {
-  const [demands, setDemands] = useState<Demand[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sortField, setSortField] = useState<string>("created_at");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [liveData, setLiveData] = useState({
+    demands: 1247,
+    matches: 89,
+    revenue: 234567,
+    activeUsers: 423,
+  });
 
+  // 模拟实时数据更新
   useEffect(() => {
-    async function loadDemands() {
-      try {
-        const result = await fetchDemands();
-        if (result.data && result.data.length > 0) {
-          setDemands(result.data);
-        } else {
-          setDemands(MOCK_DEMANDS);
-        }
-      } catch (error) {
-        console.error("Failed to fetch demands:", error);
-        setDemands(MOCK_DEMANDS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadDemands();
+    const interval = setInterval(() => {
+      setLiveData((prev) => ({
+        demands: prev.demands + Math.floor(Math.random() * 5),
+        matches: prev.matches + Math.floor(Math.random() * 3),
+        revenue: prev.revenue + Math.floor(Math.random() * 1000),
+        activeUsers: prev.activeUsers + Math.floor(Math.random() * 10 - 5),
+      }));
+    }, 3000);
 
-    // 定时刷新 (60秒)
-    const interval = setInterval(loadDemands, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  // 排序处理
-  const handleSort = (field: string) => {
-    if (sortField === field) {
-      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("desc");
-    }
-  };
+  // 最新需求数据
+  const recentDemands = [
+    {
+      id: "1",
+      title: "TWS耳机",
+      region: "北美",
+      value: "$328K",
+      status: "critical",
+      time: "2分钟前",
+    },
+    {
+      id: "2",
+      title: "有机棉T恤",
+      region: "北美",
+      value: "$245K",
+      status: "high",
+      time: "15分钟前",
+    },
+    {
+      id: "3",
+      title: "智能手表配件",
+      region: "北美",
+      value: "$1.85M",
+      status: "critical",
+      time: "30分钟前",
+    },
+    {
+      id: "4",
+      title: "户外LED灯",
+      region: "北美",
+      value: "$225K",
+      status: "high",
+      time: "1小时前",
+    },
+    {
+      id: "5",
+      title: "医疗硅胶制品",
+      region: "欧洲",
+      value: "$650K",
+      status: "medium",
+      time: "2小时前",
+    },
+  ];
 
-  // 排序后的数据
-  const sortedDemands = [...demands].sort((a, b) => {
-    let aVal: string | number = "";
-    let bVal: string | number = "";
-    
-    switch (sortField) {
-      case "urgency":
-        const urgencyOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-        aVal = urgencyOrder[a.urgency as keyof typeof urgencyOrder] || 0;
-        bVal = urgencyOrder[b.urgency as keyof typeof urgencyOrder] || 0;
-        break;
-      case "quantity":
-        aVal = a.quantity;
-        bVal = b.quantity;
-        break;
-      case "margin":
-        aVal = a.profit_estimate?.estimated_margin || 0;
-        bVal = b.profit_estimate?.estimated_margin || 0;
-        break;
-      case "created_at":
-        aVal = new Date(a.created_at).getTime();
-        bVal = new Date(b.created_at).getTime();
-        break;
-      default:
-        aVal = String(a[sortField as keyof Demand] || "");
-        bVal = String(b[sortField as keyof Demand] || "");
-    }
-    
-    if (sortDirection === "asc") {
-      return aVal > bVal ? 1 : -1;
-    }
-    return aVal < bVal ? 1 : -1;
-  });
-
-  // 统计数据
-  const stats = {
-    total: demands.length,
-    urgent: demands.filter(d => d.urgency === "critical" || d.urgency === "high").length,
-    highMargin: demands.filter(d => (d.profit_estimate?.estimated_margin || 0) >= 18).length,
-  };
-
-  // 表头排序指示器
-  const SortIndicator = ({ field }: { field: string }) => {
-    if (sortField !== field) return null;
-    return (
-      <span className="ml-1 text-corp-accent">
-        {sortDirection === "asc" ? "↑" : "↓"}
-      </span>
-    );
-  };
+  const stats = [
+    {
+      label: "总需求数",
+      value: liveData.demands,
+      change: "+12.3%",
+      icon: Package,
+      color: "blue",
+    },
+    {
+      label: "智能匹配",
+      value: liveData.matches,
+      change: "+8.7%",
+      icon: Zap,
+      color: "purple",
+    },
+    {
+      label: "交易额",
+      value: `$${(liveData.revenue / 1000).toFixed(1)}K`,
+      change: "+23.5%",
+      icon: DollarSign,
+      color: "green",
+    },
+    {
+      label: "活跃用户",
+      value: liveData.activeUsers,
+      change: "+5.2%",
+      icon: Users,
+      color: "orange",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-corp-bg text-corp-text-main font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-corp-border">
+      <nav className="border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold text-corp-text-main">
-                Global Demand Console
-              </h1>
-              <p className="text-sm text-corp-text-sub mt-0.5">
-                全球采购需求管理 · 工业绿洲
-              </p>
+            <div className="flex items-center gap-8">
+              <Link href="/" className="flex items-center gap-3 group">
+                <Image
+                  src="/logo.png"
+                  alt="Demand OS"
+                  width={140}
+                  height={40}
+                  className="object-contain"
+                />
+              </Link>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-sm text-slate-600">系统运行中</span>
+              </div>
             </div>
-            <div className="flex items-center gap-6">
-              {/* 统计摘要 */}
-              <div className="flex items-center gap-6 text-sm">
-                <div className="text-center">
-                  <div className="font-bold text-corp-text-main">{stats.total}</div>
-                  <div className="text-xs text-corp-text-sub">活跃需求</div>
+            
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              返回首页
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+            控制台
+          </h1>
+          <p className="text-slate-600">
+            实时监控全球需求，智能匹配供应链资源
+          </p>
+        </motion.div>
+
+        {/* Stats Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 + index * 0.1 }}
+              className="bg-white rounded-2xl border border-slate-200/60 p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div
+                  className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600`}
+                >
+                  <stat.icon className="w-6 h-6" />
                 </div>
-                <div className="text-center">
-                  <div className="font-bold text-orange-600">{stats.urgent}</div>
-                  <div className="text-xs text-corp-text-sub">紧急订单</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-green-600">{stats.highMargin}</div>
-                  <div className="text-xs text-corp-text-sub">高利润</div>
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                  {stat.change}
+                </span>
+              </div>
+              <div className="text-3xl font-bold text-slate-900 mb-1">
+                {stat.value}
+              </div>
+              <div className="text-sm text-slate-600">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Data Visualization Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mb-8"
+        >
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">数据分析</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - 2/3 width */}
+            <div className="lg:col-span-2 space-y-6">
+              <TrendChart />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <RegionPieChart />
+                <UrgencyBarChart />
+              </div>
+            </div>
+            
+            {/* Right Column - 1/3 width */}
+            <div className="space-y-6">
+              <ProfitGauge />
+              <LiveDataFeed />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Demands - 2/3 width */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 overflow-hidden"
+          >
+            <div className="p-6 border-b border-slate-100">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-slate-900">最新需求</h2>
+                <div className="flex items-center gap-2">
+                  <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <Search className="w-5 h-5 text-slate-600" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <Filter className="w-5 h-5 text-slate-600" />
+                  </button>
                 </div>
               </div>
-              
-              {/* 刷新按钮 */}
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-corp-accent text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+            </div>
+
+            <div className="divide-y divide-slate-100">
+              {recentDemands.map((demand, index) => (
+                <motion.div
+                  key={demand.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.05 }}
+                  className="p-6 hover:bg-slate-50 transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <StatusBadge status={demand.status} />
+                        <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                          {demand.title}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-slate-600">
+                        <div className="flex items-center gap-1">
+                          <Globe className="w-4 h-4" />
+                          {demand.region}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          {demand.value}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {demand.time}
+                        </div>
+                      </div>
+                    </div>
+                    <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="p-6 border-t border-slate-100 bg-slate-50">
+              <Link
+                href="/demand"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-2 group"
               >
-                刷新数据
-              </button>
+                查看全部需求
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
             </div>
-          </div>
-        </div>
-      </header>
+          </motion.div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-6">
-        {/* 筛选栏 */}
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 bg-corp-accent text-white rounded text-sm font-medium">
-              全部
-            </button>
-            <button className="px-3 py-1.5 bg-white border border-corp-border text-corp-text-sub rounded text-sm hover:bg-gray-50">
-              紧急
-            </button>
-            <button className="px-3 py-1.5 bg-white border border-corp-border text-corp-text-sub rounded text-sm hover:bg-gray-50">
-              高利润
-            </button>
-            <button className="px-3 py-1.5 bg-white border border-corp-border text-corp-text-sub rounded text-sm hover:bg-gray-50">
-              消费电子
-            </button>
-            <button className="px-3 py-1.5 bg-white border border-corp-border text-corp-text-sub rounded text-sm hover:bg-gray-50">
-              服装纺织
-            </button>
-          </div>
-          
-          <div className="relative">
-            <input 
-              type="text"
-              placeholder="搜索需求..."
-              className="pl-8 pr-4 py-1.5 w-64 border border-corp-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-corp-accent/20 focus:border-corp-accent"
-            />
-            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-corp-text-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
+          {/* Right Sidebar - 1/3 width */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
+            {/* Quick Actions */}
+            <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
+              <h3 className="text-lg font-bold text-slate-900 mb-4">
+                快捷操作
+              </h3>
+              <div className="space-y-3">
+                <QuickAction
+                  icon={Package}
+                  label="发布新需求"
+                  color="blue"
+                />
+                <QuickAction
+                  icon={Warehouse}
+                  label="供应商管理"
+                  color="purple"
+                />
+                <QuickAction
+                  icon={TrendingUp}
+                  label="数据分析"
+                  color="green"
+                />
+              </div>
+            </div>
 
-        {/* 数据表格 */}
-        <div className="bg-corp-surface border border-corp-border rounded-lg overflow-hidden shadow-sm">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-corp-accent" />
+            {/* Activity Feed */}
+            <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
+              <h3 className="text-lg font-bold text-slate-900 mb-4">
+                系统动态
+              </h3>
+              <div className="space-y-4">
+                <ActivityItem
+                  icon={CheckCircle}
+                  text="新匹配：TWS耳机 × 深圳工厂"
+                  time="刚刚"
+                  color="green"
+                />
+                <ActivityItem
+                  icon={Activity}
+                  text="系统升级完成"
+                  time="5分钟前"
+                  color="blue"
+                />
+                <ActivityItem
+                  icon={AlertCircle}
+                  text="需求待审核：3条"
+                  time="10分钟前"
+                  color="orange"
+                />
+              </div>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-corp-border">
-                    <th 
-                      className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider cursor-pointer hover:text-corp-text-main"
-                      onClick={() => handleSort("urgency")}
-                    >
-                      Status <SortIndicator field="urgency" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider">
-                      Demand Info
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider">
-                      Trade Terms
-                    </th>
-                    <th 
-                      className="px-4 py-3 text-right text-xs font-bold text-corp-text-sub uppercase tracking-wider cursor-pointer hover:text-corp-text-main"
-                      onClick={() => handleSort("quantity")}
-                    >
-                      Quantity <SortIndicator field="quantity" />
-                    </th>
-                    <th 
-                      className="px-4 py-3 text-right text-xs font-bold text-corp-text-sub uppercase tracking-wider cursor-pointer hover:text-corp-text-main"
-                      onClick={() => handleSort("margin")}
-                    >
-                      Financials <SortIndicator field="margin" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider">
-                      Region
-                    </th>
-                    <th 
-                      className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider cursor-pointer hover:text-corp-text-main"
-                      onClick={() => handleSort("created_at")}
-                    >
-                      Time <SortIndicator field="created_at" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-corp-text-sub uppercase tracking-wider">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedDemands.map((demand) => (
-                    <DemandRow key={demand.id} demand={demand} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          </motion.div>
         </div>
 
-        {/* 底部分页 */}
-        <div className="mt-4 flex items-center justify-between text-sm text-corp-text-sub">
-          <div>
-            显示 {sortedDemands.length} 条记录
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-corp-border rounded hover:bg-gray-50 disabled:opacity-50" disabled>
-              上一页
-            </button>
-            <span className="px-3 py-1 bg-corp-accent text-white rounded">1</span>
-            <button className="px-3 py-1 border border-corp-border rounded hover:bg-gray-50 disabled:opacity-50" disabled>
-              下一页
-            </button>
-          </div>
-        </div>
-      </main>
+        {/* AI Recommendation Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8"
+        >
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">AI 智能匹配</h2>
+          <AIRecommendation />
+        </motion.div>
+      </div>
+
+      {/* AI Chat Bot */}
+      <AIChatBot />
+    </div>
+  );
+}
+
+// Status Badge Component
+function StatusBadge({ status }: { status: string }) {
+  const styles: Record<string, { bg: string; text: string; label: string }> = {
+    critical: { bg: "bg-red-100", text: "text-red-700", label: "特急" },
+    high: { bg: "bg-orange-100", text: "text-orange-700", label: "紧急" },
+    medium: { bg: "bg-yellow-100", text: "text-yellow-700", label: "一般" },
+    low: { bg: "bg-green-100", text: "text-green-700", label: "普通" },
+  };
+
+  const style = styles[status] || styles.low;
+
+  return (
+    <span
+      className={`px-2 py-1 rounded-full text-xs font-medium ${style.bg} ${style.text}`}
+    >
+      {style.label}
+    </span>
+  );
+}
+
+// Quick Action Component
+function QuickAction({
+  icon: Icon,
+  label,
+  color,
+}: {
+  icon: any;
+  label: string;
+  color: string;
+}) {
+  return (
+    <button
+      className={`w-full flex items-center gap-3 p-3 rounded-xl bg-${color}-50 hover:bg-${color}-100 text-${color}-700 transition-colors group`}
+    >
+      <div className={`p-2 rounded-lg bg-${color}-100 group-hover:bg-${color}-200 transition-colors`}>
+        <Icon className="w-5 h-5" />
+      </div>
+      <span className="font-medium text-sm">{label}</span>
+      <ArrowUpRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+    </button>
+  );
+}
+
+// Activity Item Component
+function ActivityItem({
+  icon: Icon,
+  text,
+  time,
+  color,
+}: {
+  icon: any;
+  text: string;
+  time: string;
+  color: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className={`p-2 rounded-lg bg-${color}-50 text-${color}-600 mt-0.5`}>
+        <Icon className="w-4 h-4" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm text-slate-900">{text}</p>
+        <p className="text-xs text-slate-500 mt-0.5">{time}</p>
+      </div>
     </div>
   );
 }

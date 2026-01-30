@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { FileText, Download } from "lucide-react";
+import Image from "next/image";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -14,16 +15,19 @@ export default function ThoughtLeadership() {
       title: "2026年全球供应链报告",
       description: "深度剖析后疫情时代的供应链重塑",
       pages: "68页",
+      cover: "/images/whitepapers/supply-chain.jpg"
     },
     {
       title: "TikTok美国家居生活趋势",
       description: "社交电商如何改变消费者行为",
       pages: "42页",
+      cover: "/images/whitepapers/tiktok-trends.jpg"
     },
     {
       title: "工厂的数字化转型",
       description: "从传统制造到智能工业的实践路径",
       pages: "56页",
+      cover: "/images/whitepapers/digital-transformation.jpg"
     },
   ];
 
@@ -63,8 +67,30 @@ export default function ThoughtLeadership() {
               }}
             >
               {/* 白皮书封面 */}
-              <div className="h-64 bg-slate-100 flex items-center justify-center border-b border-slate-200">
-                <FileText className="w-24 h-24 text-slate-300" />
+              <div className="relative h-64 bg-gradient-to-br from-[#051c2c] to-[#00509d] overflow-hidden">
+                {/* 背景纹理 */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" 
+                    style={{
+                      backgroundImage: `linear-gradient(45deg, transparent 48%, white 49%, white 51%, transparent 52%)`,
+                      backgroundSize: '20px 20px'
+                    }}
+                  />
+                </div>
+                
+                {/* 白皮书图标 */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <FileText className="w-32 h-32 text-white/20" />
+                </div>
+                
+                {/* 装饰性元素 */}
+                <div className="absolute top-4 right-4 w-16 h-16 border-2 border-white/30 rounded-full" />
+                <div className="absolute bottom-4 left-4 w-20 h-20 bg-white/10 rounded-sm rotate-12" />
+                
+                {/* 页码显示 */}
+                <div className="absolute bottom-4 right-4 px-3 py-1 bg-white/90 text-[#051c2c] text-xs font-semibold rounded">
+                  {report.pages}
+                </div>
               </div>
 
               {/* 内容 */}

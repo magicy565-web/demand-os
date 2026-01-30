@@ -1,8 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Font System */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+  }
+  
+  code, pre, kbd {
+    font-family: var(--font-mono);
+  }
+}
 
 :root {
   /* 工业科技色系 */
@@ -919,5 +942,77 @@ body.light ::-webkit-scrollbar-thumb {
   
   .stat-value {
     font-size: 24px;
+  }
+}
+/* ========================================
+   📱 MOBILE OPTIMIZATIONS
+   ======================================== */
+
+@layer utilities {
+  /* 隐藏滚动条 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Touch 优化 */
+  .touch-action-none {
+    touch-action: none;
+  }
+  
+  .touch-action-pan-y {
+    touch-action: pan-y;
+  }
+  
+  /* 移动端文字优化 */
+  @media (max-width: 640px) {
+    .text-mobile-sm {
+      font-size: 0.875rem;
+    }
+    
+    .text-mobile-base {
+      font-size: 1rem;
+    }
+    
+    .text-mobile-lg {
+      font-size: 1.125rem;
+    }
+  }
+  
+  /* 安全区域适配 */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ========================================
+   ✨ SCROLL ANIMATIONS
+   ======================================== */
+
+@layer components {
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Scroll Snap */
+  .snap-y {
+    scroll-snap-type: y mandatory;
+  }
+  
+  .snap-start {
+    scroll-snap-align: start;
+  }
+  
+  .snap-center {
+    scroll-snap-align: center;
   }
 }

@@ -1,15 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Demand } from "@/types/demand";
-import { Card3D } from "./Card3D";
 import {
   formatRelativeTime,
   formatNumber,
   getUrgencyLabel,
-  getBusinessValueColor,
 } from "@/lib/utils";
+import {
+  Package,
+  MapPin,
+  Tag,
+  Star,
+  MessageCircle,
+  ExternalLink,
+} from "lucide-react";
 
 interface DemandCardEnhancedProps {
   demand: Demand;
@@ -17,344 +23,131 @@ interface DemandCardEnhancedProps {
   isMobile?: boolean;
 }
 
-// 根据紧急程度返回光效颜色
-const getGlowColor = (urgency: string) => {
-  switch (urgency) {
-    case "critical":
-      return "rgba(255, 0, 110, 0.5)";
-    case "high":
-      return "rgba(255, 0, 110, 0.3)";
-    case "medium":
-      return "rgba(157, 78, 221, 0.4)";
-    default:
-      return "rgba(0, 245, 255, 0.4)";
-  }
-};
-
-// 入场动画变体
-const cardVariants = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hidden: (_index: number) => ({
-    opacity: 0,
-    y: 100,
-    rotateX: -30,
-    scale: 0.8,
-    filter: "blur(10px)",
-  }),
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    rotateX: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-      delay: index * 0.08,
-      duration: 0.6,
-    },
-  }),
-  hover: {
-    y: -8,
-    transition: {
-      type: "spring",
-      stiffness: 400,
-      damping: 25,
-    },
-  },
-};
-
-// 新需求弹入动画 - 修复版本
-const newItemVariants = {
-  initial: {
-    opacity: 0,
-    scale: 0.8,
-    y: -50,
-  },
-  animate: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 150,
-      damping: 20,
-      duration: 0.5,
-    },
-  },
-};
-
 export function DemandCardEnhanced({ demand, index, isMobile = false }: DemandCardEnhancedProps) {
   const router = useRouter();
-  const valueColor = getBusinessValueColor(demand.business_value);
-  const glowColor = getGlowColor(demand.urgency);
-  const isNew = Date.now() - new Date(demand.created_at).getTime() < 60000; // 1分钟内的是新数据
+  const [isSaved, setIsSaved] = useState(false);
+  const isNew = Date.now() - new Date(demand.created_at).getTime() < 60000;
 
-  // 移动端禁用动画的辅助函数
-  const getAnimationProps = (animationConfig: any) => {
-    return isMobile ? { initial: "visible", animate: "visible" } : animationConfig;
-  };
-
-  // 联系供应商
   const handleContact = () => {
-    // 打开联系表单或跳转到联系页
     const whatsappLink = `https://wa.me/?text=Hi, I'm interested in: ${demand.title}`;
     window.open(whatsappLink, "_blank");
   };
 
-  // 收藏需求
   const handleSave = () => {
     const saved = JSON.parse(localStorage.getItem("savedDemands") || "[]") as string[];
     if (saved.includes(demand.id)) {
       const updated = saved.filter(id => id !== demand.id);
       localStorage.setItem("savedDemands", JSON.stringify(updated));
+      setIsSaved(false);
     } else {
       localStorage.setItem("savedDemands", JSON.stringify([...saved, demand.id]));
+      setIsSaved(true);
     }
   };
 
-  // 查看详情
   const handleViewDetails = () => {
     router.push(`/demand/${demand.id}`);
   };
 
   return (
-    <motion.div
-      custom={index}
-      variants={isNew ? newItemVariants : cardVariants}
-      initial={isMobile ? "visible" : (isNew ? "initial" : "hidden")}
-      animate="visible"
-      whileHover={isMobile ? undefined : "hover"}
-      layout
-      layoutId={demand.id}
-    >
-      <Card3D glowColor={glowColor} intensity={12} disableInteractive={isMobile ? true : true}>
-        <div className="p-6 relative">
-          {/* 新需求标记 */}
-          {isNew && (
-            <motion.div
-              className="absolute top-4 right-4 z-30"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", delay: 0.3 }}
-            >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-green opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyber-green" />
+    <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-gray-200">
+      {/* 头部 */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            {isNew && (
+              <span className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
+                新需求
               </span>
-            </motion.div>
-          )}
-
-          {/* 顶部状态栏 */}
-          <div className="flex items-center justify-between mb-3">
-            <motion.span
-              className="text-xs font-mono text-gray-500"
-              initial={isMobile ? "visible" : { opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.2 }}
-            >
-              {formatRelativeTime(demand.created_at)}
-            </motion.span>
-            <motion.div
-              className="flex items-center gap-2"
-              initial={isMobile ? "visible" : { opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.2 }}
-            >
-              <span
-                className={`text-xs font-mono px-2.5 py-1 rounded-full border backdrop-blur-sm ${
-                  demand.urgency === "critical"
-                    ? "border-cyber-red bg-cyber-red/20 text-cyber-red animate-pulse shadow-lg shadow-cyber-red/20"
-                    : demand.urgency === "high"
-                    ? "border-cyber-pink bg-cyber-pink/20 text-cyber-pink"
-                    : demand.urgency === "medium"
-                    ? "border-cyber-yellow bg-cyber-yellow/20 text-cyber-yellow"
-                    : "border-cyber-green bg-cyber-green/20 text-cyber-green"
-                }`}
-              >
-                {getUrgencyLabel(demand.urgency)}
+            )}
+            {demand.urgency === "critical" && (
+              <span className="px-2 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded-full">
+                紧急
               </span>
-            </motion.div>
+            )}
           </div>
-
-          {/* 标题 */}
-          <motion.h3
-            className="text-xl font-bold text-white mb-2 group-hover:text-cyber-cyan transition-colors line-clamp-2"
-            initial={isMobile ? "visible" : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.3 }}
-          >
+          
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2 leading-relaxed">
             {demand.title}
-          </motion.h3>
-
-          {/* 描述 */}
-          <motion.p
-            className="text-sm text-gray-300 mb-4 line-clamp-3 leading-relaxed"
-            initial={isMobile ? "visible" : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={isMobile ? { duration: 0 } : { delay: index * 0.08 + 0.4 }}
-          >
+          </h3>
+          
+          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed mb-4">
             {demand.description}
-          </motion.p>
-
-          {/* 标签 */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {demand.tags?.slice(0, 3).map((tag, tagIndex) => (
-              <motion.span
-                key={tagIndex}
-                className="text-xs px-2.5 py-1 bg-cyber-dark border border-cyber-purple/30 rounded text-cyber-purple hover:border-cyber-purple hover:bg-cyber-purple/10 transition-all cursor-pointer font-medium"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.08 + 0.5 + tagIndex * 0.05 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                #{tag}
-              </motion.span>
-            ))}
-          </div>
-
-          {/* 数据网格 */}
-          <motion.div
-            className="grid grid-cols-3 gap-2 mb-4 pt-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.08 + 0.6 }}
-          >
-            <div className="bg-cyber-black/50 rounded-lg p-2.5 border border-transparent hover:border-cyber-cyan/30 transition-colors">
-              <div className="text-xs text-gray-500 mb-0.5">地区</div>
-              <div className="text-sm text-cyber-cyan font-mono truncate">{demand.region}</div>
-            </div>
-            <div className="bg-cyber-black/50 rounded-lg p-2.5 border border-transparent hover:border-cyber-purple/30 transition-colors">
-              <div className="text-xs text-gray-500 mb-0.5">分类</div>
-              <div className="text-sm text-cyber-purple font-mono truncate">{demand.category}</div>
-            </div>
-            <div className="bg-cyber-black/50 rounded-lg p-2.5 border border-transparent hover:border-cyber-pink/30 transition-colors">
-              <div className="text-xs text-gray-500 mb-0.5">来源</div>
-              <div className="text-sm text-cyber-pink font-mono truncate">{demand.source_platform}</div>
-            </div>
-          </motion.div>
-
-          {/* 数量与价格行 */}
-          <motion.div
-            className="grid grid-cols-2 gap-3 mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.08 + 0.65 }}
-          >
-            <div className="bg-cyber-black/50 rounded-lg p-3 border border-transparent hover:border-white/20 transition-colors">
-              <div className="text-xs text-gray-500 mb-1">需求数量</div>
-              <div className="text-sm text-white font-mono font-semibold">
-                {formatNumber(demand.quantity)} {demand.unit}
-              </div>
-            </div>
-            <div className="relative bg-gradient-to-r from-cyber-cyan/10 to-cyber-purple/10 rounded-lg p-3 overflow-hidden">
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
-                animate={{
-                  x: ["-100%", "200%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                  ease: "easeInOut",
-                }}
-              />
-              <div className="relative">
-                <div className="text-xs text-gray-500 mb-1">预算范围</div>
-                <div className="text-sm font-bold text-cyber-green font-mono">
-                  {demand.price_range}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 商业价值指标 */}
-          <motion.div
-            className="flex items-center gap-3 mb-4 pt-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.08 + 0.8 }}
-          >
-            <span className="text-xs text-gray-500 whitespace-nowrap">商业价值</span>
-            <div className="flex-1 flex items-center gap-2">
-              <div className="flex-1 h-2 bg-cyber-dark rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${demand.business_value}%` }}
-                  transition={{ duration: 1.2, delay: index * 0.08 + 0.9, ease: "easeOut" }}
-                  className={`h-full rounded-full ${
-                    demand.business_value >= 80
-                      ? "bg-gradient-to-r from-cyber-green to-cyber-cyan"
-                      : demand.business_value >= 60
-                      ? "bg-gradient-to-r from-cyber-cyan to-cyber-purple"
-                      : demand.business_value >= 40
-                      ? "bg-gradient-to-r from-cyber-yellow to-cyber-pink"
-                      : "bg-gray-500"
-                  }`}
-                />
-              </div>
-              <motion.span
-                className={`text-sm font-bold font-mono w-10 text-right ${valueColor}`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.08 + 1.2, type: "spring" }}
-              >
-                {demand.business_value}
-              </motion.span>
-            </div>
-          </motion.div>
-
-          {/* 行动按钮组 - 突出设计 */}
-          <motion.div
-            className="flex gap-2 pt-4 border-t border-gray-800/50"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.08 + 1.0 }}
-          >
-            {/* 主行动按钮 - 联系供应商 */}
-            <motion.button
-              onClick={handleContact}
-              className="flex-1 relative px-4 py-3 bg-gradient-to-r from-neon-primary to-neon-secondary text-black font-bold text-sm rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-xl hover:shadow-neon-primary/60 uppercase tracking-wider"
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97, y: 0 }}
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-neon-secondary to-neon-primary opacity-0 group-hover:opacity-100"
-                transition={{ duration: 0.3 }}
-              />
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                <span>💬</span>
-                <span>联系</span>
-              </span>
-            </motion.button>
-
-            {/* 次行动按钮 - 收藏 */}
-            <motion.button
-              onClick={handleSave}
-              className="relative px-4 py-3 border-2 border-neon-secondary text-neon-secondary rounded-lg hover:bg-neon-secondary/10 transition-all duration-300 font-semibold uppercase tracking-wider"
-              whileHover={{ scale: 1.05, y: -1 }}
-              whileTap={{ scale: 0.95, y: 0 }}
-            >
-              <span className="relative z-10 flex items-center gap-1">
-                <span>⭐</span>
-              </span>
-            </motion.button>
-
-            {/* 详情按钮 */}
-            <motion.button
-              onClick={handleViewDetails}
-              className="relative px-4 py-3 border-2 border-neon-purple text-neon-purple rounded-lg hover:bg-neon-purple/10 transition-all duration-300 font-semibold"
-              whileHover={{ scale: 1.05, y: -1 }}
-              whileTap={{ scale: 0.95, y: 0 }}
-            >
-              <span className="relative z-10">→</span>
-            </motion.button>
-          </motion.div>
+          </p>
         </div>
-      </Card3D>
-    </motion.div>
+      </div>
+
+      {/* 关键信息 */}
+      <div className="space-y-3 mb-6 pb-6 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-600">
+            <MapPin className="w-4 h-4 text-gray-400" />
+            <span className="text-sm">{demand.region}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-600">
+            <Tag className="w-4 h-4 text-gray-400" />
+            <span className="text-sm">{demand.category}</span>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-600">
+            <Package className="w-4 h-4 text-gray-400" />
+            <span className="text-sm font-medium">{formatNumber(demand.quantity)} {demand.unit}</span>
+          </div>
+          <div className="text-sm font-semibold text-gray-900">
+            {demand.price_range}
+          </div>
+        </div>
+      </div>
+
+      {/* 标签 */}
+      {demand.tags && demand.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {demand.tags.slice(0, 3).map((tag, tagIndex) => (
+            <span
+              key={tagIndex}
+              className="px-3 py-1 text-xs text-gray-600 bg-gray-50 rounded-full"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 按钮组 */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleContact}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
+        >
+          <MessageCircle className="w-4 h-4" />
+          <span>联系供应商</span>
+        </button>
+        
+        <button
+          onClick={handleSave}
+          className={`px-4 py-2.5 rounded-xl transition-colors ${
+            isSaved
+              ? "bg-yellow-50 text-yellow-600"
+              : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+          }`}
+        >
+          <Star className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`} />
+        </button>
+        
+        <button
+          onClick={handleViewDetails}
+          className="px-4 py-2.5 bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 transition-colors"
+        >
+          <ExternalLink className="w-4 h-4" />
+        </button>
+      </div>
+      
+      {/* 时间戳 */}
+      <div className="mt-4 pt-4 border-t border-gray-100 text-xs text-gray-400 text-right">
+        {formatRelativeTime(demand.created_at)}
+      </div>
+    </div>
   );
 }

@@ -174,6 +174,26 @@ export function DemandWaterfallEnhanced({
   const [useMock, setUseMock] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [newDemandIds, setNewDemandIds] = useState<Set<string>>(new Set());
+  const [isPaused, setIsPaused] = useState(false);
+
+  // 自动滚动功能
+  useEffect(() => {
+    if (isPaused) return;
+
+    const scrollInterval = setInterval(() => {
+      window.scrollBy({
+        top: 1,
+        behavior: 'smooth'
+      });
+      
+      // 滚动到底部时回到顶部
+      if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 100) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 50);
+
+    return () => clearInterval(scrollInterval);
+  }, [isPaused]);
 
   // 加载初始数据
   useEffect(() => {
@@ -251,29 +271,26 @@ export function DemandWaterfallEnhanced({
   }
 
   return (
-    <div className="relative">
-      {/* 连接状态指示器 - 增强版 */}
+    <div 
+      className="relative"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* 连接状态指示器 */}
       <motion.div
-        className="flex items-center justify-between mb-8"
+        className="flex items-center justify-between mb-8 bg-white/50 backdrop-blur-sm rounded-2xl p-4 shadow-sm"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex items-center gap-4">
-          <div className="relative flex items-center gap-2 px-4 py-2 bg-cyber-dark/50 rounded-full border border-gray-800">
+          <div className="relative flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
             <motion.div
               className={`w-2 h-2 rounded-full ${
-                isConnected ? "bg-cyber-green" : "bg-cyber-red"
+                isConnected ? "bg-green-500" : "bg-gray-400"
               }`}
               animate={{
                 scale: isConnected ? [1, 1.3, 1] : 1,
-                boxShadow: isConnected
-                  ? [
-                      "0 0 0 0 rgba(6, 255, 165, 0.4)",
-                      "0 0 0 8px rgba(6, 255, 165, 0)",
-                      "0 0 0 0 rgba(6, 255, 165, 0)",
-                    ]
-                  : "none",
               }}
               transition={{
                 duration: 1.5,
@@ -281,7 +298,7 @@ export function DemandWaterfallEnhanced({
                 ease: "easeInOut",
               }}
             />
-            <span className="text-sm font-mono text-gray-400">
+            <span className="text-sm text-gray-600">
               {isConnected ? "实时连接" : useMock ? "演示模式" : "离线模式"}
             </span>
           </div>
@@ -292,9 +309,9 @@ export function DemandWaterfallEnhanced({
                 initial={{ opacity: 0, scale: 0, x: -20 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0 }}
-                className="px-3 py-1 bg-cyber-cyan/10 border border-cyber-cyan/30 rounded-full"
+                className="px-3 py-1 bg-blue-50 rounded-full"
               >
-                <span className="text-xs text-cyber-cyan font-mono">
+                <span className="text-xs text-blue-600 font-semibold">
                   +{messageCount} 新需求
                 </span>
               </motion.div>
@@ -302,14 +319,20 @@ export function DemandWaterfallEnhanced({
           </AnimatePresence>
         </div>
 
-        <motion.div
-          className="text-sm text-gray-500 font-mono flex items-center gap-2"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <span className="w-1 h-1 bg-cyber-cyan rounded-full" />
-          共 {demands.length} 条需求信号
-        </motion.div>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500">
+            共 {demands.length} 条需求
+          </span>
+          {isPaused && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full"
+            >
+              已暂停
+            </motion.span>
+          )}
+        </div>
       </motion.div>
 
       {/* 瀑布流网格 - 使用 Masonry */}
@@ -331,7 +354,7 @@ export function DemandWaterfallEnhanced({
         </AnimatePresence>
       </Masonry>
 
-      {/* 加载更多按钮 - 增强版 */}
+      {/* 加载更多按钮 */}
       {demands.length > 0 && (
         <motion.div
           className="flex justify-center mt-12"
@@ -339,43 +362,11 @@ export function DemandWaterfallEnhanced({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <motion.button
-            className="group relative px-8 py-4 border border-cyber-purple/50 text-cyber-purple font-mono text-sm rounded-xl overflow-hidden transition-all hover:border-cyber-purple hover:shadow-lg hover:shadow-cyber-purple/20"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              <motion.span
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                ↓
-              </motion.span>
-              加载更多需求
-              <motion.span
-                animate={{ y: [0, 3, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                ↓
-              </motion.span>
-            </span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-cyber-purple/0 via-cyber-purple/20 to-cyber-purple/0"
-              animate={{
-                x: ["-100%", "100%"],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          </motion.button>
+          <button className="px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
+            加载更多需求
+          </button>
         </motion.div>
       )}
-
-      {/* 底部渐变遮罩 */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-cyber-black via-cyber-black/50 to-transparent pointer-events-none" />
     </div>
   );
 }
