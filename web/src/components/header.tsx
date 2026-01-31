@@ -1,93 +1,107 @@
-'use client'
+"use client"
 
-import { useState } from "react"
 import Link from "next/link"
+import { useState } from "react"
 import { Menu, X } from "lucide-react"
+import { Button } from "./ui/button"
+
+const navItems = [
+  { label: "能力", href: "#capabilities" },
+  { label: "行业聚焦", href: "#industries" },
+  { label: "30天路径", href: "#timeline" },
+  { label: "成功案例", href: "#stories" },
+  { label: "洞察", href: "#insights" },
+]
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const navItems = [
-    { label: "能力", href: "#capabilities" },
-    { label: "行业", href: "#industries" },
-    { label: "方法论", href: "#framework" },
-    { label: "洞察", href: "#knowledge" },
-  ]
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-paper/95 backdrop-blur-sm">
-      <nav className="container-editorial flex items-center justify-between h-16 lg:h-20">
-        {/* Logo */}
-        <Link href="/" className="shrink-0">
-          <h1 className="heading-serif text-xl lg:text-2xl text-navy hover:text-cobalt transition-colors duration-300">
-            鸿亿鸿
-          </h1>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-8">
-          {navItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.href}
-              className="text-sm font-medium text-charcoal hover:text-navy transition-colors duration-300 uppercase tracking-wide"
-            >
-              {item.label}
+    <header className="fixed top-0 left-0 right-0 z-50 bg-paper-warm border-b border-navy/10 backdrop-blur-sm">
+      <div className="container-editorial">
+        <div className="flex items-center justify-between h-20 lg:h-24">
+          {/* Logo with Badge */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="font-serif text-2xl lg:text-3xl text-navy tracking-tight">
+              鸿亿鸿
             </Link>
-          ))}
-        </div>
+            <span className="hidden lg:block text-[9px] font-bold uppercase tracking-widest text-gold border border-gold px-2 py-1">
+              TikTok Shop Partner
+            </span>
+          </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-4 lg:gap-6">
-          <Link
-            href="#login"
-            className="text-xs lg:text-sm font-bold uppercase tracking-wider text-navy hover:text-cobalt transition-colors duration-300 hidden sm:inline-block"
-          >
-            客户登录
-          </Link>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 hover:bg-paper-warm transition-colors duration-300"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5 text-navy" strokeWidth={2} />
-            ) : (
-              <Menu className="w-5 h-5 text-navy" strokeWidth={2} />
-            )}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-paper">
-          <div className="container-editorial py-4 space-y-4">
-            {navItems.map((item, index) => (
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navItems.map((item) => (
               <Link
-                key={index}
+                key={item.label}
                 href={item.href}
-                className="block text-sm font-medium text-charcoal hover:text-navy transition-colors duration-300 uppercase tracking-wide py-2"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-[11px] font-medium uppercase tracking-[0.15em] text-charcoal hover:text-electric-blue transition-colors duration-300"
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-border">
+          </nav>
+
+          {/* CTA Group */}
+          <div className="hidden lg:flex items-center gap-4">
+            <Link
+              href="#diagnosis"
+              className="text-xs font-medium px-4 py-2 bg-electric-blue text-navy hover:bg-electric-blue/90 transition-colors duration-300"
+            >
+              预约订单增长诊断
+            </Link>
+            <Link
+              href="#login"
+              className="text-xs font-medium uppercase tracking-wider text-charcoal border border-charcoal px-4 py-2 hover:bg-navy hover:text-paper hover:border-navy transition-all duration-300"
+            >
+              客户登录
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            className="lg:hidden p-2 text-charcoal"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "关闭菜单" : "打开菜单"}
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <nav className="lg:hidden py-6 border-t border-border">
+            <div className="flex flex-col gap-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="text-[11px] font-medium uppercase tracking-[0.15em] text-charcoal hover:text-electric-blue transition-colors duration-300"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                href="#diagnosis"
+                className="text-xs font-medium px-4 py-2 bg-electric-blue text-navy text-center mt-4"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                预约订单增长诊断
+              </Link>
               <Link
                 href="#login"
-                className="block text-xs font-bold uppercase tracking-wider text-navy hover:text-cobalt transition-colors duration-300 py-2"
+                className="text-xs font-medium uppercase tracking-wider text-charcoal border border-charcoal px-4 py-2 text-center"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 客户登录
               </Link>
             </div>
-          </div>
-        </div>
-      )}
+          </nav>
+        )}
+      </div>
     </header>
   )
 }
-
-export default Header

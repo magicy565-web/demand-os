@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { GlobalNav } from "@/components/GlobalNav";
-import { Playfair_Display, Inter } from 'next/font/google'
-import "./globals.css";
+import React from "react"
+import type { Metadata } from 'next'
+import { Playfair_Display, Inter, Noto_Serif_SC } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
 
 const playfair = Playfair_Display({ 
   subsets: ["latin"],
@@ -14,34 +15,46 @@ const inter = Inter({
   variable: '--font-inter'
 });
 
+const notoSerifSC = Noto_Serif_SC({
+  subsets: ["latin"],
+  variable: '--font-noto-serif-sc',
+  weight: ['400', '500', '600', '700']
+});
+
 export const metadata: Metadata = {
-  title: "Demand OS | 工业绿洲 - 全球需求实时对接",
-  description: "AI 驱动的全球需求实时对接系统，连接全球电商平台的实时需求信号",
-  keywords: ["Demand OS", "工业绿洲", "AI", "全球需求", "实时对接", "电商"],
-  authors: [{ name: "Demand OS Team" }],
-  openGraph: {
-    title: "Demand OS | 工业绿洲",
-    description: "AI 驱动的全球需求实时对接系统",
-    type: "website",
-    locale: "zh_CN",
+  title: 'Demand-OS | Global Trade Operating System',
+  description: 'Connecting Eastern supply chains with Western demand through rigorous data science. Strategic consulting for cross-border e-commerce.',
+  generator: 'v0.app',
+  icons: {
+    icon: [
+      {
+        url: '/icon-light-32x32.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icon-dark-32x32.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    apple: '/apple-icon.png',
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="zh-CN">
-      <body className="antialiased min-h-screen">
-        <GlobalNav />
-        
-        {/* 主内容区 */}
-        <main className="relative">
-          {children}
-        </main>
+      <body className={`${playfair.variable} ${inter.variable} ${notoSerifSC.variable} font-sans antialiased`}>
+        {children}
+        <Analytics />
       </body>
     </html>
-  );
+  )
 }

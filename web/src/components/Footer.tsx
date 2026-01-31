@@ -1,89 +1,156 @@
-'use client'
+"use client"
+
+import React from "react"
 
 import Link from "next/link"
+import { useState } from "react"
+import { ArrowRight } from "lucide-react"
 
-export function Footer() {
-  const footerLinks = {
-    Capabilities: [
+const footerLinks = {
+  capabilities: {
+    title: "能力",
+    titleEn: "Capabilities",
+    links: [
       { label: "战略咨询", href: "#strategy" },
-      { label: "运营赋能", href: "#operations" },
+      { label: "市场进入", href: "#market-entry" },
+      { label: "品牌孵化", href: "#brand-incubation" },
+      { label: "供应链优化", href: "#supply-chain" },
     ],
-    Industries: [
+  },
+  industries: {
+    title: "行业",
+    titleEn: "Industries",
+    links: [
       { label: "消费电子", href: "#electronics" },
       { label: "美妆个护", href: "#beauty" },
+      { label: "家居生活", href: "#home" },
+      { label: "运动户外", href: "#sports" },
     ],
-    Insights: [
-      { label: "全球贸易展望", href: "#outlook" },
-      { label: "研究报告", href: "#reports" },
+  },
+  insights: {
+    title: "洞察",
+    titleEn: "Insights",
+    links: [
+      { label: "白皮书", href: "#whitepapers" },
+      { label: "行业报告", href: "#reports" },
+      { label: "案例研究", href: "#cases" },
+      { label: "观点文章", href: "#articles" },
     ],
-    Company: [
+  },
+  company: {
+    title: "关于",
+    titleEn: "About",
+    links: [
       { label: "关于我们", href: "#about" },
-      { label: "联系方式", href: "#contact" },
+      { label: "合伙人团队", href: "#leadership" },
+      { label: "加入我们", href: "#careers" },
+      { label: "联系我们", href: "#contact" },
     ],
+  },
+}
+
+export function Footer() {
+  const [email, setEmail] = useState("")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle newsletter subscription
+    console.log("Subscribe:", email)
+    setEmail("")
   }
 
   return (
-    <footer className="bg-navy text-paper border-t border-paper/10">
-      <div className="container-editorial py-12 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 pb-12 lg:pb-16 border-b border-paper/10">
-          <div>
-            <Link href="/" className="inline-block mb-6">
-              <h2 className="heading-serif text-2xl lg:text-3xl text-paper">
-                鸿亿鸿
-              </h2>
+    <footer className="bg-navy py-16 lg:py-24">
+      <div className="container-editorial">
+        {/* Top Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 pb-12 lg:pb-16 border-b border-paper/10">
+          {/* Brand & Newsletter */}
+          <div className="lg:col-span-4">
+            <Link
+              href="/"
+              className="font-serif text-2xl text-paper tracking-tight block mb-6"
+            >
+              鸿亿鸿
             </Link>
-            <p className="text-paper/70 text-base">
-              全球贸易操作系统。
+            <p className="text-sm text-paper/60 mb-8 max-w-sm leading-relaxed">
+              全球贸易操作系统。连接东方供应链与西方需求，为跨境电商企业提供战略级咨询服务。
             </p>
-          </div>
-          <div className="flex flex-col justify-end">
-            <h3 className="heading-serif text-xl mb-4">
-              订阅通讯
-            </h3>
-            <form className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="your.email@company.com"
-                className="flex-1 px-4 py-3 bg-navy-light border border-paper/20 text-paper text-sm"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-cobalt text-navy font-bold uppercase text-sm"
-              >
-                订阅
-              </button>
-            </form>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 lg:py-16 border-b border-paper/10">
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4 className="text-xs font-bold uppercase text-paper mb-4">
-                {category}
-              </h4>
-              <ul className="space-y-3">
-                {links.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-paper/70"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+
+            {/* Newsletter */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-paper/40 mb-4">Subscribe to Insights</p>
+              <form onSubmit={handleSubmit} className="flex items-center gap-0">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="您的邮箱"
+                  className="flex-1 bg-transparent border-b border-paper/20 py-3 text-sm text-paper placeholder:text-paper/30 focus:outline-none focus:border-paper/50 transition-colors duration-300"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="p-3 text-paper/50 hover:text-paper transition-colors duration-300"
+                  aria-label="订阅"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </form>
             </div>
-          ))}
+          </div>
+
+          {/* Links Grid */}
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            {Object.entries(footerLinks).map(([key, section]) => (
+              <div key={key}>
+                <p className="text-sm text-paper mb-1">{section.title}</p>
+                <p className="text-xs text-paper/40 uppercase tracking-wider mb-4">
+                  {section.titleEn}
+                </p>
+                <ul className="space-y-3">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-paper/60 hover:text-paper transition-colors duration-300"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="py-8">
-          <p className="text-xs text-paper/50">
-            © 2024-2025 All rights reserved.
+
+        {/* Bottom Section */}
+        <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <p className="text-xs text-paper/40">
+            &copy; {new Date().getFullYear()} 鸿亿鸿 Demand-OS. All rights reserved.
           </p>
+          <div className="flex items-center gap-6">
+            <Link
+              href="#privacy"
+              className="text-xs text-paper/40 hover:text-paper/60 transition-colors duration-300"
+            >
+              隐私政策
+            </Link>
+            <Link
+              href="#terms"
+              className="text-xs text-paper/40 hover:text-paper/60 transition-colors duration-300"
+            >
+              使用条款
+            </Link>
+            <Link
+              href="#sitemap"
+              className="text-xs text-paper/40 hover:text-paper/60 transition-colors duration-300"
+            >
+              网站地图
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   )
 }
-
-export default Footer
