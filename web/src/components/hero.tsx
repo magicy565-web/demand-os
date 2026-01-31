@@ -83,7 +83,7 @@ export function Hero() {
               
               <div className="aspect-[4/3] relative border border-electric-blue/20 overflow-hidden bg-navy/40">
                 <Image
-                  src="/images/dashboard-preview.jpg"
+                  src="/images/demand-dashboard.jpg"
                   alt="Demand-OS Dashboard Preview"
                   fill
                   className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"

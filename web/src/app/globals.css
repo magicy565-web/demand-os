@@ -1,8 +1,7 @@
 /* McKinsey Portal v2.0 - Fixed */
-@import 'tailwindcss';
-@import 'tw-animate-css';
-
-@custom-variant dark (&:is(.dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* Digital Command Center Colors */
