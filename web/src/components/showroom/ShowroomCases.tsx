@@ -91,21 +91,8 @@ export function ShowroomCases() {
                   sizes="(max-width: 1024px) 100vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                {/* 渐变遮罩 */}
-                <div className={`absolute inset-0 bg-gradient-to-t ${belt.gradient} opacity-40 mix-blend-multiply`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                
-                {/* 地理标签 */}
-                <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                  <MapPin className="w-4 h-4 text-white" />
-                  <span className="text-sm font-medium text-white">{belt.location}</span>
-                </div>
-
-                {/* 增长标签 */}
-                <div className="absolute top-4 right-4 flex items-center gap-1 px-3 py-1.5 bg-green-500/20 backdrop-blur-md rounded-full border border-green-400/30">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  <span className="text-sm font-bold text-green-400">{belt.stats.growth}</span>
-                </div>
+                {/* 仅保留底部渐变 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
 
               {/* 内容区域 */}

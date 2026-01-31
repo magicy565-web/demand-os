@@ -25,7 +25,7 @@ export default function McKinseyNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
+    <nav className="sticky top-0 z-50 bg-gradient-to-r from-slate-50/95 via-white/95 to-slate-50/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

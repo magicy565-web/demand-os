@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
-import { ModeSwitch } from "@/components/ModeSwitch";
 import { GlobalNav } from "@/components/GlobalNav";
+import { Playfair_Display, Inter } from 'next/font/google'
 import "./globals.css";
+
+const playfair = Playfair_Display({ 
+  subsets: ["latin"],
+  variable: '--font-playfair',
+  weight: ['400', '500', '600']
+});
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: '--font-inter'
+});
 
 export const metadata: Metadata = {
   title: "Demand OS | 工业绿洲 - 全球需求实时对接",
@@ -24,8 +35,6 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className="antialiased min-h-screen">
-        {/* 全局模式切换导航 */}
-        <ModeSwitch />
         <GlobalNav />
         
         {/* 主内容区 */}

@@ -1,110 +1,89 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import Image from "next/image";
+import Link from "next/link"
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const footerLinks = {
+    Capabilities: [
+      { label: "战略咨询", href: "#strategy" },
+      { label: "运营赋能", href: "#operations" },
+    ],
+    Industries: [
+      { label: "消费电子", href: "#electronics" },
+      { label: "美妆个护", href: "#beauty" },
+    ],
+    Insights: [
+      { label: "全球贸易展望", href: "#outlook" },
+      { label: "研究报告", href: "#reports" },
+    ],
+    Company: [
+      { label: "关于我们", href: "#about" },
+      { label: "联系方式", href: "#contact" },
+    ],
+  }
 
   return (
-    <footer className="relative py-12 mt-16 border-t border-slate-200 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Logo & 描述 */}
-          <div className="md:col-span-2">
-            <Link href="/" className="inline-block mb-4">
-              <Image
-                src="/images/logo.png"
-                alt="Demand OS"
-                width={140}
-                height={40}
-                className="object-contain"
-              />
+    <footer className="bg-navy text-paper border-t border-paper/10">
+      <div className="container-editorial py-12 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 pb-12 lg:pb-16 border-b border-paper/10">
+          <div>
+            <Link href="/" className="inline-block mb-6">
+              <h2 className="heading-serif text-2xl lg:text-3xl text-paper">
+                鸿亿鸿
+              </h2>
             </Link>
-            <p className="text-slate-600 text-sm mb-4">
-              全球贸易操作系统 · 连接全球采购商与中国优质工厂
+            <p className="text-paper/70 text-base">
+              全球贸易操作系统。
             </p>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              系统正常运行中
-            </div>
           </div>
-
-          {/* 产品 */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 mb-4">产品</h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/console" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  控制台
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  定价方案
-                </Link>
-              </li>
-              <li>
-                <Link href="/membership" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  企业俱乐部
-                </Link>
-              </li>
-              <li>
-                <Link href="/logistics" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  物流网络
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* 服务 */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 mb-4">服务</h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/careers" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  招聘
-                </Link>
-              </li>
-              <li>
-                <Link href="/help" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  帮助中心
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  联系我们
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-slate-600 hover:text-[#00509d] transition-colors">
-                  关于我们
-                </Link>
-              </li>
-            </ul>
+          <div className="flex flex-col justify-end">
+            <h3 className="heading-serif text-xl mb-4">
+              订阅通讯
+            </h3>
+            <form className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                placeholder="your.email@company.com"
+                className="flex-1 px-4 py-3 bg-navy-light border border-paper/20 text-paper text-sm"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-cobalt text-navy font-bold uppercase text-sm"
+              >
+                订阅
+              </button>
+            </form>
           </div>
         </div>
-
-        {/* 底部版权 */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200">
-          <p className="text-xs text-slate-600">
-            © {currentYear} Demand OS. All rights reserved.
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 lg:py-16 border-b border-paper/10">
+          {Object.entries(footerLinks).map(([category, links]) => (
+            <div key={category}>
+              <h4 className="text-xs font-bold uppercase text-paper mb-4">
+                {category}
+              </h4>
+              <ul className="space-y-3">
+                {links.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-paper/70"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="py-8">
+          <p className="text-xs text-paper/50">
+            © 2024-2025 All rights reserved.
           </p>
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <Link href="/contact" className="text-xs text-slate-600 hover:text-[#00509d] transition-colors">
-              隐私政策
-            </Link>
-            <span className="text-xs text-slate-400">·</span>
-            <Link href="/contact" className="text-xs text-slate-600 hover:text-[#00509d] transition-colors">
-              服务条款
-            </Link>
-            <span className="text-xs text-slate-400">·</span>
-            <Link href="/contact" className="text-xs text-slate-600 hover:text-[#00509d] transition-colors">
-              联系我们
-            </Link>
-          </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
+
+export default Footer

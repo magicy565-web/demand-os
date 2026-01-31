@@ -2,7 +2,7 @@
 
 import McKinseyNav from "@/components/McKinseyNav";
 import McKinseyHero from "@/components/McKinseyHero";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
 import CommandPalette from "@/components/CommandPalette";

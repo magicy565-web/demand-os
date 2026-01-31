@@ -1,36 +1,25 @@
-"use client";
+'use client'
 
-import McKinseyNav from "@/components/McKinseyNav";
-import McKinseyHero from "@/components/McKinseyHero";
-import { Footer } from "@/components/Footer";
-import ScrollProgress from "@/components/ScrollProgress";
-import BackToTop from "@/components/BackToTop";
-import CommandPalette from "@/components/CommandPalette";
-import AIChatBot from "@/components/AIChatBot";
+import { Header } from '@/components/header'
+import { Hero } from '@/components/hero'
+import { BentoGrid } from '@/components/bento-grid'
+import { IndustryPractice } from '@/components/industry-practice'
+import { Framework } from '@/components/framework'
+import { Leadership } from '@/components/leadership'
+import { KnowledgeSection } from '@/components/knowledge-section'
+import { Footer } from '@/components/footer'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* 滚动进度条 */}
-      <ScrollProgress />
-
-      {/* 导航栏 */}
-      <McKinseyNav />
-
-      {/* Hero + Bento Grid */}
-      <McKinseyHero />
-
-      {/* 页脚 */}
+    <main className="min-h-screen bg-paper">
+      <Header />
+      <Hero />
+      <BentoGrid />
+      <IndustryPractice />
+      <Framework />
+      <Leadership />
+      <KnowledgeSection />
       <Footer />
-
-      {/* 返回顶部按钮 */}
-      <BackToTop />
-
-      {/* 命令面板 */}
-      <CommandPalette />
-
-      {/* AI 聊天机器人 */}
-      <AIChatBot />
-    </div>
-  );
+    </main>
+  )
 }
