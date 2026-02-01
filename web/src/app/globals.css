@@ -1,4 +1,4 @@
-﻿/* Demand-OS Professional Design System */
+﻿/* Demand-OS Design System */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,9 +35,6 @@
   --gray-200: #E5E7EB;
   --gray-300: #D1D5DB;
   --gray-400: #9CA3AF;
-  --accent-teal: #14B8A6;
-  --accent-purple: #8B5CF6;
-  --accent-pink: #EC4899;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,43 +52,16 @@
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  body {
-    @apply bg-white dark:bg-navy text-charcoal dark:text-slate-light;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white dark:bg-navy text-charcoal dark:text-slate-light; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif; }
 }
 
 @layer components {
-  .btn {
-    @apply px-6 py-2.5 rounded-lg font-medium transition-all cursor-pointer inline-flex items-center justify-center gap-2;
-  }
-
-  .btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700;
-  }
-
-  .btn-secondary {
-    @apply bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700;
-  }
-
-  .btn-gold {
-    @apply bg-yellow-600 text-white hover:bg-yellow-700;
-  }
-
-  .card {
-    @apply rounded-xl bg-white dark:bg-gray-900 transition-all;
-  }
-
-  .card-elevated {
-    @apply shadow-lg hover:shadow-xl;
-  }
-
-  .card-glass {
-    @apply backdrop-blur-md bg-white/80 dark:bg-gray-900/60;
-  }
+  .btn { @apply px-6 py-2.5 rounded-lg font-medium transition-all cursor-pointer; }
+  .btn-primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
+  .btn-secondary { @apply bg-gray-100 text-gray-900 hover:bg-gray-200; }
+  .btn-gold { @apply bg-yellow-600 text-white hover:bg-yellow-700; }
+  .card { @apply rounded-xl bg-white dark:bg-gray-900; }
+  .card-elevated { @apply shadow-lg hover:shadow-xl; }
+  .card-glass { @apply backdrop-blur-md bg-white/80 dark:bg-gray-900/60; }
 }
