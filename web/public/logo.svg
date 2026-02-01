@@ -1,0 +1,52 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define gradients -->
+  <defs>
+    <linearGradient id="navyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1729;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E293B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="white" stroke="url(#navyGradient)" stroke-width="2" filter="url(#shadow)"/>
+
+  <!-- Main geometric shape - abstract "OS" concept -->
+  <!-- Left circle (O) -->
+  <g filter="url(#shadow)">
+    <circle cx="65" cy="100" r="28" fill="none" stroke="url(#navyGradient)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right shape (S) - flowing curves -->
+  <g filter="url(#shadow)">
+    <!-- Top curve -->
+    <path d="M 130 75 Q 145 75 145 85 Q 145 95 130 95" fill="none" stroke="url(#blueGradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Middle bar -->
+    <line x1="120" y1="100" x2="150" y2="100" stroke="url(#blueGradient)" stroke-width="4" stroke-linecap="round"/>
+    <!-- Bottom curve -->
+    <path d="M 150 105 Q 145 105 145 115 Q 145 125 130 125" fill="none" stroke="url(#blueGradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Accent dots (technology indicator) -->
+  <circle cx="75" cy="65" r="3" fill="url(#blueGradient)"/>
+  <circle cx="125" cy="135" r="3" fill="url(#navyGradient)"/>
+
+  <!-- Bottom text -->
+  <text x="100" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#0F1729" letter-spacing="2">
+    DEMAND-OS
+  </text>
+</svg>

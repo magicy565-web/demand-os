@@ -12,7 +12,7 @@ export default function McKinseyNav() {
   const menuItems = [
     {
       label: "解决方案",
-      items: ["企业规划", "Demand-OS", "TikTok孵化器"],
+      items: ["企业规划", "Demand-OS"],
     },
     {
       label: "服务",

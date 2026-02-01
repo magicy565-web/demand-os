@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 
@@ -66,9 +67,15 @@ export function Footer() {
             <div className="lg:col-span-5">
               <Link
                 href="/"
-                className="inline-block text-2xl sm:text-3xl font-semibold text-white mb-4 sm:mb-6 hover:text-white/90 transition-colors touch-feedback"
+                className="inline-flex items-center gap-2 mb-4 sm:mb-6 hover:opacity-90 transition-opacity"
               >
-                鸿亿鸿
+                <Image 
+                  src="/images/logo.png" 
+                  alt="Demand-OS Logo" 
+                  width={80}
+                  height={80}
+                  className="h-20 w-20 object-contain"
+                />
               </Link>
               <p className="text-sm sm:text-base text-white/70 mb-6 sm:mb-8 max-w-md leading-relaxed chinese-text">
                 全球贸易操作系统。连接东方供应链与西方需求，为跨境电商企业提供战略级咨询服务。

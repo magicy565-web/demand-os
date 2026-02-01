@@ -1,0 +1,68 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <!-- 白色背景 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 波浪线条渐变 -->
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d0d7e6;stop-opacity:0.4" />
+      <stop offset="50%" style="stop-color:#8b93ad;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#d0d7e6;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1920" height="1080" fill="url(#bgGradient)"/>
+  
+  <!-- 顶部波浪组 - 精细波浪 -->
+  <path d="M0,150 Q480,80 960,150 T1920,150" 
+        stroke="url(#waveGradient)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M0,170 Q480,100 960,170 T1920,170" 
+        stroke="url(#waveGradient)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M0,190 Q480,120 960,190 T1920,190" 
+        stroke="url(#waveGradient)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.4"/>
+  
+  <!-- 中间波浪组 - 主体波浪 -->
+  <path d="M0,400 Q300,350 600,400 T1200,400 T1920,400" 
+        stroke="#a0aac4" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M0,450 Q300,400 600,450 T1200,450 T1920,450" 
+        stroke="#a0aac4" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M0,490 Q300,440 600,490 T1200,490 T1920,490" 
+        stroke="#a0aac4" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.3"/>
+  
+  <!-- 下部波浪组 - 轻盈波浪 -->
+  <path d="M0,750 Q400,700 800,750 T1600,750 T1920,750" 
+        stroke="url(#waveGradient)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M0,800 Q400,750 800,800 T1600,800 T1920,800" 
+        stroke="url(#waveGradient)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M0,840 Q400,790 800,840 T1600,840 T1920,840" 
+        stroke="url(#waveGradient)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.3"/>
+  
+  <!-- 竖向逻辑线条 - 象征连接和秩序 -->
+  <line x1="960" y1="50" x2="960" y2="1080" stroke="#d0d7e6" stroke-width="1" opacity="0.4"/>
+  <line x1="480" y1="50" x2="480" y2="1080" stroke="#d0d7e6" stroke-width="0.8" opacity="0.3"/>
+  <line x1="1440" y1="50" x2="1440" y2="1080" stroke="#d0d7e6" stroke-width="0.8" opacity="0.3"/>
+  
+  <!-- 点缀圆形节点 - 体现网络连接 -->
+  <circle cx="960" cy="300" r="3" fill="#8b93ad" opacity="0.4"/>
+  <circle cx="960" cy="540" r="3" fill="#8b93ad" opacity="0.5"/>
+  <circle cx="960" cy="780" r="3" fill="#8b93ad" opacity="0.4"/>
+  
+  <circle cx="480" cy="400" r="2" fill="#8b93ad" opacity="0.3"/>
+  <circle cx="1440" cy="650" r="2" fill="#8b93ad" opacity="0.3"/>
+  
+  <!-- 轻微的几何形状 - 强化逻辑感 -->
+  <path d="M200,250 L350,300 L300,450 L150,400 Z" 
+        fill="none" stroke="#d0d7e6" stroke-width="1" opacity="0.2"/>
+  <path d="M1570,600 L1720,650 L1670,800 L1520,750 Z" 
+        fill="none" stroke="#d0d7e6" stroke-width="1" opacity="0.2"/>
+  
+  <!-- 渐进式波浪 - 象征发展轨迹 -->
+  <path d="M100,200 Q200,180 300,220 Q400,260 500,200" 
+        stroke="#c5cde0" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M1420,900 Q1520,880 1620,920 Q1720,960 1820,900" 
+        stroke="#c5cde0" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>

@@ -12,7 +12,7 @@ import { Footer } from "@/components/layout/Footer"
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-gradient-to-b from-paper-mist via-surface to-paper-warm">
       <Header />
       <Hero />
       <DemandTicker />

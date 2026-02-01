@@ -1,17 +1,15 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronRight } from "lucide-react"
 
 const navItems = [
-  { label: "能力", href: "#capabilities" },
-  { label: "行业聚焦", href: "#industries" },
-  { label: "30天路径", href: "#timeline" },
   { label: "线上展会", href: "/webinar", isExternal: true },
+  { label: "数智产业园 OS", href: "/industrial-os", isExternal: true },
+  { label: "全球布局", href: "/global-trust", isExternal: true },
   { label: "Demand-OS", href: "/saas-home/demand-os", isExternal: true },
-  { label: "成功案例", href: "#stories" },
-  { label: "洞察", href: "#insights" },
 ]
 
 export function Header() {
@@ -40,17 +38,21 @@ export function Header() {
   }, [mobileMenuOpen])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-lg transition-shadow duration-300 ${scrolled ? "shadow-md" : "border-b border-gray-100"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl transition-all duration-300 ${scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"}`}>
       <div className="container-editorial safe-area-inset-left safe-area-inset-right">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo with Badge */}
           <div className="flex items-center gap-3 lg:gap-4">
-            <Link href="/" className="font-semibold text-lg lg:text-2xl text-navy tracking-tight hover:text-brand-blue transition-colors touch-feedback">
-              鸿亿鸿
+            <Link href="/" className="inline-flex items-center justify-center hover:opacity-80 transition-opacity">
+              <Image 
+                src="/images/logo.png" 
+                alt="Demand-OS Logo" 
+                width={56}
+                height={56}
+                className="h-14 w-14 lg:h-20 lg:w-20 object-contain"
+                priority
+              />
             </Link>
-            <span className="hidden lg:inline-flex badge badge-gold">
-              TikTok Shop Partner
-            </span>
           </div>
 
           {/* Desktop Navigation */}
@@ -65,16 +67,6 @@ export function Header() {
               </Link>
             ))}
           </nav>
-
-          {/* CTA Group */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Link href="#diagnosis" className="btn-primary btn-sm">
-              预约订单增长诊断
-            </Link>
-            <Link href="#login" className="btn-ghost btn-sm">
-              客户登录
-            </Link>
-          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -115,32 +107,6 @@ export function Header() {
               ))}
             </div>
             
-            {/* Mobile CTA Buttons */}
-            <div className="p-4 space-y-3 border-t border-gray-100 mt-2">
-              <Link
-                href="#diagnosis"
-                className="btn-primary w-full touch-feedback"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                预约订单增长诊断
-              </Link>
-              <Link
-                href="#login"
-                className="btn-ghost w-full touch-feedback"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                客户登录
-              </Link>
-            </div>
-            
-            {/* Mobile Badge */}
-            <div className="p-4 pt-0">
-              <div className="flex items-center justify-center gap-2 py-3 bg-paper-warm">
-                <span className="badge badge-gold text-xs">
-                  TikTok Shop 官方战略合作伙伴
-                </span>
-              </div>
-            </div>
           </nav>
         </div>
       )}

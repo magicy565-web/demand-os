@@ -40,6 +40,9 @@ const config: Config = {
   			'paper': 'var(--paper)',
   			'paper-warm': 'var(--paper-warm)',
   			'paper-cream': 'var(--paper-cream)',
+  			'paper-mist': 'var(--paper-mist)',
+  			'surface': 'var(--surface)',
+  			'surface-elevated': 'var(--surface-elevated)',
   			'charcoal': 'var(--charcoal)',
   			'slate': 'var(--slate)',
   			'slate-light': 'var(--slate-light)',
@@ -144,6 +147,25 @@ const config: Config = {
   				'monospace'
   			]
   		},
+  		boxShadow: {
+  			'xs': 'var(--shadow-xs)',
+  			'sm': 'var(--shadow-sm)',
+  			'md': 'var(--shadow-md)',
+  			'lg': 'var(--shadow-lg)',
+  			'xl': 'var(--shadow-xl)',
+  			'2xl': 'var(--shadow-2xl)',
+  			'inner': 'var(--shadow-inner)',
+  			'card': 'var(--shadow-sm)',
+  			'card-hover': 'var(--shadow-md)',
+  			'elevated': 'var(--shadow-lg)',
+  			'float': 'var(--shadow-xl)',
+  			'brand': 'var(--shadow-blue)',
+  			'accent': 'var(--shadow-gold)',
+  			'panel': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+  			'neon': '0 0 20px rgba(0, 255, 157, 0.4)',
+  			'neon-strong': '0 0 30px rgba(0, 255, 157, 0.6), 0 0 60px rgba(0, 255, 157, 0.3)',
+  			'cyber': '0 0 40px rgba(0, 243, 255, 0.3)'
+  		},
   		animation: {
   			'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
   			'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
@@ -215,14 +237,6 @@ const config: Config = {
   				}
   			}
   		},
-  		boxShadow: {
-  			'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-  			'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  			'panel': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-  			'neon': '0 0 20px rgba(0, 255, 157, 0.4)',
-  			'neon-strong': '0 0 30px rgba(0, 255, 157, 0.6), 0 0 60px rgba(0, 255, 157, 0.3)',
-  			'cyber': '0 0 40px rgba(0, 243, 255, 0.3)'
-  		},
   		backdropBlur: {
   			xs: '2px'
   		},
@@ -233,7 +247,7 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
-};
+  plugins: [require("tailwindcss-animate")]
+}
 
-export default config;
+export default config

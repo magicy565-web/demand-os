@@ -56,19 +56,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
+      {
         url: '/icon-light-32x32.png',
         media: '(prefers-color-scheme: light)',
+        sizes: '32x32',
       },
       {
         url: '/icon-dark-32x32.png',
         media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        sizes: '32x32',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: [
+      '/apple-icon.png',
+    ],
+    shortcut: '/favicon.svg',
   },
 }
 
@@ -80,7 +85,12 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="scroll-smooth">
       <head>
-        {/* 预连接字体服务 */}
+        {/* Manifest for PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        {/* Apple Web App */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        {/* Preconnect */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

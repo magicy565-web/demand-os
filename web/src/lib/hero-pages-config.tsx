@@ -178,10 +178,10 @@ export const heroPageConfigs: Record<string, HeroPageConfig> = {
     title: "孕育下一个畅销书",
     subtitle: "TikTok 产业联盟",
     description: "连接全球创作者、品牌与供应链，通过短视频电商赋能新品牌孵化，打造爆款产品。",
-    backgroundImage: "/images/tiktok-alliance-bg.jpg",
-    blurDataURL: generateBlurDataURL("#2d1b3d"),
+    backgroundImage: "/images/tiktok-alliance-bg.svg",
+    blurDataURL: generateBlurDataURL("#f8f9ff"),
     icon: <PlayCircle className="w-16 h-16" />,
-    variant: "dark",
+    variant: "light",
     accentColor: "#ff0050",
     stats: [
       { value: "500+", label: "孵化品牌" },
