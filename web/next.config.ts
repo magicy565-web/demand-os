@@ -4,9 +4,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   productionBrowserSourceMaps: false,
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
