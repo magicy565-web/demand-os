@@ -10,22 +10,54 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+  			// === Demand-OS Professional Color System ===
+  			// Primary Navy
+  			'navy': 'var(--navy)',
+  			'navy-light': 'var(--navy-light)',
+  			'navy-dark': 'var(--navy-dark)',
+  			
+  			// Brand Blue
+  			'brand-blue': 'var(--brand-blue)',
+  			'brand-blue-light': 'var(--brand-blue-light)',
+  			'brand-blue-dark': 'var(--brand-blue-dark)',
+  			'electric-blue': 'var(--electric-blue)',
+  			'sky-blue': 'var(--sky-blue)',
+  			
+  			// Gold Accent
+  			'gold': 'var(--gold)',
+  			'gold-light': 'var(--gold-light)',
+  			'gold-muted': 'var(--gold-muted)',
+  			'amber': 'var(--amber)',
+  			
+  			// Semantic
+  			'success': 'var(--success)',
+  			'success-light': 'var(--success-light)',
+  			'warning': 'var(--warning)',
+  			'error': 'var(--error)',
+  			'tiktok-red': 'var(--tiktok-red)',
+  			
+  			// Neutral
+  			'paper': 'var(--paper)',
+  			'paper-warm': 'var(--paper-warm)',
+  			'paper-cream': 'var(--paper-cream)',
+  			'charcoal': 'var(--charcoal)',
+  			'slate': 'var(--slate)',
+  			'slate-light': 'var(--slate-light)',
+  			
+  			// Accent
+  			'accent-teal': 'var(--accent-teal)',
+  			'accent-indigo': 'var(--accent-indigo)',
+  			'accent-purple': 'var(--accent-purple)',
+  			'cobalt': 'var(--cobalt)',
+  			'cobalt-muted': 'var(--cobalt-muted)',
+  			
+  			// Legacy colors (kept for backward compatibility)
   			'cyber-bg': '#020617',
   			'cyber-glass': 'rgba(2, 6, 23, 0.6)',
-  			'neon-primary': '#00ff9d',
-  			'neon-secondary': '#00f3ff',
-  			'neon-alert': '#ff0055',
-  			'neon-purple': '#a855f7',
-  			'neon-yellow': '#fbbf24',
-  			'corp-bg': '#f8fafc',
-  			'corp-surface': '#ffffff',
-  			'corp-border': '#e2e8f0',
-  			'corp-text-main': '#0f172a',
-  			'corp-text-sub': '#64748b',
-  			'corp-accent': '#2563eb',
-  			'corp-success': '#16a34a',
-  			'corp-warning': '#d97706',
-  			'corp-danger': '#dc2626',
+  			'cyber-blue': 'var(--brand-blue)',
+  			'cyber-pink': '#ff0055',
+  			'cyber-green': 'var(--success)',
+  			'cyber-yellow': '#fbbf24',
   			profit: '#22c55e',
   			loss: '#ef4444',
   			neutral: '#6b7280',

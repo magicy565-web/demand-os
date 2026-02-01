@@ -51,29 +51,29 @@ export function IndustryPractice() {
     <section id="industries" className="section-padding bg-paper">
       <div className="container-editorial">
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 lg:mb-16 gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14 lg:mb-20 gap-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Industry Practice</p>
-            <h2 className="heading-serif text-3xl md:text-4xl lg:text-5xl text-navy">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-4">Industry Practice</p>
+            <h2 className="heading-serif text-3xl md:text-4xl lg:text-5xl text-navy leading-tight">
               行业聚焦
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground max-w-md lg:text-right">
+          <p className="text-sm text-muted-foreground max-w-md lg:text-right leading-relaxed">
             我们深耕六大核心行业，以专业洞察与本土化经验助力您的全球化征程。
           </p>
         </div>
 
         {/* Industry Index List */}
-        <div className="border-t border-border">
+        <div className="border-t border-border/60">
           {industries.map((industry) => (
             <Link
               key={industry.id}
               href={`#industry-${industry.id}`}
-              className="group block border-b border-border py-6 lg:py-8 transition-colors duration-300 hover:bg-paper-warm"
+              className="group block border-b border-border/60 py-7 lg:py-9 transition-all duration-300 hover:bg-paper-warm hover:px-4 hover:-mx-4"
             >
-              <div className="flex items-center gap-4 lg:gap-8">
+              <div className="flex items-center gap-5 lg:gap-10">
                 {/* Index Number */}
-                <span className="heading-serif text-2xl lg:text-3xl text-navy/20 w-12 lg:w-16 shrink-0">
+                <span className="heading-serif text-2xl lg:text-4xl text-navy/15 group-hover:text-electric-blue/30 w-12 lg:w-20 shrink-0 transition-colors duration-300">
                   {industry.id}
                 </span>
 

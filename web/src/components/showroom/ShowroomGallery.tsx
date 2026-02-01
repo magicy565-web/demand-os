@@ -242,7 +242,7 @@ export function ShowroomGallery() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="relative max-w-5xl w-full"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <div className="relative aspect-[16/10] rounded-2xl overflow-hidden">
                 <Image

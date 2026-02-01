@@ -1,6 +1,6 @@
 "use client";
 
-import HeroPage from "@/components/HeroPage";
+import HeroPage from "@/components/pages/HeroPage";
 import { heroPageConfigs } from "@/lib/hero-pages-config";
 import { FloorGuide } from "@/components/showroom/FloorGuide";
 import { ShowroomCases } from "@/components/showroom/ShowroomCases";

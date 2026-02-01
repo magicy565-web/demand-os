@@ -1,6 +1,6 @@
 "use client";
 
-import HeroPage from "@/components/HeroPage";
+import HeroPage from "@/components/pages/HeroPage";
 import { heroPageConfigs } from "@/lib/hero-pages-config";
 
 export default function DemandOSPage() {

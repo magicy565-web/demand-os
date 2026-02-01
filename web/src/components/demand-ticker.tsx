@@ -18,12 +18,12 @@ export function DemandTicker() {
   const duplicatedUpdates = [...demandUpdates, ...demandUpdates]
 
   return (
-    <div className="relative overflow-hidden bg-navy/5 border-y border-border py-3">
+    <div className="relative overflow-hidden bg-gradient-to-r from-navy/[0.03] via-navy/[0.05] to-navy/[0.03] border-y border-border/50 py-4">
       <div className="container-editorial">
-        <div className="flex items-center gap-4">
-          <div className="flex-shrink-0 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-electric-blue rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <div className="flex items-center gap-6">
+          <div className="flex-shrink-0 flex items-center gap-2.5 pr-6 border-r border-border/50">
+            <div className="w-2 h-2 bg-electric-blue rounded-full animate-pulse shadow-md shadow-electric-blue/40" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-navy/60">
               实时需求
             </span>
           </div>

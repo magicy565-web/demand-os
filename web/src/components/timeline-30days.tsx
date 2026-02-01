@@ -41,18 +41,18 @@ const phases = [
 
 export function Timeline30Days() {
   return (
-    <section id="timeline" className="section-padding bg-paper-warm">
+    <section id="timeline" className="section-padding bg-gradient-to-b from-paper-warm to-paper">
       <div className="container-editorial">
-        <div className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest text-gold mb-4">
+        <div className="text-center mb-16 lg:mb-20">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold mb-5">
             30天出海成功路径
           </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-navy mb-6 text-balance">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-navy mb-8 text-balance leading-tight">
             从工厂到英国消费者，
             <br className="hidden md:block" />
             一个月内实现订单闭环
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             不是"试试看"，而是经过300+订单验证的确定性路径。
             <br className="hidden md:block" />
             每个阶段都有明确交付物，进度透明可控。
@@ -61,14 +61,14 @@ export function Timeline30Days() {
 
         <div className="relative">
           {/* Vertical timeline line */}
-          <div className="absolute left-8 md:left-12 top-0 bottom-0 w-px bg-border" />
+          <div className="absolute left-8 md:left-14 top-0 bottom-0 w-px bg-gradient-to-b from-navy/20 via-electric-blue/30 to-navy/20" />
           
-          <div className="space-y-12 lg:space-y-16">
+          <div className="space-y-14 lg:space-y-20">
             {phases.map((phase, index) => (
               <div key={index} className="relative">
                 {/* Phase number indicator */}
-                <div className="absolute left-0 top-0 flex items-center justify-center w-16 h-16 md:w-24 md:h-24 border-2 border-navy bg-paper">
-                  <span className="text-2xl md:text-4xl font-serif text-navy">
+                <div className="absolute left-0 top-0 flex items-center justify-center w-16 h-16 md:w-28 md:h-28 border-2 border-navy/80 bg-paper shadow-lg shadow-navy/5">
+                  <span className="text-3xl md:text-5xl font-serif text-navy">
                     {phase.phase}
                   </span>
                 </div>

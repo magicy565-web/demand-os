@@ -26,8 +26,6 @@ import RegionPieChart from "@/components/charts/RegionPieChart";
 import UrgencyBarChart from "@/components/charts/UrgencyBarChart";
 import ProfitGauge from "@/components/charts/ProfitGauge";
 import LiveDataFeed from "@/components/charts/LiveDataFeed";
-import AIRecommendation from "@/components/AIRecommendation";
-import AIChatBot from "@/components/AIChatBot";
 
 export default function ConsolePage() {
   const [liveData, setLiveData] = useState({
@@ -365,7 +363,7 @@ export default function ConsolePage() {
           </motion.div>
         </div>
 
-        {/* AI Recommendation Section */}
+        {/* AI Recommendation Placeholder - Feature Coming Soon */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -373,12 +371,11 @@ export default function ConsolePage() {
           className="mt-8"
         >
           <h2 className="text-2xl font-bold text-slate-900 mb-6">AI 智能匹配</h2>
-          <AIRecommendation />
+          <div className="bg-paper-warm border border-border p-8 text-center">
+            <p className="text-muted-foreground">AI 智能匹配功能即将上线</p>
+          </div>
         </motion.div>
       </div>
-
-      {/* AI Chat Bot */}
-      <AIChatBot />
     </div>
   );
 }

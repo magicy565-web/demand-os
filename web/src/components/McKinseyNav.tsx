@@ -76,7 +76,7 @@ export default function McKinseyNav() {
             {/* CTA Button */}
             <Link
               href="/console"
-              className="px-6 py-2 bg-[#051c2c] text-white rounded-sm hover:bg-[#00509d] transition font-medium"
+              className="px-6 py-2 bg-[#00D9FF] text-[#002147] rounded-sm hover:bg-[#00B8D4] transition font-medium"
             >
               控制台登录
             </Link>
@@ -116,7 +116,7 @@ export default function McKinseyNav() {
             ))}
             <Link
               href="/console"
-              className="block mx-4 px-6 py-2 bg-[#051c2c] text-white text-center rounded-sm"
+              className="block mx-4 px-6 py-2 bg-[#00D9FF] text-[#002147] text-center rounded-sm hover:bg-[#00B8D4] transition font-medium"
             >
               控制台登录
             </Link>

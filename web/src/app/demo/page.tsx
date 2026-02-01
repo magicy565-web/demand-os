@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { DemandWaterfallEnhanced } from "@/components/DemandWaterfallEnhanced";
-import { ParticleBackground } from "@/components/ParticleBackground";
+import { DemandWaterfallEnhanced } from "@/components/features/DemandWaterfallEnhanced";
+// import { ParticleBackground } from "@/components/ParticleBackground"; // 暂时禁用，缺少tsparticles依赖
 import { 
   Activity, 
   TrendingUp, 
@@ -25,8 +25,8 @@ export default function DemandOSDemoPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e27] via-[#16213e] to-[#0f1419] relative overflow-hidden">
-      {/* 粒子背景 */}
-      <ParticleBackground />
+      {/* 粒子背景 - 已禁用 */}
+      {/* <ParticleBackground /> */}
 
       {/* 顶部悬浮状态栏 */}
       <motion.div

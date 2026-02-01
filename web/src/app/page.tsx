@@ -1,14 +1,14 @@
-import { Header } from "@/components/header"
-import { Hero } from "@/components/hero"
+import { Header } from "@/components/layout/header"
+import { Hero } from "@/components/pages/hero"
 import { DemandTicker } from "@/components/demand-ticker"
-import { DashboardPreview } from "@/components/dashboard-preview"
+import { DashboardPreview } from "@/components/features/dashboard-preview"
 import { IndustryPractice } from "@/components/industry-practice"
 import { Timeline30Days } from "@/components/timeline-30days"
 import { FactoryEmpowerment } from "@/components/factory-empowerment"
 import { PricingModel } from "@/components/pricing-model"
-import { Leadership } from "@/components/leadership"
-import { KnowledgeSection } from "@/components/knowledge-section"
-import { Footer } from "@/components/footer"
+import { Leadership } from "@/components/features/leadership"
+import { KnowledgeSection } from "@/components/features/knowledge-section"
+import { Footer } from "@/components/layout/Footer"
 
 export default function Home() {
   return (
