@@ -1,7 +1,7 @@
 'use client'
 
 import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
+import { Footer } from "@/components/layout/Footer"
 import PageHero from '@/components/global-trust-components/page-hero'
 import GlobalPresence from '@/components/global-trust-components/global-presence'
 import PartnerLogos from '@/components/global-trust-components/partner-logos'
