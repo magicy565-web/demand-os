@@ -29,6 +29,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { AutoRequestResponse, ChatStatus, ProductMatch } from "@/types/auto-request";
+import MemberList from "./MemberList";
+import { WelcomeCard } from "./WelcomeCard";
+import { channelWelcomeConfigs } from "@/lib/channelWelcomeConfig";
 
 interface Message {
   id: string;
@@ -53,132 +56,7 @@ export default function AutoRequestChatArea({
   channelName,
   channelDescription,
 }: AutoRequestChatAreaProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      user: { name: "Demand-OS Bot", isBot: true, botTag: "APP" },
-      content: `# AI Auto-Request Channel ⚡ [BETA]
-
-## 🤖 Next-Gen Conversational Sourcing
-
-**AI Auto-Request** uses advanced natural language processing to understand your sourcing needs and automatically take action - no forms, no templates, just conversation.
-
----
-
-## 🎯 How It Works
-
-### **Step 1: Describe in Natural Language**
-Talk to the AI like you would to a sourcing agent:
-• No rigid formats or templates
-• Use everyday language
-• Be as detailed or brief as you like
-
-### **Step 2: AI Understanding**
-Our AI analyzes your message and extracts:
-• 📦 **Product type** & specifications
-• 🔢 **Quantity** requirements
-• 💰 **Budget** constraints
-• ⏰ **Timeline** expectations
-• 🌍 **Destination** & shipping preferences
-• ✅ **Quality standards** & certifications
-
-### **Step 3: Smart Decision**
-AI automatically decides:
-
-**🚀 Auto-Source (Instant)**
-• Clear, straightforward requests
-• Standard products with known specs
-• AI matches suppliers immediately
-• You get results in <2 minutes
-
-**📝 Manual Ticket (Expert Review)**
-• Complex or custom requirements
-• High-value orders requiring negotiation
-• Special certifications or compliance
-• Sourcing team provides personalized service
-
----
-
-## 💡 Example Conversations
-
-### **Simple Request (Auto-Sourced)**
-\`\`\`
-👤 "Need 10,000 eco-friendly tote bags for a marketing campaign, budget around $2-3 each, delivery to NYC in 6 weeks"
-
-🤖 "Got it! Searching for eco-friendly tote bags..."
-   ✅ Found 8 verified suppliers
-   💰 Price range: $1.80 - $3.20/unit
-   🚚 Lead time: 25-35 days
-   [View Matches]
-\`\`\`
-
-### **Complex Request (Manual Ticket)**
-\`\`\`
-👤 "Looking for a factory to manufacture custom IoT sensors with BLE 5.0, need FDA compliance for medical use, around 50K units over next year"
-
-🤖 "This requires expert attention due to:"
-   • Medical device compliance (FDA)
-   • Custom IoT development
-   • Long-term supply agreement
-   
-   📋 Created Ticket #TR-7834
-   🧑‍💼 Assigned to: Senior Sourcing Manager
-   ⏱️ Response time: Within 4 hours
-\`\`\`
-
----
-
-## 🌟 Key Advantages
-
-✅ **No Learning Curve:** Just type naturally
-✅ **Smart Routing:** AI knows when to auto-process vs. escalate
-✅ **24/7 Available:** AI never sleeps
-✅ **Context Aware:** Remembers your previous requests
-✅ **Multi-Language:** English, Chinese, Spanish, and more
-
----
-
-## 📊 Beta Performance Stats
-
-• ⚡ **Auto-Source Rate:** 67% of requests
-• 🎯 **Match Accuracy:** 91%
-• ⏱️ **Average Response:** 1.8 minutes (auto), 3.2 hours (manual)
-• ⭐ **User Satisfaction:** 4.6/5
-
----
-
-## 🔧 Beta Limitations
-
-⚠️ **Currently Learning:**
-• Extremely niche or rare products may require manual review
-• Complex multi-component BOMs need human verification
-• Certain regulated industries (medical, aerospace) auto-route to experts
-
----
-
-## 💬 What to Include in Your Message
-
-**Recommended Info:**
-• ✅ Product description (the more specific, the better)
-• ✅ Quantity (even approximate)
-• ✅ Budget range (helps filter suppliers)
-• ✅ Timeline (urgent? flexible?)
-• ✅ Destination (for shipping calculations)
-
-**Nice to Have:**
-• 🎨 Color/design preferences
-• 📜 Certifications needed
-• 🏷️ Branding/customization requirements
-• 📦 Packaging preferences
-
----
-
-**Ready to try?** Just type your sourcing need below! 🚀
-
-_Note: This is a beta feature. We're constantly improving based on your feedback!_`,
-      timestamp: getCurrentTimestamp(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<ChatStatus>("idle");
@@ -384,6 +262,11 @@ _Note: This is a beta feature. We're constantly improving based on your feedback
               </>
             )}
           </motion.div>
+        )}
+
+        {/* 欢迎卡片 - 放在所有消息前面 */}
+        {channelWelcomeConfigs["ai-auto-request"] && (
+          <WelcomeCard {...channelWelcomeConfigs["ai-auto-request"]} />
         )}
 
         {messages.map((message) => (

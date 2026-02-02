@@ -35,6 +35,8 @@ import {
   Globe,
 } from "lucide-react";
 import MemberList from "./MemberList";
+import { WelcomeCard } from "./WelcomeCard";
+import { channelWelcomeConfigs } from "@/lib/channelWelcomeConfig";
 
 interface Message {
   id: string;
@@ -73,80 +75,6 @@ const getCurrentTimestamp = (): string => {
 
 // 预设的对话消息
 const initialMessages: Message[] = [
-  {
-    id: "welcome",
-    user: { name: "Demand-OS Bot", isBot: true, botTag: "APP" },
-    content: `# Welcome to Quick RFQ Channel 📋
-
-## 🎯 What is Quick RFQ?
-
-**Quick RFQ (Request for Quotation)** is your fast-track sourcing solution. Submit your requirements and get AI-matched supplier quotations within minutes.
-
----
-
-## 🚀 How It Works
-
-### **Step 1: Submit Requirements**
-Describe your product needs in natural language:
-- Product category & specifications
-- Order quantity (MOQ considerations)
-- Target unit price range
-- Required delivery timeline
-- Quality certifications needed
-
-### **Step 2: AI Processing**
-Our AI analyzes your requirements and:
-- ✅ Matches qualified suppliers from our verified database
-- ✅ Evaluates supplier capabilities & certifications
-- ✅ Ranks by relevance, pricing, and reliability
-
-### **Step 3: Receive Quotations**
-Get instant supplier cards showing:
-- Company profile & verification status
-- Price range & MOQ
-- Production capacity
-- Certifications (ISO, CE, FCC, etc.)
-- Lead time & shipping options
-
-### **Step 4: Connect Directly**
-Click to connect with suppliers via:
-- Direct messaging
-- WhatsApp/WeChat
-- Email
-
----
-
-## 💡 Example RFQ Format
-
-\`\`\`
-"Need 5,000 wireless earbuds with ANC (Active Noise Cancellation)
-Budget: $8-12 per unit
-Delivery: Within 45 days
-Certifications: CE, FCC required
-Destination: Los Angeles, USA"
-\`\`\`
-
----
-
-## 📊 Success Rate
-
-- ⚡ **Average Response Time:** 8 minutes
-- 🏭 **Supplier Match Rate:** 94%
-- ✅ **Quote Accuracy:** 98%
-- 🌍 **Countries Covered:** 50+
-
----
-
-**Ready to start?** Type your RFQ below! 👇`,
-    timestamp: "Today at 09:00 AM",
-    embed: {
-      type: "info",
-      title: "📸 Quick RFQ Workflow",
-      description: "Visual guide showing the complete RFQ process from submission to supplier connection",
-      footer: "💡 Tip: Be specific about quantities and timelines for better matches",
-      color: "#5865F2"
-    }
-  },
   {
     id: "msg-1",
     user: { name: "Alex Thompson" },
@@ -350,6 +278,11 @@ export default function QuickRFQChatArea({
         {/* 消息区域 */}
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            {/* 欢迎卡片 */}
+            {channelWelcomeConfigs["quick-rfq"] && (
+              <WelcomeCard {...channelWelcomeConfigs["quick-rfq"]} />
+            )}
+            
             {messages.map((message) => (
               <MessageRow key={message.id} message={message} />
             ))}
