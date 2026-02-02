@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/header"
 import { Hero } from "@/components/pages/hero"
 import { DemandTicker } from "@/components/demand-ticker"
-import { DashboardPreview } from "@/components/features/dashboard-preview"
+import { RealTimeOverseasServices } from "@/components/features/real-time-overseas-services"
 import { IndustryPractice } from "@/components/industry-practice"
 import { Timeline30Days } from "@/components/timeline-30days"
 import { FactoryEmpowerment } from "@/components/factory-empowerment"
@@ -16,7 +16,7 @@ export default function Home() {
       <Header />
       <Hero />
       <DemandTicker />
-      <DashboardPreview />
+      <RealTimeOverseasServices />
       <IndustryPractice />
       <Timeline30Days />
       <FactoryEmpowerment />
