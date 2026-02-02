@@ -37,6 +37,7 @@ import {
 import MemberList from "./MemberList";
 import { WelcomeCard } from "./WelcomeCard";
 import { channelWelcomeConfigs } from "@/lib/channelWelcomeConfig";
+import { DemoMessage, demoScenarios, getCurrentTimestamp as getDemoTimestamp } from "@/lib/liveDemoData";
 
 interface Message {
   id: string;
@@ -182,7 +183,11 @@ export default function QuickRFQChatArea({
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showMemberList, setShowMemberList] = useState(true);
+  const [isLiveDemoPlaying, setIsLiveDemoPlaying] = useState(true);
+  const [currentDemoStep, setCurrentDemoStep] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -191,6 +196,47 @@ export default function QuickRFQChatArea({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // 实时演示逻辑
+  useEffect(() => {
+    if (!isLiveDemoPlaying) {
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+      return;
+    }
+
+    const quickRfqScenario = demoScenarios.find((s) => s.id === "quick-rfq");
+    if (!quickRfqScenario || currentDemoStep >= quickRfqScenario.messages.length) {
+      return;
+    }
+
+    const currentMessage = quickRfqScenario.messages[currentDemoStep];
+    const delay = currentMessage.delay || 1000;
+
+    demoTimeoutRef.current = setTimeout(() => {
+      const newMessage: Message = {
+        id: currentMessage.id,
+        user: currentMessage.user,
+        content: currentMessage.content,
+        timestamp: getDemoTimestamp(),
+        embed: currentMessage.embed as any,
+        reactions: currentMessage.reactions,
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+
+      setTimeout(() => {
+        setCurrentDemoStep((prev) => prev + 1);
+      }, 500);
+    }, delay);
+
+    return () => {
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+    };
+  }, [isLiveDemoPlaying, currentDemoStep]);
 
   const handleSend = async () => {
     if (!inputValue.trim() || isProcessing) return;

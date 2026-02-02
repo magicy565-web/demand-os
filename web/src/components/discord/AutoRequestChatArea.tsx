@@ -32,6 +32,7 @@ import { AutoRequestResponse, ChatStatus, ProductMatch } from "@/types/auto-requ
 import MemberList from "./MemberList";
 import { WelcomeCard } from "./WelcomeCard";
 import { channelWelcomeConfigs } from "@/lib/channelWelcomeConfig";
+import { demoScenarios, getCurrentTimestamp as getDemoTimestamp } from "@/lib/liveDemoData";
 
 interface Message {
   id: string;
@@ -60,7 +61,10 @@ export default function AutoRequestChatArea({
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<ChatStatus>("idle");
+  const [isLiveDemoPlaying, setIsLiveDemoPlaying] = useState(true);
+  const [currentDemoStep, setCurrentDemoStep] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,6 +73,46 @@ export default function AutoRequestChatArea({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // 实时演示逻辑
+  useEffect(() => {
+    if (!isLiveDemoPlaying) {
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+      return;
+    }
+
+    // 使用自动寻源演示场景
+    const autoRequestScenario = demoScenarios.find((s) => s.id === "sample-order");
+    if (!autoRequestScenario || currentDemoStep >= autoRequestScenario.messages.length) {
+      return;
+    }
+
+    const currentMessage = autoRequestScenario.messages[currentDemoStep];
+    const delay = currentMessage.delay || 1000;
+
+    demoTimeoutRef.current = setTimeout(() => {
+      const newMessage: Message = {
+        id: currentMessage.id,
+        user: currentMessage.user,
+        content: currentMessage.content,
+        timestamp: getDemoTimestamp(),
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+
+      setTimeout(() => {
+        setCurrentDemoStep((prev) => prev + 1);
+      }, 500);
+    }, delay);
+
+    return () => {
+      if (demoTimeoutRef.current) {
+        clearTimeout(demoTimeoutRef.current);
+      }
+    };
+  }, [isLiveDemoPlaying, currentDemoStep]);
 
   const handleSend = async () => {
     if (!inputValue.trim() || isProcessing) return;
