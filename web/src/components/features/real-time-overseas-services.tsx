@@ -42,12 +42,12 @@ export function RealTimeOverseasServices() {
                 playsInline
                 controls={false}
                 className="w-full h-full object-cover"
-                poster="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/video-poster.gif"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23000' width='16' height='9'/%3E%3Cpath fill='%23fff' d='M6.5 3L10.5 6l-4 3V3z'/%3E%3C/svg%3E"
                 onEnded={handleVideoEnded}
                 onPause={handleVideoPause}
               >
                 <source
-                  src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
+                  src="https://www.w3schools.com/html/mov_bbb.mp4"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
