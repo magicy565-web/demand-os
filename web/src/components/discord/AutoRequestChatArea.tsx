@@ -63,8 +63,10 @@ export default function AutoRequestChatArea({
   const [currentStatus, setCurrentStatus] = useState<ChatStatus>("idle");
   const [isLiveDemoPlaying, setIsLiveDemoPlaying] = useState(true);
   const [currentDemoStep, setCurrentDemoStep] = useState(0);
+  const [demoStarted, setDemoStarted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const initialDelayRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,9 +76,32 @@ export default function AutoRequestChatArea({
     scrollToBottom();
   }, [messages]);
 
-  // 实时演示逻辑
+  // 初始延迟逻辑：30秒后才开始演示
   useEffect(() => {
     if (!isLiveDemoPlaying) {
+      setDemoStarted(false);
+      return;
+    }
+
+    if (demoStarted) {
+      return;
+    }
+
+    // 30秒后开始演示
+    initialDelayRef.current = setTimeout(() => {
+      setDemoStarted(true);
+    }, 30000);
+
+    return () => {
+      if (initialDelayRef.current) {
+        clearTimeout(initialDelayRef.current);
+      }
+    };
+  }, [isLiveDemoPlaying, demoStarted]);
+
+  // 实时演示逻辑
+  useEffect(() => {
+    if (!isLiveDemoPlaying || !demoStarted) {
       if (demoTimeoutRef.current) {
         clearTimeout(demoTimeoutRef.current);
       }
@@ -112,7 +137,7 @@ export default function AutoRequestChatArea({
         clearTimeout(demoTimeoutRef.current);
       }
     };
-  }, [isLiveDemoPlaying, currentDemoStep]);
+  }, [isLiveDemoPlaying, demoStarted, currentDemoStep]);
 
   const handleSend = async () => {
     if (!inputValue.trim() || isProcessing) return;

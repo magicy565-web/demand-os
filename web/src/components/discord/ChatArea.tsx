@@ -133,11 +133,13 @@ export default function ChatArea({
   const [showMemberList, setShowMemberList] = useState(true);
   const [currentDemoStep, setCurrentDemoStep] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const [demoStarted, setDemoStarted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // 容器引用：用于在切换频道时滚动到顶部
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const initialDelayRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -158,9 +160,32 @@ export default function ChatArea({
     }
   }, [channelName]);
 
+  // 初始延迟逻辑：30秒后才开始演示
+  useEffect(() => {
+    if (!isLiveDemoPlaying) {
+      setDemoStarted(false);
+      return;
+    }
+
+    if (demoStarted) {
+      return;
+    }
+
+    // 30秒后开始演示
+    initialDelayRef.current = setTimeout(() => {
+      setDemoStarted(true);
+    }, 30000);
+
+    return () => {
+      if (initialDelayRef.current) {
+        clearTimeout(initialDelayRef.current);
+      }
+    };
+  }, [isLiveDemoPlaying, demoStarted]);
+
   // 实时演示逻辑
   useEffect(() => {
-    if (!isLiveDemoPlaying || liveDemoMessages.length === 0) {
+    if (!isLiveDemoPlaying || !demoStarted || liveDemoMessages.length === 0) {
       // 清理定时器
       if (demoTimeoutRef.current) {
         clearTimeout(demoTimeoutRef.current);
@@ -204,7 +229,7 @@ export default function ChatArea({
         clearTimeout(demoTimeoutRef.current);
       }
     };
-  }, [isLiveDemoPlaying, currentDemoStep, liveDemoMessages, onDemoComplete]);
+  }, [isLiveDemoPlaying, demoStarted, currentDemoStep, liveDemoMessages, onDemoComplete]);
 
   // 重置演示
   useEffect(() => {
