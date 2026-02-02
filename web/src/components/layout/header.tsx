@@ -38,7 +38,7 @@ export function Header() {
   }, [mobileMenuOpen])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl transition-all duration-300 ${scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[999] bg-white/95 backdrop-blur-xl transition-all duration-300 ${scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"}`}>
       <div className="container-editorial safe-area-inset-left safe-area-inset-right">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo with Badge */}
@@ -83,15 +83,20 @@ export function Header() {
 
       {/* Mobile Navigation Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-40">
+        <div className="lg:hidden fixed inset-0 top-16 z-[100]">
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
             onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
           />
           
           {/* Navigation Panel */}
-          <nav className="relative bg-white h-full overflow-y-auto safe-area-inset-bottom">
+          <nav 
+            className="relative bg-white h-full overflow-y-auto safe-area-inset-bottom shadow-2xl animate-slide-in-from-top"
+            role="navigation"
+            aria-label="移动端主导航"
+          >
             <div className="py-2">
               {navItems.map((item, index) => (
                 <Link
@@ -101,7 +106,7 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <span className="flex-1 text-charcoal">{item.label}</span>
+                  <span className="flex-1 text-charcoal font-medium">{item.label}</span>
                   <ChevronRight className="w-5 h-5 text-slate-light" />
                 </Link>
               ))}

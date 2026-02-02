@@ -25,7 +25,7 @@ export default function McKinseyNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-gradient-to-r from-slate-50/95 via-white/95 to-slate-50/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+    <nav className="sticky top-0 z-[999] bg-gradient-to-r from-slate-50/95 via-white/95 to-slate-50/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -97,29 +97,33 @@ export default function McKinseyNav() {
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="md:hidden py-4 border-t border-slate-200">
-            {menuItems.map((menu) => (
-              <div key={menu.label} className="mb-4">
-                <p className="px-4 py-2 text-sm font-bold text-slate-900">
-                  {menu.label}
-                </p>
-                {menu.items.map((item) => (
-                  <Link
-                    key={item}
-                    href="#"
-                    className="block px-6 py-2 text-sm text-slate-600 hover:text-[#00509d]"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            ))}
-            <Link
-              href="/console"
-              className="block mx-4 px-6 py-2 bg-[#00D9FF] text-[#002147] text-center rounded-sm hover:bg-[#00B8D4] transition font-medium"
-            >
-              控制台登录
-            </Link>
+          <div className="md:hidden fixed inset-x-0 top-16 z-[100] bg-white border-t border-slate-200 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto animate-slide-in-from-top">
+            <div className="py-4 safe-area-inset-bottom">
+              {menuItems.map((menu) => (
+                <div key={menu.label} className="mb-4">
+                  <p className="px-4 py-2 text-sm font-bold text-slate-900">
+                    {menu.label}
+                  </p>
+                  {menu.items.map((item) => (
+                    <Link
+                      key={item}
+                      href="#"
+                      className="block px-6 py-3 text-sm text-slate-600 hover:text-[#00509d] hover:bg-slate-50 transition-colors touch-feedback"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+              <Link
+                href="/console"
+                className="block mx-4 mt-4 px-6 py-3 bg-[#00D9FF] text-[#002147] text-center rounded-sm hover:bg-[#00B8D4] transition font-medium touch-target"
+                onClick={() => setMobileOpen(false)}
+              >
+                控制台登录
+              </Link>
+            </div>
           </div>
         )}
       </div>

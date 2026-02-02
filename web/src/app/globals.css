@@ -891,6 +891,26 @@
   }
 }
 
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes typewriter {
   from { width: 0; }
   to { width: 100%; }
@@ -919,6 +939,14 @@
 
 .animate-slide-in-right {
   animation: slide-in-right 0.5s ease-out forwards;
+}
+
+.animate-slide-in-from-top {
+  animation: slide-in-from-top 0.3s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
 }
 
 .animate-typewriter {
@@ -1160,7 +1188,7 @@
     inset: 0;
     top: 64px;
     background: white;
-    z-index: 40;
+    z-index: 100;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1168,16 +1196,23 @@
   .mobile-nav-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     min-height: 56px;
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: 500;
+    color: var(--charcoal);
     border-bottom: 1px solid var(--border-light);
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    animation: slide-in-from-top 0.3s ease-out forwards;
   }
   
   .mobile-nav-item:active {
     background-color: var(--paper-warm);
+  }
+  
+  .mobile-nav-item:hover {
+    background-color: var(--paper-cream);
   }
 }
 
@@ -1375,5 +1410,180 @@
   
   .mobile-nav-item:active {
     background-color: var(--navy-light);
+  }
+}
+
+/* ===== 移动端专属优化增强 ===== */
+
+/* 移动端导航栏固定高度 */
+@media (max-width: 768px) {
+  header {
+    min-height: 64px;
+  }
+  
+  /* 防止移动端菜单内容溢出 */
+  .mobile-menu-wrapper {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 移动端按钮点击反馈优化 */
+@media (max-width: 768px) {
+  button,
+  a,
+  .clickable {
+    -webkit-tap-highlight-color: rgba(37, 99, 235, 0.1);
+  }
+  
+  /* 移动端菜单按钮增强 */
+  .menu-button {
+    position: relative;
+    z-index: 1000;
+  }
+}
+
+/* 移动端导航层级优化 */
+@media (max-width: 1024px) {
+  /* 确保移动端菜单在所有内容之上 */
+  .mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+  }
+  
+  .mobile-menu-panel {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+    background: white;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 移动端滚动优化 */
+@media (max-width: 768px) {
+  /* 防止橡皮筋效果 */
+  body {
+    overscroll-behavior-y: none;
+  }
+  
+  /* 固定导航栏时的body padding */
+  body.nav-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+}
+
+/* 移动端文字选择优化 */
+@media (max-width: 768px) {
+  /* 导航项不允许选择文字 */
+  .mobile-nav-item,
+  button,
+  .btn-primary,
+  .btn-secondary {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* 移动端卡片交互优化 */
+@media (max-width: 768px) {
+  .card-interactive {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .card-interactive:active {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+}
+
+/* 移动端间距优化 */
+@media (max-width: 640px) {
+  /* 节间距优化 */
+  .section-mobile {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* 移动端图片优化 */
+@media (max-width: 768px) {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* 禁用图片拖拽 */
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+}
+
+/* 移动端表单优化 */
+@media (max-width: 768px) {
+  /* 表单元素全宽 */
+  .form-mobile input,
+  .form-mobile textarea,
+  .form-mobile select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* iOS特定优化 */
+@supports (-webkit-touch-callout: none) {
+  /* iOS安全区域适配 */
+  .ios-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .ios-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* iOS input zoom fix */
+  @media (max-width: 768px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* Android特定优化 */
+@media (max-width: 768px) {
+  /* Android点击延迟消除 */
+  a,
+  button,
+  input,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* 移动端性能优化 */
+@media (max-width: 768px) {
+  /* 使用transform代替position改变 */
+  .optimized-animation {
+    will-change: transform, opacity;
+  }
+  
+  /* 减少不必要的重绘 */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 }
