@@ -134,6 +134,8 @@ export default function ChatArea({
   const [currentDemoStep, setCurrentDemoStep] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // 容器引用：用于在切换频道时滚动到顶部
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const demoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -144,6 +146,17 @@ export default function ChatArea({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // 切换频道时滚动到内容顶部
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      try {
+        messagesContainerRef.current.scrollTo({ top: 0, behavior: "auto" });
+      } catch (e) {
+        messagesContainerRef.current.scrollTop = 0;
+      }
+    }
+  }, [channelName]);
 
   // 实时演示逻辑
   useEffect(() => {
@@ -167,88 +180,28 @@ export default function ChatArea({
     const currentMessage = liveDemoMessages[currentDemoStep];
     const delay = currentMessage.delay || 1000;
 
-    // 延迟后开始处理消息
+    // 延迟后直接添加完整消息（已移除打字机效果）
     demoTimeoutRef.current = setTimeout(() => {
-      if (currentMessage.typingDuration && currentMessage.typingDuration > 0) {
-        // 显示打字中状态
-        const typingMessage: Message = {
-          id: `typing-${currentDemoStep}`,
-          user: currentMessage.user,
-          content: "",
-          timestamp: getCurrentTimestamp(),
-          isTyping: true,
-          typingText: "",
-        };
-        
-        setMessages(prev => [...prev, typingMessage]);
-        setIsTyping(true);
+      const newMessage: Message = {
+        id: currentMessage.id,
+        user: currentMessage.user,
+        content: currentMessage.content,
+        timestamp: getCurrentTimestamp(),
+        embed: currentMessage.embed,
+        reactions: currentMessage.reactions,
+      };
 
-        // 打字效果
-        const chars = currentMessage.content.split("");
-        let currentIndex = 0;
-        const charsPerTick = Math.max(1, Math.floor(chars.length / (currentMessage.typingDuration / 50)));
+      setMessages(prev => [...prev, newMessage]);
 
-        const typingInterval = setInterval(() => {
-          currentIndex += charsPerTick;
-          if (currentIndex >= chars.length) {
-            currentIndex = chars.length;
-            clearInterval(typingInterval);
-            
-            // 打字完成，添加完整消息
-            setMessages(prev => {
-              const filtered = prev.filter(m => m.id !== `typing-${currentDemoStep}`);
-              return [...filtered, {
-                id: currentMessage.id,
-                user: currentMessage.user,
-                content: currentMessage.content,
-                timestamp: getCurrentTimestamp(),
-                embed: currentMessage.embed,
-                reactions: currentMessage.reactions,
-              }];
-            });
-            setIsTyping(false);
-            
-            // 移动到下一步
-            setTimeout(() => {
-              setCurrentDemoStep(prev => prev + 1);
-            }, 500);
-          } else {
-            // 更新打字内容
-            setMessages(prev => prev.map(m => 
-              m.id === `typing-${currentDemoStep}` 
-                ? { ...m, typingText: chars.slice(0, currentIndex).join("") }
-                : m
-            ));
-          }
-        }, 50);
-
-        typingTimeoutRef.current = typingInterval as any;
-      } else {
-        // 没有打字效果，直接添加消息
-        const newMessage: Message = {
-          id: currentMessage.id,
-          user: currentMessage.user,
-          content: currentMessage.content,
-          timestamp: getCurrentTimestamp(),
-          embed: currentMessage.embed,
-          reactions: currentMessage.reactions,
-        };
-        
-        setMessages(prev => [...prev, newMessage]);
-        
-        // 移动到下一步
-        setTimeout(() => {
-          setCurrentDemoStep(prev => prev + 1);
-        }, 500);
-      }
+      // 移动到下一步
+      setTimeout(() => {
+        setCurrentDemoStep(prev => prev + 1);
+      }, 500);
     }, delay);
 
     return () => {
       if (demoTimeoutRef.current) {
         clearTimeout(demoTimeoutRef.current);
-      }
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
       }
     };
   }, [isLiveDemoPlaying, currentDemoStep, liveDemoMessages, onDemoComplete]);
@@ -332,7 +285,7 @@ export default function ChatArea({
       {/* 消息区域 */}
       <div className="flex flex-1 min-h-0">
         {/* 消息流 */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-discord-server scrollbar-track-transparent">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-discord-server scrollbar-track-transparent">
           {/* 频道欢迎卡片 */}
           {channelWelcomeConfigs["tiktok-hunter"] && (
             <WelcomeCard {...channelWelcomeConfigs["tiktok-hunter"]} />

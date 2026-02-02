@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Hash, 
@@ -72,14 +73,14 @@ const channelGroups: ChannelGroup[] = [
 interface ChannelSidebarProps {
   serverName?: string;
   activeChannelId?: string;
-  onChannelChange?: (channelId: string) => void;
 }
 
 export default function ChannelSidebar({ 
   serverName = "Demand OS Official",
   activeChannelId = "tiktok-hunter",
-  onChannelChange 
 }: ChannelSidebarProps) {
+  const router = useRouter();
+
   const [groups, setGroups] = useState(channelGroups);
   const [isMuted, setIsMuted] = useState(false);
   const [isDeafened, setIsDeafened] = useState(false);
@@ -115,7 +116,13 @@ export default function ChannelSidebar({
             group={group}
             activeChannelId={activeChannelId}
             onToggle={() => toggleGroup(group.id)}
-            onChannelClick={onChannelChange}
+            onChannelClick={(channelId) => {
+              if (channelId === "tiktok-hunter") {
+                router.push("/discord");
+              } else {
+                router.push(`/discord/${channelId}`);
+              }
+            }}
           />
         ))}
         
@@ -165,11 +172,7 @@ function ChannelGroupComponent({ group, activeChannelId, onToggle, onChannelClic
       {/* 频道列表 */}
       <AnimatePresence>
         {!group.collapsed && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+          <div
             className="mt-1 space-y-[2px] overflow-hidden"
           >
             {group.channels.map((channel) => (
@@ -182,7 +185,7 @@ function ChannelGroupComponent({ group, activeChannelId, onToggle, onChannelClic
                 }}
               />
             ))}
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
