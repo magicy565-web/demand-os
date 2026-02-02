@@ -591,15 +591,34 @@ function EmbedCard({ embed }: { embed: EmbedData }) {
 
 function MemberList() {
   const onlineMembers = [
-    { name: "Demand-OS Bot", status: "online", isBot: true },
+    { name: "Demand-OS Bot", status: "online", isBot: true, role: "AI Assistant" },
     { name: "Admin", status: "online", role: "Owner" },
+    { name: "Sarah Chen", status: "online", role: "Moderator" },
     { name: "DropshipKing_99", status: "online" },
-    { name: "GlobalSourcer", status: "idle" },
+    { name: "GlobalSourcer", status: "online" },
+    { name: "Mike Liu", status: "online" },
+    { name: "Emma Wang", status: "online" },
+    { name: "Alex Thompson", status: "online" },
+    { name: "Jennifer Wu", status: "idle" },
+    { name: "David Kim", status: "idle" },
+    { name: "Lisa Wang", status: "idle" },
+    { name: "James Chen", status: "online" },
+    { name: "Michael Brown", status: "online" },
+    { name: "Rachel Green", status: "idle" },
+    { name: "Kevin Zhang", status: "online" },
+    { name: "Amanda Lee", status: "dnd" },
   ];
   
   const offlineMembers = [
     { name: "NewUser123", status: "offline" },
     { name: "Viewer_001", status: "offline" },
+    { name: "TradeMaster", status: "offline" },
+    { name: "SupplyChainPro", status: "offline" },
+    { name: "ImportExpert", status: "offline" },
+    { name: "DealHunter88", status: "offline" },
+    { name: "QualityFirst", status: "offline" },
+    { name: "BulkBuyerJohn", status: "offline" },
+    { name: "EcomSeller", status: "offline" },
   ];
 
   return (

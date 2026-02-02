@@ -41,9 +41,10 @@ const channelGroups: ChannelGroup[] = [
     name: "AI TOOLS",
     channels: [
       { id: "tiktok-hunter", name: "tiktok-hunter", type: "text", unread: true, mentions: 2 },
-      { id: "quick-rfq", name: "quick-rfq", type: "text" },
+      { id: "quick-rfq", name: "quick-rfq", type: "text", unread: true, mentions: 5 },
       { id: "ai-auto-request", name: "ai-auto-request ⚡BETA", type: "text", unread: true, mentions: 1 },
-      { id: "market-trends", name: "market-trends", type: "text" },
+      { id: "market-trends", name: "market-trends", type: "text", unread: true, mentions: 3 },
+      { id: "factory-discover", name: "factory-discover 🆕", type: "text", unread: true, mentions: 8 },
       { id: "ai-voice", name: "AI Voice Chat", type: "voice" },
     ]
   },

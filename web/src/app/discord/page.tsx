@@ -5,6 +5,9 @@ import ServerSidebar from "@/components/discord/ServerSidebar";
 import ChannelSidebar from "@/components/discord/ChannelSidebar";
 import ChatArea from "@/components/discord/ChatArea";
 import AutoRequestChatArea from "@/components/discord/AutoRequestChatArea";
+import QuickRFQChatArea from "@/components/discord/QuickRFQChatArea";
+import MarketTrendsChatArea from "@/components/discord/MarketTrendsChatArea";
+import FactoryDiscoverChatArea from "@/components/discord/FactoryDiscoverChatArea";
 import LiveDemoController from "@/components/discord/LiveDemoController";
 import { demoScenarios } from "@/lib/liveDemoData";
 
@@ -28,7 +31,8 @@ export default function DiscordDemoPage() {
     "tiktok-hunter": "🔍 Paste TikTok links here to get instant factory quotes.",
     "quick-rfq": "📝 Submit RFQ requests for quick supplier matching.",
     "ai-auto-request": "⚡ Beta: Describe your needs in natural language, AI auto-sources or creates manual tickets",
-    "market-trends": "📈 Discuss market trends and product opportunities.",
+    "market-trends": "📈 Real-time market insights and product trend analysis.",
+    "factory-discover": "🏭 Discover and explore verified factories worldwide.",
     "general-chat": "💬 General discussion for the community.",
     "introductions": "👋 Introduce yourself to the community!",
     "success-stories": "🏆 Share your sourcing success stories.",
@@ -75,9 +79,24 @@ export default function DiscordDemoPage() {
           onChannelChange={setActiveChannelId}
         />
         
-        {/* 聊天区域 (主内容) */}
+        {/* 聊天区域 (主内容) - 根据频道类型渲染不同组件 */}
         {activeChannelId === "ai-auto-request" ? (
           <AutoRequestChatArea
+            channelName={activeChannelId}
+            channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
+          />
+        ) : activeChannelId === "quick-rfq" ? (
+          <QuickRFQChatArea
+            channelName={activeChannelId}
+            channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
+          />
+        ) : activeChannelId === "market-trends" ? (
+          <MarketTrendsChatArea
+            channelName={activeChannelId}
+            channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
+          />
+        ) : activeChannelId === "factory-discover" ? (
+          <FactoryDiscoverChatArea
             channelName={activeChannelId}
             channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
           />
@@ -93,8 +112,8 @@ export default function DiscordDemoPage() {
         )}
       </div>
 
-      {/* 实时演示控制器 (只在非 auto-request 频道显示) */}
-      {activeChannelId !== "ai-auto-request" && (
+      {/* 实时演示控制器 (只在通用频道显示) */}
+      {!["ai-auto-request", "quick-rfq", "market-trends", "factory-discover"].includes(activeChannelId) && (
         <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999 }}>
           <LiveDemoController
             onStart={handleDemoStart}

@@ -413,7 +413,7 @@ export function DemandStatsPanel({
           </div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
