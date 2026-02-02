@@ -61,6 +61,126 @@ interface EmbedData {
 // 示例消息数据
 const sampleMessages: Message[] = [
   {
+    id: "welcome",
+    user: { name: "Demand-OS Bot", avatar: "/images/logo.png", isBot: true, botTag: "APP" },
+    content: `# Welcome to TikTok Hunter 🎯
+
+## 🔥 Viral Product to Factory Pipeline
+
+**TikTok Hunter** instantly converts viral TikTok products into actionable sourcing opportunities. Paste any TikTok link and get factory quotes in seconds!
+
+---
+
+## 🚀 How TikTok Hunter Works
+
+### **Step 1: Find Trending Products**
+Browse TikTok for viral products:
+• #TikTokMadeMeBuyIt
+• Gadget review videos
+• Product demonstrations
+• Unboxing videos
+
+### **Step 2: Paste the Link**
+Simply paste any TikTok video URL:
+\`\`\`
+Example:
+https://www.tiktok.com/@shop/video/1234567890
+\`\`\`
+
+### **Step 3: AI Analysis**
+Our AI extracts & analyzes:
+• ✅ **Product identification** via computer vision
+• ✅ **Product specs** from video & description
+• ✅ **Market demand** signals (views, likes, comments)
+• ✅ **Similar products** in our database
+
+### **Step 4: Instant Factory Match**
+Get comprehensive sourcing info:
+• 💰 **FOB Pricing** from verified suppliers
+• 📊 **MOQ** (Minimum Order Quantity)
+• 🚚 **Lead Times** for production & shipping
+• 🏭 **Factory Matches** with certifications
+• 📈 **Market Insights** (trend score, competition)
+
+---
+
+## 💡 What You'll Get
+
+**📦 Product Details:**
+• Exact product name & description
+• Technical specifications
+• Available colors/variants
+• Packaging options
+
+**💰 Pricing Breakdown:**
+• Unit price (with quantity tiers)
+• Shipping cost estimates
+• Customization fees (if applicable)
+• Sample costs
+
+**🏭 Supplier Information:**
+• Factory verification status
+• Production capacity
+• Quality certifications (CE, FCC, ISO, etc.)
+• Past buyer reviews & ratings
+
+**📊 Market Intelligence:**
+• Trend score (0-100)
+• Competition level
+• Profit margin estimates
+• Seasonal demand patterns
+
+---
+
+## 🎯 Pro Tips
+
+✅ **Paste popular videos** - Higher views = better data
+✅ **Check multiple suppliers** - Compare for best deals
+✅ **Request samples first** - Verify quality before bulk
+✅ **Act fast on trends** - Viral products have short windows
+✅ **Use the RFQ button** - Get custom quotes for volume orders
+
+---
+
+## 📈 Success Metrics
+
+• ⚡ **Average Analysis Time:** 8 seconds
+• 🎯 **Product Match Accuracy:** 96%
+• 🏭 **Average Suppliers Found:** 5-12 per product
+• 💰 **Avg. Price Advantage:** 40-60% below retail
+• 🚀 **Trending Products Tracked:** 50,000+/day
+
+---
+
+## 🛠️ Advanced Features
+
+**🔍 Reverse Image Search:**
+Upload a product image directly (no TikTok link needed)
+
+**📊 Trend Alerts:**
+Get notified when products hit viral status
+
+**💬 Auto-RFQ:**
+Automatically generate detailed RFQ documents
+
+**🤝 Supplier Direct Chat:**
+Connect with factories via WhatsApp/WeChat
+
+---
+
+**Ready to start?** Paste a TikTok link below! 👇
+
+_Note: We support TikTok, Instagram Reels, YouTube Shorts, and direct image uploads_`,
+    timestamp: "Today at 09:00 AM",
+    embed: {
+      type: "info",
+      title: "🎬 TikTok Hunter Workflow",
+      description: "Find Viral Product → Paste TikTok Link → AI Analysis → Factory Matching → Get Instant Quote",
+      footer: "💡 Tip: Look for products with 500K+ views for best supplier selection",
+      color: "#00F2FE"
+    }
+  },
+  {
     id: "1",
     user: { name: "DropshipKing_99" },
     content: "Hey everyone! Just found this amazing product on TikTok 🔥",

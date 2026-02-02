@@ -144,8 +144,101 @@ const initialMessages: Message[] = [
   {
     id: "welcome",
     user: { name: "Demand-OS Bot", isBot: true, botTag: "DISCOVER" },
-    content: `Welcome to **#factory-discover** 🏭\n\n🔍 **AI Factory Discovery Engine**\n\nFind verified manufacturers worldwide with our AI-powered factory matching system!\n\n**How to use:**\n• Describe your product needs\n• Specify location preferences (optional)\n• Mention certifications required\n• State your MOQ & timeline\n\n**Quick Commands:**\n• \`@find [product]\` - Search factories by product\n• \`@top [category]\` - Top rated factories\n• \`@verified [region]\` - Verified suppliers by region\n• \`@compare [factory1] vs [factory2]\` - Compare factories\n\nLet's discover your perfect manufacturing partner! 🚀`,
+    content: `# Factory Discover - Global Sourcing 🏭
+
+## 🌍 AI-Powered Factory Discovery
+
+Access our curated database of **50,000+ verified manufacturers** across 80+ countries with intelligent matching algorithms.
+
+---
+
+## 🎯 Why Factory Discover?
+
+### **Comprehensive Verification**
+• ✅ **Gold Verified:** On-site audit completed (5-star rating)
+• ⭐ **Verified:** Remote verification (3-4 star rating)
+• 🔍 **Basic:** Profile verified, pending full audit
+
+### **Smart Filtering System**
+• 🏭 **By Industry:** Electronics, Textiles, Machinery, Chemicals, etc.
+• 🌏 **By Region:** China, Vietnam, India, Bangladesh, Thailand, etc.
+• 📊 **By Capacity:** Small (≤100K/mo), Medium (100K-1M/mo), Large (≥1M/mo)
+• 🏆 **By Rating:** Quality score, delivery reliability, communication
+• 💰 **By Price Range:** Budget, Mid-range, Premium
+
+---
+
+## 🚀 How to Use
+
+### **Method 1: Quick Filters (Reactions)**
+Click reactions on this message:
+• 🏆 = Gold Verified Only
+• 🇨🇳 = China Factories
+• 🇻🇳 = Vietnam Factories
+• 🇮🇳 = India Factories
+• 📱 = Electronics Category
+• 👕 = Textiles & Apparel
+
+### **Method 2: Natural Language Search**
+Simply describe what you need:
+\`\`\`
+"Looking for LED lighting manufacturers in Vietnam with ISO9001 certification and monthly capacity over 500K units"
+\`\`\`
+
+### **Method 3: Command-Based Search**
+| Command | Description | Example |
+|---------|-------------|----------|
+| \`@discover [product]\` | Find factories by product | \`@discover wireless chargers\` |
+| \`@region [location]\` | Filter by country/region | \`@region Southeast Asia\` |
+| \`@verified\` | Show only verified factories | \`@verified gold\` |
+| \`@capacity [size]\` | Filter by production scale | \`@capacity large\` |
+| \`@cert [certification]\` | Filter by certifications | \`@cert ISO9001\` |
+
+---
+
+## 📊 Factory Profile Includes
+
+Each factory card shows:
+• 🏢 **Company Overview:** Established year, employee count, factory size
+• 🔧 **Capabilities:** Product categories, production techniques
+• 📜 **Certifications:** ISO, BSCI, SA8000, SEDEX, etc.
+• 📈 **Performance Metrics:** Quality score, on-time delivery %, defect rate
+• 💬 **Reviews:** Verified buyer feedback and ratings
+• 📍 **Location:** Factory address with Google Maps link
+• 💰 **Pricing:** Average price range for common products
+• ⏱️ **Lead Time:** Typical production + shipping timeline
+
+---
+
+## 🌟 Featured Regions
+
+**🇨🇳 China:** Electronics, Machinery, Chemicals (25,000+ factories)
+**🇻🇳 Vietnam:** Textiles, Footwear, Furniture (8,000+ factories)
+**🇮🇳 India:** Pharmaceuticals, Textiles, IT Hardware (6,000+ factories)
+**🇧🇩 Bangladesh:** Garments, Textiles (4,000+ factories)
+**🇹🇭 Thailand:** Automotive Parts, Food Processing (3,000+ factories)
+
+---
+
+## 💡 Pro Tips
+
+✅ **Start with verified factories** for quality assurance
+✅ **Check production capacity** before large orders
+✅ **Read buyer reviews** for real experiences
+✅ **Request samples** before committing to bulk orders
+✅ **Use multiple suppliers** to reduce risk
+
+---
+
+**Ready to discover?** Use quick filters below or type your search! 🔍`,
     timestamp: "Today at 08:00 AM",
+    embed: {
+      type: "info",
+      title: "🏭 Factory Discovery Process",
+      description: "Step-by-step guide: Search → Filter → Review Profiles → Request Quotes → Compare → Connect",
+      footer: "🔄 Database updated daily | 🌍 Covering 80+ countries | ✅ 50,000+ verified manufacturers",
+      color: "#FEE75C"
+    }
   },
   {
     id: "featured",

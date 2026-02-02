@@ -79,8 +79,83 @@ const initialMessages: Message[] = [
   {
     id: "welcome",
     user: { name: "Demand-OS Bot", isBot: true, botTag: "AI" },
-    content: `Welcome to **#market-trends** 📈\n\n🔮 **AI Market Intelligence Center**\n\nGet real-time insights on product trends, pricing dynamics, and market opportunities!\n\n**Commands:**\n• \`@trend [product]\` - Get trend analysis\n• \`@hotproducts\` - Today's trending products\n• \`@pricewatch [category]\` - Price monitoring\n• \`@forecast [product]\` - Demand forecast\n\n**Auto Updates:**\n🔔 Daily trend reports at 9:00 AM\n🔔 Price alerts for your watched products\n\nAsk me anything about market trends! 👇`,
+    content: `# Market Trends & Intelligence 📈
+
+## 🔮 Real-Time Market Analytics
+
+Stay ahead of the competition with AI-powered market intelligence, pricing trends, and demand forecasting.
+
+---
+
+## 🎯 Key Features
+
+### **1. Trend Analysis**
+• 📊 Real-time product category performance
+• 📈 Growth rate tracking (YoY, MoM)
+• 🌍 Regional demand patterns
+• 🔥 Emerging product categories
+
+### **2. Pricing Intelligence**
+• 💰 Historical price trends
+• 📉 Price elasticity analysis
+• 🏷️ Competitive pricing benchmarks
+• 💵 Cost structure breakdown (materials, labor, logistics)
+
+### **3. Hot Products Tracking**
+• ⭐ Trending products in the last 7/30/90 days
+• 🚀 Breakout products (sudden demand surge)
+• 🎯 Niche opportunities
+• 📦 Product lifecycle stage
+
+### **4. Demand Forecasting**
+• 🔮 AI-powered predictions (next 30/60/90 days)
+• 📅 Seasonal pattern analysis
+• 🌐 Market saturation indicators
+• 💡 Sourcing recommendations
+
+---
+
+## 🤖 Available Commands
+
+| Command | Description | Example |
+|---------|-------------|----------|
+| \`@trend [category]\` | View detailed trend analysis | \`@trend electronics\` |
+| \`@hotproducts\` | See top trending products | \`@hotproducts\` |
+| \`@pricing [product]\` | Check price history & trends | \`@pricing wireless earbuds\` |
+| \`@forecast [category]\` | Get demand forecast | \`@forecast home appliances\` |
+| \`@compare [products]\` | Compare multiple products | \`@compare earbuds vs headphones\` |
+| \`@region [location]\` | Regional market insights | \`@region North America\` |
+
+---
+
+## 📊 Live Market Dashboard
+
+**Current Top Trends (Last 24 Hours):**
+• 🔥 **Electronics:** +12.5% ↑
+• 📱 **Smart Home:** +8.3% ↑
+• 👕 **Apparel:** +5.1% ↑
+• 🏠 **Furniture:** -2.4% ↓
+
+---
+
+## 💡 Pro Tips
+
+✅ **Check trends before sourcing** - Avoid saturated markets
+✅ **Monitor price movements** - Time your purchases optimally
+✅ **Use forecasts for planning** - Align inventory with demand
+✅ **Track competitors** - Stay competitive on pricing
+
+---
+
+Type a command to get started! 💹`,
     timestamp: "Today at 08:00 AM",
+    embed: {
+      type: "report",
+      title: "📊 Market Intelligence Dashboard",
+      description: "Comprehensive view of real-time trends, pricing analytics, and demand forecasting tools",
+      footer: "🔄 Data updates every 15 minutes | Sources: 500+ marketplaces worldwide",
+      color: "#57F287"
+    }
   },
   {
     id: "daily-report",
