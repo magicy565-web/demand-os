@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ServerSidebar from "@/components/discord/ServerSidebar";
 import ChannelSidebar from "@/components/discord/ChannelSidebar";
 import ChatArea from "@/components/discord/ChatArea";
@@ -22,6 +22,11 @@ export default function DiscordDemoPage() {
   const [activeChannelId, setActiveChannelId] = useState("tiktok-hunter");
   const [isLiveDemoPlaying, setIsLiveDemoPlaying] = useState(true); // 默认开始演示
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
+
+  // Debug: Log channel changes
+  useEffect(() => {
+    console.log("Active Channel Changed:", activeChannelId);
+  }, [activeChannelId]);
 
   // 当前演示场景
   const currentScenario = demoScenarios[currentScenarioIndex];

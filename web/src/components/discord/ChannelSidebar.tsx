@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Hash, 
@@ -177,7 +177,9 @@ function ChannelGroupComponent({ group, activeChannelId, onToggle, onChannelClic
                 key={channel.id}
                 channel={channel}
                 active={activeChannelId === channel.id}
-                onClick={() => onChannelClick?.(channel.id)}
+                onClick={() => {
+                  onChannelClick?.(channel.id);
+                }}
               />
             ))}
           </motion.div>
@@ -196,9 +198,15 @@ interface ChannelItemProps {
 function ChannelItem({ channel, active, onClick }: ChannelItemProps) {
   const Icon = channel.type === "text" ? Hash : channel.type === "voice" ? Volume2 : Bell;
   
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClick?.();
+  }, [onClick, channel.id]);
+  
   return (
     <div 
-      onClick={onClick}
+      onClick={handleClick}
       className={`group px-2 py-[6px] rounded flex items-center gap-1.5 cursor-pointer
         ${active 
           ? 'bg-discord-active text-discord-text-header' 
@@ -221,11 +229,11 @@ function ChannelItem({ channel, active, onClick }: ChannelItemProps) {
       )}
 
       {/* 悬停操作按钮 */}
-      <div className="hidden group-hover:flex items-center gap-1">
-        <button className="p-0.5 hover:text-discord-text-header">
+      <div className="hidden group-hover:flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <button className="p-0.5 hover:text-discord-text-header" onClick={(e) => e.stopPropagation()}>
           <Users className="w-4 h-4" />
         </button>
-        <button className="p-0.5 hover:text-discord-text-header">
+        <button className="p-0.5 hover:text-discord-text-header" onClick={(e) => e.stopPropagation()}>
           <Settings className="w-4 h-4" />
         </button>
       </div>
