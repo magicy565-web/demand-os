@@ -87,21 +87,25 @@ export default function DiscordDemoPage() {
         {/* 聊天区域 (主内容) - 根据频道类型渲染不同组件 */}
         {activeChannelId === "ai-auto-request" ? (
           <AutoRequestChatArea
+            key="ai-auto-request"
             channelName={activeChannelId}
             channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
           />
         ) : activeChannelId === "quick-rfq" ? (
           <QuickRFQChatArea
+            key="quick-rfq"
             channelName={activeChannelId}
             channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
           />
         ) : activeChannelId === "market-trends" ? (
           <MarketTrendsChatArea
+            key="market-trends"
             channelName={activeChannelId}
             channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
           />
         ) : activeChannelId === "factory-discover" ? (
           <FactoryDiscoverChatArea
+            key="factory-discover"
             channelName={activeChannelId}
             channelDescription={channelDescriptions[activeChannelId] || "Welcome to this channel!"}
           />
