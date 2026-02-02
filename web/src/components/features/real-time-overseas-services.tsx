@@ -47,7 +47,7 @@ export function RealTimeOverseasServices() {
                 onPause={handleVideoPause}
               >
                 <source
-                  src="https://www.w3schools.com/html/mov_bbb.mp4"
+                  src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
