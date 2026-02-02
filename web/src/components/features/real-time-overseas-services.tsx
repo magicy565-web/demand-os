@@ -1,26 +1,10 @@
 "use client"
 
-import { TrendingUp, Play } from "lucide-react"
-import { useRef, useState } from "react"
+import { TrendingUp } from "lucide-react"
+import { useRef } from "react"
 
 export function RealTimeOverseasServices() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const handlePlayClick = () => {
-    if (videoRef.current) {
-      videoRef.current.play()
-      setIsPlaying(true)
-    }
-  }
-
-  const handleVideoEnded = () => {
-    setIsPlaying(false)
-  }
-
-  const handleVideoPause = () => {
-    setIsPlaying(false)
-  }
 
   return (
     <section className="section-padding bg-navy text-white overflow-hidden relative">
@@ -34,17 +18,14 @@ export function RealTimeOverseasServices() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* 左边：视频 */}
           <div className="relative order-2 lg:order-1">
-            <div className="aspect-video bg-black border border-white/10 rounded-xl overflow-hidden group cursor-pointer" onClick={handlePlayClick}>
+            <div className="aspect-video bg-black border border-white/10 rounded-xl overflow-hidden group shadow-2xl">
               <video
                 ref={videoRef}
                 loop
-                muted
                 playsInline
-                controls={false}
+                controls
                 className="w-full h-full object-cover"
                 poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23000' width='16' height='9'/%3E%3Cpath fill='%23fff' d='M6.5 3L10.5 6l-4 3V3z'/%3E%3C/svg%3E"
-                onEnded={handleVideoEnded}
-                onPause={handleVideoPause}
               >
                 <source
                   src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
@@ -52,15 +33,6 @@ export function RealTimeOverseasServices() {
                 />
                 Your browser does not support the video tag.
               </video>
-              
-              {/* 播放按钮 - 仅当未播放时显示 */}
-              {!isPlaying && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors duration-300">
-                  <div className="w-20 h-20 rounded-full border-2 border-white flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
-                    <Play className="w-8 h-8 text-white fill-white ml-1" />
-                  </div>
-                </div>
-              )}
             </div>
             {/* 装饰性光晕 */}
             <div className="absolute -inset-4 bg-gradient-to-r from-brand-blue/20 to-gold/20 blur-2xl -z-10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
