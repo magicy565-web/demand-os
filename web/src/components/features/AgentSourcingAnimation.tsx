@@ -14,8 +14,8 @@ import {
   UserCheck
 } from "lucide-react";
 
-// 生成180-300秒的随机时长
-const getRandomDuration = () => Math.floor(Math.random() * (300 - 180 + 1) + 180) * 1000;
+// 生成30-60秒的随机时长
+const getRandomDuration = () => Math.floor(Math.random() * (60 - 30 + 1) + 30) * 1000;
 
 const sourcingSteps = [
   { icon: Globe, text: "扫描全球采购平台中", color: "text-blue-600", duration: getRandomDuration() },
@@ -59,9 +59,9 @@ export function AgentSourcingAnimation() {
   }, [currentStep]);
 
   useEffect(() => {
-    // 模拟持续发现需求 - 每180-300秒增加
+    // 模拟持续发现需求 - 每30-60秒增加
     const scheduleDemandUpdate = () => {
-      const randomDelay = Math.floor(Math.random() * (300 - 180 + 1) + 180) * 1000;
+      const randomDelay = Math.floor(Math.random() * (60 - 30 + 1) + 30) * 1000;
       const timeout = setTimeout(() => {
         setDemandsFound((prev) => prev + Math.floor(Math.random() * 2) + 1);
         scheduleDemandUpdate(); // 递归调度下一次更新

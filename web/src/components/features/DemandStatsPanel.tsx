@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { 
   TrendingUp, 
   Globe, 
@@ -10,7 +11,9 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   BarChart3,
-  PieChart
+  PieChart,
+  Sparkles,
+  Zap
 } from "lucide-react";
 
 interface DemandStatsProps {
@@ -23,8 +26,8 @@ interface DemandStatsProps {
 }
 
 export function DemandStatsPanel({ 
-  totalDemands = 1234,
-  activeMatches = 856,
+  totalDemands: initialTotalDemands = 1234,
+  activeMatches: initialActiveMatches = 856,
   totalValue = "$12.5M",
   regions = [
     { name: "北美", count: 420, percent: 34 },
@@ -50,7 +53,29 @@ export function DemandStatsPanel({
     { date: "Sun", count: 160 },
   ]
 }: Partial<DemandStatsProps>) {
-  const maxTrend = Math.max(...trends.map(t => t.count));
+  // 实时数据更新
+  const [totalDemands, setTotalDemands] = useState(initialTotalDemands);
+  const [activeMatches, setActiveMatches] = useState(initialActiveMatches);
+  const [displayTrends, setDisplayTrends] = useState(trends);
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
+
+  // 模拟实时数据更新
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTotalDemands(prev => prev + Math.floor(Math.random() * 5));
+      setActiveMatches(prev => prev + Math.floor(Math.random() * 3));
+      setDisplayTrends(prev => {
+        const newTrends = [...prev];
+        newTrends[newTrends.length - 1].count += Math.floor(Math.random() * 10);
+        return newTrends;
+      });
+      setLastUpdateTime(new Date());
+    }, 8000); // 每8秒更新一次
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const maxTrend = Math.max(...displayTrends.map(t => t.count));
 
   return (
     <div className="space-y-6">
@@ -63,6 +88,7 @@ export function DemandStatsPanel({
           change="+12.5%"
           positive
           color="cyan"
+          isRealtime
         />
         <StatMetricCard
           icon={TrendingUp}
@@ -71,6 +97,7 @@ export function DemandStatsPanel({
           change="+8.3%"
           positive
           color="purple"
+          isRealtime
         />
         <StatMetricCard
           icon={DollarSign}
@@ -109,7 +136,7 @@ export function DemandStatsPanel({
           
           {/* 简单柱状图 */}
           <div className="flex items-end justify-between h-32 gap-2">
-            {trends.map((item, index) => (
+            {displayTrends.map((item, index) => (
               <motion.div
                 key={item.date}
                 className="flex-1 flex flex-col items-center gap-2"
@@ -227,7 +254,8 @@ function StatMetricCard({
   value, 
   change, 
   positive,
-  color
+  color,
+  isRealtime = false
 }: { 
   icon: any; 
   label: string; 
@@ -235,7 +263,22 @@ function StatMetricCard({
   change: string;
   positive: boolean;
   color: "cyan" | "purple" | "pink" | "green";
+  isRealtime?: boolean;
 }) {
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (!isRealtime) return;
+    
+    // 检测到值变化时显示更新动画
+    const timeout = setTimeout(() => {
+      setIsUpdating(true);
+      setTimeout(() => setIsUpdating(false), 600);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [value, isRealtime]);
+
   const colorClasses = {
     cyan: "from-cyber-cyan/20 to-cyber-cyan/5 border-cyber-cyan/30",
     purple: "from-cyber-purple/20 to-cyber-purple/5 border-cyber-purple/30",
@@ -255,16 +298,48 @@ function StatMetricCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
-      className={`p-4 rounded-2xl bg-gradient-to-br ${colorClasses[color]} border backdrop-blur-sm`}
+      className={`p-4 rounded-2xl bg-gradient-to-br ${colorClasses[color]} border backdrop-blur-sm relative overflow-hidden`}
     >
+      {/* 实时更新闪烁效果 */}
+      {isRealtime && isUpdating && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0 bg-white/20"
+        />
+      )}
+
       <div className="flex items-center justify-between mb-3">
-        <Icon className={`w-5 h-5 ${iconColors[color]}`} />
+        <div className="relative">
+          <Icon className={`w-5 h-5 ${iconColors[color]}`} />
+          {isRealtime && (
+            <motion.div
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${
+                color === 'cyan' ? 'bg-cyber-cyan' :
+                color === 'purple' ? 'bg-cyber-purple' :
+                color === 'pink' ? 'bg-cyber-pink' :
+                'bg-green-500'
+              }`}
+            />
+          )}
+        </div>
         <div className={`flex items-center gap-1 text-xs ${positive ? "text-green-400" : "text-red-400"}`}>
           {positive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
           {change}
         </div>
       </div>
-      <p className="text-2xl font-bold text-white mb-1">{value}</p>
+      <motion.p
+        key={value}
+        initial={{ scale: 1.2, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="text-2xl font-bold text-white mb-1"
+      >
+        {value}
+      </motion.p>
       <p className="text-xs text-white/50">{label}</p>
     </motion.div>
   );
