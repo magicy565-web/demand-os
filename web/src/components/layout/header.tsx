@@ -9,6 +9,7 @@ const navItems = [
   { label: "线上展会", href: "/webinar", isExternal: true },
   { label: "数智产业园 OS", href: "/industrial-os", isExternal: true },
   { label: "全球布局", href: "/global-trust", isExternal: true },
+  { label: "全球展会", href: "/showrooms", isExternal: true },
   { label: "Demand-OS", href: "/saas-home/demand-os", isExternal: true },
 ]
 

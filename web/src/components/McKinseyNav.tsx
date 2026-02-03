@@ -12,15 +12,27 @@ export default function McKinseyNav() {
   const menuItems = [
     {
       label: "解决方案",
-      items: ["企业规划", "Demand-OS"],
+      items: [
+        { name: "企业规划", href: "#" },
+        { name: "Demand-OS", href: "/saas-home/demand-os" }
+      ],
     },
     {
       label: "服务",
-      items: ["展览", "仓库", "会员俱乐部"],
+      items: [
+        { name: "全球展会", href: "/showrooms" },
+        { name: "展览", href: "#" },
+        { name: "仓库", href: "#" },
+        { name: "会员俱乐部", href: "#" }
+      ],
     },
     {
       label: "资讯",
-      items: ["活动", "新闻", "招聘"],
+      items: [
+        { name: "活动", href: "#" },
+        { name: "新闻", href: "#" },
+        { name: "招聘", href: "#" }
+      ],
     },
   ];
 
@@ -61,11 +73,11 @@ export default function McKinseyNav() {
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-sm shadow-lg">
                     {menu.items.map((item) => (
                       <Link
-                        key={item}
-                        href="#"
+                        key={item.name}
+                        href={item.href}
                         className="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-[#00509d] transition"
                       >
-                        {item}
+                        {item.name}
                       </Link>
                     ))}
                   </div>
@@ -106,12 +118,12 @@ export default function McKinseyNav() {
                   </p>
                   {menu.items.map((item) => (
                     <Link
-                      key={item}
-                      href="#"
+                      key={item.name}
+                      href={item.href}
                       className="block px-6 py-3 text-sm text-slate-600 hover:text-[#00509d] hover:bg-slate-50 transition-colors touch-feedback"
                       onClick={() => setMobileOpen(false)}
                     >
-                      {item}
+                      {item.name}
                     </Link>
                   ))}
                 </div>
