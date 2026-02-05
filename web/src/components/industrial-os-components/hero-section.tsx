@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Search, FileText, Cpu, Package, Ship, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DemandForm } from "./demand-form";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const TYPING_PHRASES = [
   "请输入海外采购需求（支持模糊语义/图片/招投标文件）...",
@@ -18,6 +20,7 @@ export function HeroSection() {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   // Typewriter effect
   useEffect(() => {
@@ -123,9 +126,16 @@ export function HeroSection() {
                   )}
                 </AnimatePresence>
               </div>
-              <Button className="m-2 bg-brand-blue hover:bg-brand-blue/90 text-white border-0 gap-2 font-medium">
-                立即匹配产能 <ArrowRight className="w-4 h-4" />
-              </Button>
+              <Dialog open={showForm} onOpenChange={setShowForm}>
+                <DialogTrigger asChild>
+                  <Button className="m-2 bg-brand-blue hover:bg-brand-blue/90 text-white border-0 gap-2 font-medium">
+                    立即匹配产能 <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                  <DemandForm />
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </motion.div>
