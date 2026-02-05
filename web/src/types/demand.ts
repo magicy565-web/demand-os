@@ -225,6 +225,6 @@ export interface DirectusResponse<T> {
 
 // API 配置
 export const API_CONFIG = {
-  DIRECTUS_URL: process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://admin.cnsubscribe.xyz",
-  WS_URL: process.env.NEXT_PUBLIC_WS_URL || "wss://admin.cnsubscribe.xyz/websocket",
+  DIRECTUS_URL: process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://directus.example.com",
+  WS_URL: process.env.NEXT_PUBLIC_WS_URL || "wss://directus.example.com/websocket",
 };

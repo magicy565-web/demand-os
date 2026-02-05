@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://admin.cnsubscribe.xyz";
+const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://directus.example.com";
 
 /**
  * API 代理路由 - 解决 CORS 问题

@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "*.vercel.app",
+        pathname: "/assets/**",
+      },
+      {
+        protocol: "https",
         hostname: "admin.cnsubscribe.xyz",
         pathname: "/assets/**",
       },
@@ -28,7 +33,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/directus/:path*",
-        destination: `${process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://admin.cnsubscribe.xyz"}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://directus.example.com"}/:path*`,
       },
     ];
   },

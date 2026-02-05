@@ -1,0 +1,20 @@
+{
+  "name": "directus-backend",
+  "version": "1.0.0",
+  "description": "Directus CMS backend for Demand OS",
+  "type": "module",
+  "scripts": {
+    "dev": "node --loader tsx/esm ./node_modules/directus/cli.js start",
+    "build": "echo 'Directus uses Docker image, no build needed'",
+    "start": "directus start"
+  },
+  "dependencies": {
+    "directus": "^11.1.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
