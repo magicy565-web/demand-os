@@ -173,7 +173,10 @@ const config: Config = {
   			'slide-up': 'slide-up 0.3s ease-out',
   			'glow': 'glow 2s ease-in-out infinite alternate',
   			'scan-line': 'scan-line 4s linear infinite',
-  			'float': 'float 6s ease-in-out infinite'
+  			'float': 'float 6s ease-in-out infinite',
+  			'gradient-x': 'gradient-x 3s ease infinite',
+  			'number-roll': 'number-roll 1.5s ease-out forwards',
+  			'shimmer': 'shimmer 2s linear infinite'
   		},
   		keyframes: {
   			'pulse-slow': {
@@ -234,6 +237,34 @@ const config: Config = {
   				},
   				'50%': {
   					transform: 'translateY(-20px)'
+  				}
+  			},
+  			'gradient-x': {
+  				'0%, 100%': {
+  					'background-size': '200% 200%',
+  					'background-position': 'left center'
+  				},
+  				'50%': {
+  					'background-size': '200% 200%',
+  					'background-position': 'right center'
+  				}
+  			},
+  			'number-roll': {
+  				'0%': {
+  					transform: 'translateY(100%)',
+  					opacity: '0'
+  				},
+  				'100%': {
+  					transform: 'translateY(0)',
+  					opacity: '1'
+  				}
+  			},
+  			'shimmer': {
+  				'0%': {
+  					'background-position': '-200% 0'
+  				},
+  				'100%': {
+  					'background-position': '200% 0'
   				}
   			}
   		},

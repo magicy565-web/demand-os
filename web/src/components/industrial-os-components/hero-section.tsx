@@ -2,9 +2,9 @@
 
 import React from "react"
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Search, FileText, Cpu, Package, Ship, CheckCircle2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { ArrowRight, Search, FileText, Cpu, Package, Ship, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DemandForm } from "./demand-form";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -66,15 +66,17 @@ export function HeroSection() {
           </span>
         </motion.div>
 
-        {/* Title - Chinese government style */}
+        {/* Title - Chinese government style with enhanced visual impact */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-balance"
         >
           <span className="text-foreground">以数换单，</span>
-          <span className="text-brand-blue">以单强产</span>
+          <span className="bg-gradient-to-r from-[#3B82F6] via-[#2563EB] to-[#3B82F6] bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_2px_4px_rgba(59,130,246,0.3)]">
+            以单强产
+          </span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -128,11 +130,13 @@ export function HeroSection() {
               </div>
               <Dialog open={showForm} onOpenChange={setShowForm}>
                 <DialogTrigger asChild>
-                  <Button className="m-2 bg-brand-blue hover:bg-brand-blue/90 text-white border-0 gap-2 font-medium">
-                    立即匹配产能 <ArrowRight className="w-4 h-4" />
+                  <Button className="m-2 bg-[#3B82F6] hover:bg-[#2563EB] hover:scale-[1.02] hover:shadow-lg text-white border-0 gap-2 font-medium transition-all duration-200 ease-out group">
+                    <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+                    立即匹配产能 
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto backdrop-blur-sm bg-white/95 border border-gray-200 shadow-2xl">
                   <DemandForm />
                 </DialogContent>
               </Dialog>
@@ -182,25 +186,33 @@ function ProcessStep({
   step: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <motion.div 
+      whileHover={{ scale: 1.05, y: -2 }}
+      className="flex flex-col items-center gap-1.5 group cursor-pointer"
+    >
       <div className="relative">
-        <div className="w-12 h-12 rounded bg-paper-warm border border-gray-200 flex items-center justify-center text-slate">
-          {icon}
+        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-white to-gray-50 border border-gray-200 flex items-center justify-center text-slate group-hover:border-[#3B82F6]/50 group-hover:shadow-md transition-all duration-300">
+          <span className="group-hover:text-[#3B82F6] transition-colors">{icon}</span>
         </div>
-        <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded bg-brand-blue text-white text-[10px] font-mono">
+        <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white text-[10px] font-mono shadow-sm">
           {step}
         </span>
       </div>
-      <span className="text-[10px] text-slate font-mono">{label}</span>
-    </div>
+      <span className="text-xs text-slate font-medium group-hover:text-[#3B82F6] transition-colors">{label}</span>
+    </motion.div>
   );
 }
 
 function FlowConnector() {
   return (
-    <div className="hidden sm:flex items-center px-2">
-      <div className="w-8 h-[1px] bg-[#374151]" />
-      <div className="w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-[#374151]" />
+    <div className="hidden sm:flex items-center px-3">
+      <motion.div 
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        className="w-10 h-[2px] bg-gradient-to-r from-[#3B82F6]/30 to-[#3B82F6]/60 origin-left" 
+      />
+      <div className="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[8px] border-l-[#3B82F6]/60" />
     </div>
   );
 }
@@ -214,13 +226,34 @@ function StatBlock({
   unit: string;
   label: string;
 }) {
+  const [displayValue, setDisplayValue] = useState(0);
+  const numValue = parseFloat(value);
+  
+  useEffect(() => {
+    const duration = 1500;
+    const startTime = Date.now();
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(numValue * easeOut);
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    animate();
+  }, [numValue]);
+  
   return (
-    <div className="text-center p-3 bg-white border border-gray-200 rounded">
+    <motion.div 
+      whileHover={{ scale: 1.02, y: -2 }}
+      className="text-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+    >
       <div className="flex items-baseline justify-center gap-0.5">
-        <span className="text-xl font-mono font-bold text-foreground">{value}</span>
-        <span className="text-xs text-slate">{unit}</span>
+        <span className="text-2xl font-mono font-bold text-[#3B82F6]">
+          {displayValue.toFixed(value.includes('.') ? 1 : 0)}
+        </span>
+        <span className="text-sm text-slate">{unit}</span>
       </div>
-      <span className="text-[10px] text-slate">{label}</span>
-    </div>
+      <span className="text-xs text-slate-light mt-1 block">{label}</span>
+    </motion.div>
   );
 }
