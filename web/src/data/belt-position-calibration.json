@@ -1,0 +1,127 @@
+{
+  "version": "1.0",
+  "description": "产业带在SimpleMaps中国地图SVG(1000x738)上的手动校准坐标",
+  "calibrationMethod": "基于地理位置和SVG显示效果的精确校准",
+  "svgDimensions": {
+    "width": 1000,
+    "height": 738
+  },
+  "coordinateSystem": "百分比坐标 (0-100)",
+  "beltPositions": [
+    {
+      "id": 1,
+      "name": "深圳电子信息产业带",
+      "province": "Guangdong",
+      "coordinates": {
+        "lat": 22.5431,
+        "lng": 114.0579
+      },
+      "calibratedPosition": {
+        "x": 72.5,
+        "y": 62.0
+      },
+      "notes": "全球电子制造中心，华强北供应链辐射"
+    },
+    {
+      "id": 2,
+      "name": "宁波模具与注塑产业带",
+      "province": "Zhejiang",
+      "coordinates": {
+        "lat": 29.8683,
+        "lng": 121.5440
+      },
+      "calibratedPosition": {
+        "x": 78.5,
+        "y": 44.0
+      },
+      "notes": "中国模具之都，精密加工能力强"
+    },
+    {
+      "id": 3,
+      "name": "佛山泛家居产业带",
+      "province": "Guangdong",
+      "coordinates": {
+        "lat": 23.0215,
+        "lng": 113.1214
+      },
+      "calibratedPosition": {
+        "x": 66.0,
+        "y": 67.0
+      },
+      "notes": "产业链配套极其完善，家具建陶照明一体化"
+    },
+    {
+      "id": 4,
+      "name": "义乌小商品产业带",
+      "province": "Zhejiang",
+      "coordinates": {
+        "lat": 29.3003,
+        "lng": 120.0751
+      },
+      "calibratedPosition": {
+        "x": 68.5,
+        "y": 51.0
+      },
+      "notes": "全球最大的小商品集散中心，SKU丰富"
+    },
+    {
+      "id": 5,
+      "name": "苏州纺织丝绸产业带",
+      "province": "Jiangsu",
+      "coordinates": {
+        "lat": 31.2989,
+        "lng": 120.5853
+      },
+      "calibratedPosition": {
+        "x": 73.0,
+        "y": 40.0
+      },
+      "notes": "传统工艺与现代纺织技术结合"
+    },
+    {
+      "id": 6,
+      "name": "广州番禺服装产业带",
+      "province": "Guangdong",
+      "coordinates": {
+        "lat": 22.93,
+        "lng": 113.38
+      },
+      "calibratedPosition": {
+        "x": 70.0,
+        "y": 65.0
+      },
+      "notes": "快时尚女装，极速翻单能力"
+    },
+    {
+      "id": 7,
+      "name": "永康五金工具产业带",
+      "province": "Zhejiang",
+      "coordinates": {
+        "lat": 28.90,
+        "lng": 120.04
+      },
+      "calibratedPosition": {
+        "x": 72.0,
+        "y": 56.0
+      },
+      "notes": "中国五金之都，产业聚集度高"
+    },
+    {
+      "id": 8,
+      "name": "汕头澄海玩具产业带",
+      "province": "Guangdong",
+      "coordinates": {
+        "lat": 23.46,
+        "lng": 116.76
+      },
+      "calibratedPosition": {
+        "x": 80.5,
+        "y": 68.5
+      },
+      "notes": "世界玩具工厂，全产业链"
+    }
+  ],
+  "calibrationNotes": "这些坐标是根据SimpleMaps SVG的实际显示效果手动校准的。如需调整，请在此文件中修改对应的x、y值，然后同步更新ChinaIndustrialMap.tsx中的BELT_POSITION_FIXES对象。",
+  "lastUpdated": "2026-02-06",
+  "maintainer": "Frontend Team"
+}
