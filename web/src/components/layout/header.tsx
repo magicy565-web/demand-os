@@ -63,7 +63,7 @@ export function Header() {
       className={`fixed top-0 left-0 right-0 z-[999] bg-white/95 backdrop-blur-xl transition-all duration-500 ${
         scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"
       } ${
-        isImmersiveMode ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
+        isImmersiveMode ? "hidden" : ""
       }`}
     >
       <div className="container-editorial safe-area-inset-left safe-area-inset-right">
