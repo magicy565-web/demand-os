@@ -215,6 +215,9 @@ export const VERIFIED_FACTORIES: Factory[] = [
   }
 ];
 
+// 导出别名以解决组件导入冲突
+export const FACTORIES = VERIFIED_FACTORIES;
+
 export function getFactoryById(id: string): Factory | undefined {
   return VERIFIED_FACTORIES.find(f => f.id === id);
 }
