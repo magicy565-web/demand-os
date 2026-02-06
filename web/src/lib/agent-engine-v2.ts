@@ -6,7 +6,18 @@
 import { directus, Factory, Demand, RFQ } from './directus';
 import OpenAI from 'openai';
 
-const openai = new OpenAI();
+// 延迟初始化 OpenAI 客户端以避免构建时的 API 密钥检查
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    // 仅在实际需要时初始化
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || '',
+    });
+  }
+  return openai;
+}
 
 export interface AgentStep {
   id: string;
