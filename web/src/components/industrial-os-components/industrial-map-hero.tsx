@@ -15,7 +15,7 @@ export function IndustrialMapHero() {
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [mapScale, setMapScale] = useState<number>(0.8);
+  const [mapScale, setMapScale] = useState<number>(1);
   const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -87,14 +87,14 @@ export function IndustrialMapHero() {
 
   // 处理鼠标按下
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (mapScale <= 0.8) return; // 小于等于0.8不允许拖动
+    if (mapScale <= 1) return; // 小于等于1不允许拖动
     setIsDragging(true);
     setDragStart({ x: e.clientX - mapPosition.x, y: e.clientY - mapPosition.y });
   };
 
   // 处理鼠标移动
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || mapScale <= 0.8) return; // 小于等于0.8不允许拖动
+    if (!isDragging || mapScale <= 1) return; // 小于等于1不允许拖动
     const newX = e.clientX - dragStart.x;
     const newY = e.clientY - dragStart.y;
     
@@ -115,7 +115,7 @@ export function IndustrialMapHero() {
 
   // 重置缩放和位置
   const resetMap = () => {
-    setMapScale(0.8);
+    setMapScale(1);
     setMapPosition({ x: 0, y: 0 });
   };
 
@@ -129,22 +129,22 @@ export function IndustrialMapHero() {
         transition={{ duration: 0.8, delay: 0.2 }}
       >
         <div className="max-w-sm">
-          <h1 className="text-5xl font-black text-cyan-300 mb-1 leading-tight">
+          <h1 className="text-4xl font-black text-cyan-300 mb-1 leading-tight">
             链智云
           </h1>
-          <div className="h-1 w-20 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mb-4" />
-          <p className="text-cyan-100 text-lg mb-2 font-semibold">
+          <div className="h-0.5 w-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mb-3" />
+          <p className="text-cyan-100 text-base mb-2 font-semibold">
             中国产业带智能导航
           </p>
-          <p className="text-cyan-200/90 text-sm leading-relaxed mb-6">
+          <p className="text-cyan-200/90 text-xs leading-relaxed mb-5">
             点击产业带标注，探索智能采购解决方案
           </p>
           
           {/* 实时数据指标 */}
-          <div className="hidden lg:flex flex-col gap-3">
-            <StatCard icon={<Users className="w-5 h-5" />} label="入驻企业" value="142+" />
-            <StatCard icon={<DollarSign className="w-5 h-5" />} label="撮合GMV" value="¥24.5亿" />
-            <StatCard icon={<Clock className="w-5 h-5" />} label="周期缩短" value="60%" />
+          <div className="hidden lg:flex flex-col gap-2.5">
+            <StatCard icon={<Users className="w-4 h-4" />} label="入驻企业" value="142+" />
+            <StatCard icon={<DollarSign className="w-4 h-4" />} label="撮合GMV" value="¥24.5亿" />
+            <StatCard icon={<Clock className="w-4 h-4" />} label="周期缩短" value="60%" />
           </div>
         </div>
       </motion.div>
@@ -190,25 +190,25 @@ export function IndustrialMapHero() {
             setMapScale(Math.min(mapScale + 0.2, 2));
             setMapPosition({ x: 0, y: 0 });
           }}
-          className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
+          className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
           title="放大"
         >
-          <ZoomIn className="w-5 h-5" />
+          <ZoomIn className="w-4 h-4" />
         </button>
         <button
           onClick={() => {
             setMapScale(Math.max(mapScale - 0.2, 0.8));
             setMapPosition({ x: 0, y: 0 });
           }}
-          className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
+          className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
           title="缩小"
         >
-          <ZoomOut className="w-5 h-5" />
+          <ZoomOut className="w-4 h-4" />
         </button>
-        {mapScale !== 0.8 && (
+        {mapScale !== 1 && (
           <button
             onClick={resetMap}
-            className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30 text-xs font-medium"
+            className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30 text-xs font-medium"
             title="重置"
           >
             重置
@@ -382,11 +382,11 @@ export function IndustrialMapHero() {
 // 统计卡片组件 - 优化深色主题
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-slate-900/60 backdrop-blur-xl rounded-xl border border-cyan-500/30 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10">
+    <div className="flex items-center gap-2.5 px-3 py-2.5 bg-slate-900/60 backdrop-blur-xl rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10">
       <div className="text-cyan-400 flex-shrink-0">{icon}</div>
       <div>
-        <div className="text-xs text-cyan-200/70 font-medium">{label}</div>
-        <div className="text-lg font-bold text-cyan-50">{value}</div>
+        <div className="text-[10px] text-cyan-200/70 font-medium">{label}</div>
+        <div className="text-base font-bold text-cyan-50">{value}</div>
       </div>
     </div>
   );
