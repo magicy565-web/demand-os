@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChinaIndustrialMap from '@/components/industrial-map/ChinaIndustrialMap';
 import { IndustrialBelt } from '@/types/industrial';
-import { TrendingUp, Users, DollarSign, Clock, Filter, X, Search } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Clock, Filter, X, Search, ZoomIn, ZoomOut } from 'lucide-react';
 
 export function IndustrialMapHero() {
   const [industrialBelts, setIndustrialBelts] = useState<IndustrialBelt[]>([]);
@@ -15,6 +15,7 @@ export function IndustrialMapHero() {
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [mapScale, setMapScale] = useState<number>(1);
 
   // 加载产业带数据
   useEffect(() => {
@@ -110,12 +111,38 @@ export function IndustrialMapHero() {
       </motion.div>
 
       {/* 中国产业带地图 - 占据全屏 */}
-      <div className="absolute inset-0">
-        <ChinaIndustrialMap
-          industrialBelts={filteredBelts}
-          onBeltClick={handleBeltClick}
-        />
+      <div className="absolute inset-0 overflow-hidden">
+        <div style={{ transform: `scale(${mapScale})`, transformOrigin: 'center center', transition: 'transform 0.3s ease' }}>
+          <ChinaIndustrialMap
+            industrialBelts={filteredBelts}
+            onBeltClick={handleBeltClick}
+          />
+        </div>
       </div>
+
+      {/* 右侧缩放控制 */}
+      <motion.div
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2"
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      >
+        <button
+          onClick={() => setMapScale(Math.min(mapScale + 0.2, 2))}
+          className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
+          title="放大"
+        >
+          <ZoomIn className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setMapScale(Math.max(mapScale - 0.2, 0.8))}
+          className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
+          title="缩小"
+        >
+          <ZoomOut className="w-5 h-5" />
+        </button>
+        <div className="text-xs text-slate-400 text-center mt-1">{Math.round(mapScale * 100)}%</div>
+      </motion.div>
 
       {/* 左侧筛选面板 */}
       <motion.div
@@ -132,13 +159,13 @@ export function IndustrialMapHero() {
           transition={{ duration: 0.6, delay: 0.7 }}
         >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
             <input
               type="text"
               placeholder="搜索产业带..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all shadow-md"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-cyan-500/30 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all shadow-md"
             />
             {searchQuery && (
               <button
