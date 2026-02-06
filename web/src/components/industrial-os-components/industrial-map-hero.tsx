@@ -83,24 +83,24 @@ export function IndustrialMapHero() {
     <section className="relative w-full h-screen overflow-hidden bg-slate-950">
       {/* 左侧信息面板 */}
       <motion.div
-        className="absolute left-6 top-1/3 -translate-y-1/2 z-40 pointer-events-none"
+        className="absolute left-6 top-8 z-20 pointer-events-none"
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
         <div className="max-w-xs">
-          <h1 className="text-3xl font-bold text-white mb-3 flex items-center gap-2">
-            <span className="text-cyan-400">链智云</span>
+          <h1 className="text-4xl font-bold text-cyan-300 mb-2 flex items-center gap-2">
+            <span>链智云</span>
           </h1>
-          <p className="text-slate-300 text-sm mb-4 font-medium">
+          <p className="text-cyan-200/80 text-sm mb-3 font-medium tracking-wide">
             中国产业带智能导航
           </p>
-          <p className="text-slate-400 text-xs leading-relaxed">
+          <p className="text-slate-400/90 text-xs leading-relaxed">
             点击产业带标注，探索智能采购解决方案
           </p>
           
           {/* 实时数据指标 */}
-          <div className="hidden lg:flex flex-col gap-3 mt-6">
+          <div className="hidden lg:flex flex-col gap-2.5 mt-5">
             <StatCard icon={<Users className="w-4 h-4" />} label="入驻企业" value="142+" />
             <StatCard icon={<DollarSign className="w-4 h-4" />} label="撮合GMV" value="¥24.5亿" />
             <StatCard icon={<Clock className="w-4 h-4" />} label="周期缩短" value="60%" />
@@ -118,7 +118,7 @@ export function IndustrialMapHero() {
 
       {/* 左侧筛选面板 */}
       <motion.div
-        className="absolute left-6 top-32 z-30"
+        className="absolute left-6 bottom-20 z-30"
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.6 }}
