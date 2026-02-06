@@ -15,7 +15,7 @@ export function IndustrialMapHero() {
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [mapScale, setMapScale] = useState<number>(1);
+  const [mapScale, setMapScale] = useState<number>(0.8);
   const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -152,7 +152,7 @@ export function IndustrialMapHero() {
       {/* 中国产业带地图 - 占据全屏 */}
       <div 
         ref={mapContainerRef}
-        className="absolute inset-0 overflow-hidden bg-slate-950 cursor-grab active:cursor-grabbing"
+        className="absolute inset-0 bg-slate-950 cursor-grab active:cursor-grabbing overflow-hidden"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -162,9 +162,14 @@ export function IndustrialMapHero() {
           style={{ 
             transform: `scale(${mapScale}) translate(${mapPosition.x / mapScale}px, ${mapPosition.y / mapScale}px)`,
             transformOrigin: 'center center',
-            transition: isDragging ? 'none' : 'transform 0.3s ease'
+            transition: isDragging ? 'none' : 'transform 0.3s ease',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
-          className="w-full h-full origin-center"
+          className="origin-center"
         >
           <ChinaIndustrialMap
             industrialBelts={filteredBelts}
@@ -380,8 +385,8 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
     <div className="flex items-center gap-3 px-4 py-3 bg-slate-900/60 backdrop-blur-xl rounded-xl border border-cyan-500/30 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10">
       <div className="text-cyan-400 flex-shrink-0">{icon}</div>
       <div>
-        <div className="text-xs text-slate-400/80 font-medium">{label}</div>
-        <div className="text-lg font-bold text-white">{value}</div>
+        <div className="text-xs text-cyan-200/70 font-medium">{label}</div>
+        <div className="text-lg font-bold text-cyan-50">{value}</div>
       </div>
     </div>
   );
