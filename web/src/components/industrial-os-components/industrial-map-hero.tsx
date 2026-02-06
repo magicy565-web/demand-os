@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChinaIndustrialMap from '@/components/industrial-map/ChinaIndustrialMap';
 import { IndustrialBelt } from '@/types/industrial';
@@ -15,10 +15,6 @@ export function IndustrialMapHero() {
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   // 加载产业带数据
   useEffect(() => {
@@ -69,7 +65,6 @@ export function IndustrialMapHero() {
     }
   };
 
-  // 返回值前重置地图状态
   if (loading) {
     return (
       <section className="relative w-full h-screen flex items-center justify-center bg-slate-950">
@@ -83,33 +78,6 @@ export function IndustrialMapHero() {
       </section>
     );
   }
-
-  // 处理鼠标按下
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - mapPosition.x, y: e.clientY - mapPosition.y });
-  };
-
-  // 处理鼠标移动
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const newX = e.clientX - dragStart.x;
-    const newY = e.clientY - dragStart.y;
-    
-    // 限制拖动范围
-    const maxX = (mapContainerRef.current?.offsetWidth || 0) / 4;
-    const maxY = (mapContainerRef.current?.offsetHeight || 0) / 4;
-    
-    setMapPosition({
-      x: Math.max(-maxX, Math.min(maxX, newX)),
-      y: Math.max(-maxY, Math.min(maxY, newY))
-    });
-  };
-
-  // 处理鼠标抬起
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-slate-950">
@@ -142,30 +110,11 @@ export function IndustrialMapHero() {
       </motion.div>
 
       {/* 中国产业带地图 - 占据全屏 */}
-      <div 
-        ref={mapContainerRef}
-        className="absolute inset-0 bg-slate-950 cursor-grab active:cursor-grabbing overflow-hidden"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <div 
-          style={{ 
-            transform: `translate(${mapPosition.x}px, ${mapPosition.y}px)`,
-            transition: isDragging ? 'none' : 'transform 0.3s ease',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <ChinaIndustrialMap
-            industrialBelts={filteredBelts}
-            onBeltClick={handleBeltClick}
-          />
-        </div>
+      <div className="absolute inset-0 bg-slate-950 overflow-hidden flex items-center justify-center">
+        <ChinaIndustrialMap
+          industrialBelts={filteredBelts}
+          onBeltClick={handleBeltClick}
+        />
       </div>
 
       {/* 左侧筛选面板 */}
