@@ -81,32 +81,29 @@ export function IndustrialMapHero() {
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-slate-950">
-      {/* 顶部标题栏 - 半透明，不遮挡地图 */}
+      {/* 左侧信息面板 */}
       <motion.div
-        className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b from-slate-950/70 to-transparent backdrop-blur-sm pointer-events-none"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        className="absolute left-6 top-1/3 -translate-y-1/2 z-40 pointer-events-none"
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white mb-1 flex items-center gap-3">
-                <span className="text-cyan-400">链智云</span>
-                <span className="text-slate-400">|</span>
-                <span className="text-slate-300">中国产业带智能导航</span>
-              </h1>
-              <p className="text-slate-400 text-xs">
-                点击产业带标注，探索智能采购解决方案
-              </p>
-            </div>
-            
-            {/* 实时数据指标 */}
-            <div className="hidden lg:flex gap-4">
-              <StatCard icon={<Users className="w-4 h-4" />} label="入驻企业" value="142+" />
-              <StatCard icon={<DollarSign className="w-4 h-4" />} label="撮合GMV" value="¥24.5亿" />
-              <StatCard icon={<Clock className="w-4 h-4" />} label="周期缩短" value="60%" />
-            </div>
+        <div className="max-w-xs">
+          <h1 className="text-3xl font-bold text-white mb-3 flex items-center gap-2">
+            <span className="text-cyan-400">链智云</span>
+          </h1>
+          <p className="text-slate-300 text-sm mb-4 font-medium">
+            中国产业带智能导航
+          </p>
+          <p className="text-slate-400 text-xs leading-relaxed">
+            点击产业带标注，探索智能采购解决方案
+          </p>
+          
+          {/* 实时数据指标 */}
+          <div className="hidden lg:flex flex-col gap-3 mt-6">
+            <StatCard icon={<Users className="w-4 h-4" />} label="入驻企业" value="142+" />
+            <StatCard icon={<DollarSign className="w-4 h-4" />} label="撮合GMV" value="¥24.5亿" />
+            <StatCard icon={<Clock className="w-4 h-4" />} label="周期缩短" value="60%" />
           </div>
         </div>
       </motion.div>
