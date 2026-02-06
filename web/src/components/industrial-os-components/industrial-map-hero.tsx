@@ -1,20 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ChinaIndustrialMap from '@/components/industrial-map/ChinaIndustrialMap';
 import { IndustrialBelt } from '@/types/industrial';
-import { TrendingUp, Users, DollarSign, Clock } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Clock, Filter, X } from 'lucide-react';
 
 export function IndustrialMapHero() {
   const [industrialBelts, setIndustrialBelts] = useState<IndustrialBelt[]>([]);
+  const [filteredBelts, setFilteredBelts] = useState<IndustrialBelt[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // 加载产业带数据
   useEffect(() => {
     import('@/data/industrial_belts.json')
       .then(module => {
-        setIndustrialBelts(module.default as IndustrialBelt[]);
+        const belts = module.default as IndustrialBelt[];
+        setIndustrialBelts(belts);
+        setFilteredBelts(belts);
         setLoading(false);
       })
       .catch(err => {
@@ -22,6 +28,25 @@ export function IndustrialMapHero() {
         setLoading(false);
       });
   }, []);
+
+  // 应用筛选
+  useEffect(() => {
+    let filtered = industrialBelts;
+    
+    if (selectedProvince !== 'all') {
+      filtered = filtered.filter(belt => belt.province === selectedProvince);
+    }
+    
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(belt => 
+        belt.core_products.some(product => 
+          product.toLowerCase().includes(selectedCategory.toLowerCase())
+        )
+      );
+    }
+    
+    setFilteredBelts(filtered);
+  }, [selectedProvince, selectedCategory, industrialBelts]);
 
   const handleBeltClick = (belt: IndustrialBelt) => {
     // 平滑滚动到下一个区域
@@ -80,38 +105,88 @@ export function IndustrialMapHero() {
       {/* 中国产业带地图 - 占据全屏 */}
       <div className="absolute inset-0">
         <ChinaIndustrialMap
-          industrialBelts={industrialBelts}
+          industrialBelts={filteredBelts}
           onBeltClick={handleBeltClick}
         />
       </div>
 
-      {/* 右侧动态数据滚动条 */}
+      {/* 左侧筛选面板 */}
       <motion.div
-        className="hidden xl:block absolute right-6 top-32 z-30 space-y-3"
-        initial={{ x: 100, opacity: 0 }}
+        className="absolute left-6 top-32 z-30"
+        initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
       >
-        <DataTicker
-          label="深圳电子产业带"
-          value="今日询盘量 +12%"
-          trend="up"
-        />
-        <DataTicker
-          label="佛山家居产业带"
-          value="平均交期 15 天"
-          trend="neutral"
-        />
-        <DataTicker
-          label="义乌小商品产业带"
-          value="MOQ 低至 50 件"
-          trend="up"
-        />
-        <DataTicker
-          label="宁波模具产业带"
-          value="精度 ±0.01mm"
-          trend="neutral"
-        />
+        {/* 筛选按钮 */}
+        <motion.button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-2 px-4 py-3 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-700/50 text-white hover:bg-slate-800/80 transition-colors"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Filter className="w-4 h-4 text-cyan-400" />
+          <span className="text-sm font-medium">筛选产业带</span>
+          {(selectedProvince !== 'all' || selectedCategory !== 'all') && (
+            <span className="ml-1 px-2 py-0.5 bg-cyan-500/20 text-cyan-400 text-xs rounded-full">
+              {filteredBelts.length}
+            </span>
+          )}
+        </motion.button>
+
+        {/* 筛选面板 */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              className="mt-3 p-4 bg-slate-900/90 backdrop-blur-md rounded-lg border border-slate-700/50 min-w-[280px]"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {/* 省份筛选 */}
+              <div className="mb-4">
+                <label className="block text-xs text-slate-400 mb-2">按省份</label>
+                <select
+                  value={selectedProvince}
+                  onChange={(e) => setSelectedProvince(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                >
+                  <option value="all">全部省份</option>
+                  <option value="Guangdong">广东省</option>
+                  <option value="Zhejiang">浙江省</option>
+                  <option value="Jiangsu">江苏省</option>
+                 <option value="家具">家居家具</option>
+                  <option value="小商品">小商品</option>
+                  <option value="纺织">纺织丝绸</option>
+                  <option value="服装">服装</option>
+                  <option value="五金">五金工具</option>
+                  <option value="玩具">玩具</option>
+                </select>
+              </div>
+
+              {/* 重置按钮 */}
+              {(selectedProvince !== 'all' || selectedCategory !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSelectedProvince('all');
+                    setSelectedCategory('all');
+                  }}
+                  className="w-full px-3 py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-lg text-xs text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2"
+                >
+                  <X className="w-3 h-3" />
+                  重置筛选
+                </button>
+              )}
+
+              {/* 结果统计 */}
+              <div className="mt-3 pt-3 border-t border-slate-700/50">
+                <div className="text-xs text-slate-400">
+                  显示 <span className="text-cyan-400 font-semibold">{filteredBelts.length}</span> 个产业带
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </section>
   );
