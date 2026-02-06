@@ -65,6 +65,16 @@ export default function ChinaIndustrialMap({
     }
   };
 
+  // 避免 Hydration 错误：只在客户端渲染
+  const [isMounted, setIsMounted] = useState(false);
+  useState(() => {
+    if (typeof window !== 'undefined') {
+      setIsMounted(true);
+    }
+  });
+
+  if (!isMounted) return <div className="w-full h-full min-h-[600px] bg-[#0a1628]" />;
+
   const handleBeltLeave = () => {
     setHoveredBelt(null);
   };
@@ -113,7 +123,7 @@ export default function ChinaIndustrialMap({
                   href="/china-provinces-map.svg"
                   width="1000"
                   height="738"
-                  opacity="0.65"
+                  opacity={0.65}
                   style={{
                     filter: 'brightness(1.2) contrast(1.3) saturate(0.8) hue-rotate(160deg)',
                   }}
@@ -126,9 +136,6 @@ export default function ChinaIndustrialMap({
           <div className="absolute inset-0">
             {industrialBelts.map((belt, index) => {
               const pos = latLngToSVGPercent(belt.coordinates.lat, belt.coordinates.lng);
-              
-              // 调试输出
-              console.log(`${belt.name}: lat=${belt.coordinates.lat}, lng=${belt.coordinates.lng} => x=${pos.x.toFixed(2)}%, y=${pos.y.toFixed(2)}%`);
               
               return (
                 <motion.div

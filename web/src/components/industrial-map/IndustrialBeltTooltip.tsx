@@ -74,12 +74,12 @@ export default function IndustrialBeltTooltip({ belt, position }: IndustrialBelt
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {belt.core_categories.slice(0, 4).map((category, index) => (
+              {(belt.core_products || []).slice(0, 4).map((product, index) => (
                 <span
                   key={index}
                   className="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-xs text-purple-300 font-medium"
                 >
-                  {category}
+                  {product}
                 </span>
               ))}
             </div>
@@ -93,16 +93,9 @@ export default function IndustrialBeltTooltip({ belt, position }: IndustrialBelt
                 核心优势
               </span>
             </div>
-            <ul className="space-y-1.5">
-              {belt.advantages.slice(0, 3).map((advantage, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-green-400 mt-0.5">•</span>
-                  <span className="text-xs text-slate-300 leading-relaxed">
-                    {advantage}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div className="text-xs text-slate-300 leading-relaxed">
+              {belt.advantages}
+            </div>
           </div>
 
           {/* 底部提示 */}
