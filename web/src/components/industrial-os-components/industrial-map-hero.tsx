@@ -88,22 +88,23 @@ export function IndustrialMapHero() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <div className="max-w-xs">
-          <h1 className="text-4xl font-bold text-cyan-300 mb-2 flex items-center gap-2">
-            <span>链智云</span>
+        <div className="max-w-sm">
+          <h1 className="text-5xl font-black text-cyan-300 mb-1 leading-tight">
+            链智云
           </h1>
-          <p className="text-cyan-200/80 text-sm mb-3 font-medium tracking-wide">
+          <div className="h-1 w-20 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mb-4" />
+          <p className="text-cyan-100 text-lg mb-2 font-semibold">
             中国产业带智能导航
           </p>
-          <p className="text-slate-400/90 text-xs leading-relaxed">
+          <p className="text-slate-300/80 text-sm leading-relaxed mb-6">
             点击产业带标注，探索智能采购解决方案
           </p>
           
           {/* 实时数据指标 */}
-          <div className="hidden lg:flex flex-col gap-2.5 mt-5">
-            <StatCard icon={<Users className="w-4 h-4" />} label="入驻企业" value="142+" />
-            <StatCard icon={<DollarSign className="w-4 h-4" />} label="撮合GMV" value="¥24.5亿" />
-            <StatCard icon={<Clock className="w-4 h-4" />} label="周期缩短" value="60%" />
+          <div className="hidden lg:flex flex-col gap-3">
+            <StatCard icon={<Users className="w-5 h-5" />} label="入驻企业" value="142+" />
+            <StatCard icon={<DollarSign className="w-5 h-5" />} label="撮合GMV" value="¥24.5亿" />
+            <StatCard icon={<Clock className="w-5 h-5" />} label="周期缩短" value="60%" />
           </div>
         </div>
       </motion.div>
@@ -278,14 +279,14 @@ export function IndustrialMapHero() {
   );
 }
 
-// 统计卡片组件 - 更紧凑
+// 统计卡片组件 - 优化深色主题
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-slate-800/40 backdrop-blur-sm rounded-lg border border-slate-700/30">
-      <div className="text-cyan-400">{icon}</div>
+    <div className="flex items-center gap-3 px-4 py-3 bg-slate-900/60 backdrop-blur-xl rounded-xl border border-cyan-500/30 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10">
+      <div className="text-cyan-400 flex-shrink-0">{icon}</div>
       <div>
-        <div className="text-[10px] text-slate-400">{label}</div>
-        <div className="text-sm font-bold text-white">{value}</div>
+        <div className="text-xs text-slate-400/80 font-medium">{label}</div>
+        <div className="text-lg font-bold text-white">{value}</div>
       </div>
     </div>
   );
