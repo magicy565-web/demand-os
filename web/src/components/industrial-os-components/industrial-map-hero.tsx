@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChinaIndustrialMap from '@/components/industrial-map/ChinaIndustrialMap';
 import { IndustrialBelt } from '@/types/industrial';
-import { TrendingUp, Users, DollarSign, Clock, Filter, X, Search, ZoomIn, ZoomOut } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Clock, Filter, X, Search } from 'lucide-react';
 
 export function IndustrialMapHero() {
   const [industrialBelts, setIndustrialBelts] = useState<IndustrialBelt[]>([]);
@@ -15,7 +15,6 @@ export function IndustrialMapHero() {
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [mapScale, setMapScale] = useState<number>(1);
   const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -87,20 +86,19 @@ export function IndustrialMapHero() {
 
   // 处理鼠标按下
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (mapScale <= 1) return; // 小于等于1不允许拖动
     setIsDragging(true);
     setDragStart({ x: e.clientX - mapPosition.x, y: e.clientY - mapPosition.y });
   };
 
   // 处理鼠标移动
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || mapScale <= 1) return; // 小于等于1不允许拖动
+    if (!isDragging) return;
     const newX = e.clientX - dragStart.x;
     const newY = e.clientY - dragStart.y;
     
     // 限制拖动范围
-    const maxX = (mapScale - 1) * (mapContainerRef.current?.offsetWidth || 0) / 2;
-    const maxY = (mapScale - 1) * (mapContainerRef.current?.offsetHeight || 0) / 2;
+    const maxX = (mapContainerRef.current?.offsetWidth || 0) / 4;
+    const maxY = (mapContainerRef.current?.offsetHeight || 0) / 4;
     
     setMapPosition({
       x: Math.max(-maxX, Math.min(maxX, newX)),
@@ -111,12 +109,6 @@ export function IndustrialMapHero() {
   // 处理鼠标抬起
   const handleMouseUp = () => {
     setIsDragging(false);
-  };
-
-  // 重置缩放和位置
-  const resetMap = () => {
-    setMapScale(1);
-    setMapPosition({ x: 0, y: 0 });
   };
 
   return (
@@ -160,8 +152,7 @@ export function IndustrialMapHero() {
       >
         <div 
           style={{ 
-            transform: `scale(${mapScale}) translate(${mapPosition.x / mapScale}px, ${mapPosition.y / mapScale}px)`,
-            transformOrigin: 'center center',
+            transform: `translate(${mapPosition.x}px, ${mapPosition.y}px)`,
             transition: isDragging ? 'none' : 'transform 0.3s ease',
             width: '100%',
             height: '100%',
@@ -169,7 +160,6 @@ export function IndustrialMapHero() {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          className="origin-center"
         >
           <ChinaIndustrialMap
             industrialBelts={filteredBelts}
@@ -177,45 +167,6 @@ export function IndustrialMapHero() {
           />
         </div>
       </div>
-
-      {/* 右侧缩放控制 */}
-      <motion.div
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2"
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-      >
-        <button
-          onClick={() => {
-            setMapScale(Math.min(mapScale + 0.2, 2));
-            setMapPosition({ x: 0, y: 0 });
-          }}
-          className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
-          title="放大"
-        >
-          <ZoomIn className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => {
-            setMapScale(Math.max(mapScale - 0.2, 0.8));
-            setMapPosition({ x: 0, y: 0 });
-          }}
-          className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
-          title="缩小"
-        >
-          <ZoomOut className="w-4 h-4" />
-        </button>
-        {mapScale !== 1 && (
-          <button
-            onClick={resetMap}
-            className="p-2.5 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30 text-xs font-medium"
-            title="重置"
-          >
-            重置
-          </button>
-        )}
-        <div className="text-xs text-cyan-200 text-center mt-1 font-medium">{Math.round(mapScale * 100)}%</div>
-      </motion.div>
 
       {/* 左侧筛选面板 */}
       <motion.div
