@@ -11,39 +11,59 @@ interface ChinaIndustrialMapProps {
 }
 
 /**
- * 经纬度转换为 SVG 坐标（百分比）
- * 基于参考城市（北京、上海、广州、深圳）线性回归校准的精确映射
- * 
- * 参考城市坐标：
- * - 北京 (39.90°N, 116.40°E) → SVG(750, 200)
- * - 上海 (31.23°N, 121.47°E) → SVG(850, 350)
- * - 广州 (23.13°N, 113.26°E) → SVG(750, 550)
- * - 深圳 (22.54°N, 114.06°E) → SVG(760, 570)
- * 
- * 线性映射公式（通过最小二乘法计算）：
- * X = 12.0707 * lng - 626.29
- * Y = -21.4412 * lat + 1043.58
+ * 手动校准的产业带位置映射表
+ * 针对SimpleMaps中国地图 SVG (1000x738)
+ * 基于实际地理位置和 SVG 显示效果精确校准
+ */
+const BELT_POSITION_FIXES: Record<number, { x: number; y: number }> = {
+  1: { x: 72.5, y: 62.0 },  // 深圳电子信息产业带
+  2: { x: 78.5, y: 44.0 },  // 宁波模具与注塑产业带
+  3: { x: 66.0, y: 67.0 },  // 佛山泛家居产业带
+  4: { x: 68.5, y: 51.0 },  // 义乌小商品产业带
+  5: { x: 73.0, y: 40.0 },  // 苏州纺织丝绸产业带
+  6: { x: 70.0, y: 65.0 },  // 广州番禺服装产业带
+  7: { x: 72.0, y: 56.0 },  // 永康五金工具产业带
+  8: { x: 80.5, y: 68.5 },  // 汕头澄海玩具产业带
+};
+
+/**
+ * 使用校准表获取产业带位置
+ */
+function getBeltPosition(beltId: number, lat: number, lng: number) {
+  // 优先使用校准表中的固定位置
+  if (BELT_POSITION_FIXES[beltId]) {
+    return BELT_POSITION_FIXES[beltId];
+  }
+  
+  // 备用：使用公式推算（用于未来添加的产业带）
+  return latLngToSVGPercent(lat, lng);
+}
+
+/**
+ * 经纬度转换为 SVG 坐标（百分比）- 备用算法
+ * 基于改进的 Mercator 投影映射
  */
 function latLngToSVGPercent(lat: number, lng: number) {
-  // 基于参考城市校准的线性映射系数
-  const LNG_COEFF = 12.070689;    // 经度系数
-  const LNG_INTERCEPT = -626.290917;  // 经度截距
-  const LAT_COEFF = -21.441219;   // 纬度系数（负值因为 SVG Y 轴向下）
-  const LAT_INTERCEPT = 1043.583597;  // 纬度截距
+  // SimpleMaps 中国地图的坐标系范围
+  const CHINA_BOUNDS = {
+    minLat: 18.2,   // 最南端（南海南部）
+    maxLat: 53.5,   // 最北端（黑龙江北部）
+    minLng: 73.5,   // 最西端（新疆西部）
+    maxLng: 135.1,  // 最东端（黑龙江东部）
+  };
   
-  // SimpleMaps SVG viewBox 尺寸
   const SVG_WIDTH = 1000;
   const SVG_HEIGHT = 738;
   
-  // 计算 SVG 坐标
-  const svgX = LNG_COEFF * lng + LNG_INTERCEPT;
-  const svgY = LAT_COEFF * lat + LAT_INTERCEPT;
+  // 线性映射（Mercator 简化版）
+  const x = ((lng - CHINA_BOUNDS.minLng) / (CHINA_BOUNDS.maxLng - CHINA_BOUNDS.minLng)) * SVG_WIDTH;
+  const y = ((CHINA_BOUNDS.maxLat - lat) / (CHINA_BOUNDS.maxLat - CHINA_BOUNDS.minLat)) * SVG_HEIGHT;
   
   // 转换为百分比
-  const x = (svgX / SVG_WIDTH) * 100;
-  const y = (svgY / SVG_HEIGHT) * 100;
-  
-  return { x, y };
+  return {
+    x: (x / SVG_WIDTH) * 100,
+    y: (y / SVG_HEIGHT) * 100,
+  };
 }
 
 export default function ChinaIndustrialMap({
@@ -115,10 +135,10 @@ export default function ChinaIndustrialMap({
           {/* 产业带标注层 */}
           <div className="absolute inset-0">
             {industrialBelts.map((belt, index) => {
-              const pos = latLngToSVGPercent(belt.coordinates.lat, belt.coordinates.lng);
+              const pos = getBeltPosition(belt.id, belt.coordinates.lat, belt.coordinates.lng);
               
               // 调试输出
-              console.log(`${belt.name}: lat=${belt.coordinates.lat}, lng=${belt.coordinates.lng} => x=${pos.x.toFixed(2)}%, y=${pos.y.toFixed(2)}%`);
+              console.log(`${belt.name} (ID: ${belt.id}): lat=${belt.coordinates.lat}, lng=${belt.coordinates.lng} => x=${pos.x.toFixed(2)}%, y=${pos.y.toFixed(2)}%`);
               
               return (
                 <motion.div
