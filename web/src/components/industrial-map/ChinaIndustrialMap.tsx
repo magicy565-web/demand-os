@@ -26,14 +26,27 @@ const SVG_VIEWBOX = {
 
 /**
  * 经纬度转换为 SVG 坐标（百分比）
- * 使用 Mercator 投影的简化版本
+ * 校准后的版本，适配 SimpleMaps 的中国地图投影
  */
 function latLngToSVGPercent(lat: number, lng: number) {
-  // 经度转 X 坐标（线性映射）
-  const x = ((lng - CHINA_BOUNDS.minLng) / (CHINA_BOUNDS.maxLng - CHINA_BOUNDS.minLng)) * 100;
+  // SimpleMaps 的中国地图使用的实际可视区域（经过测量）
+  // 东南沿海地区在地图上的位置需要微调
+  const MAP_CALIBRATION = {
+    // 经度偏移：微调以匹配 SimpleMaps 的投影
+    lngOffset: -5,
+    // 纬度偏移：微调以匹配 SimpleMaps 的投影
+    latOffset: 8,
+    // 缩放系数：让标注更分散
+    scale: 1.0,
+  };
   
-  // 纬度转 Y 坐标（反向映射，因为 SVG 的 Y 轴向下）
-  const y = ((CHINA_BOUNDS.maxLat - lat) / (CHINA_BOUNDS.maxLat - CHINA_BOUNDS.minLat)) * 100;
+  // 基础线性映射
+  let x = ((lng - CHINA_BOUNDS.minLng) / (CHINA_BOUNDS.maxLng - CHINA_BOUNDS.minLng)) * 100;
+  let y = ((CHINA_BOUNDS.maxLat - lat) / (CHINA_BOUNDS.maxLat - CHINA_BOUNDS.minLat)) * 100;
+  
+  // 应用校准偏移和缩放
+  x = (x + MAP_CALIBRATION.lngOffset) * MAP_CALIBRATION.scale;
+  y = (y + MAP_CALIBRATION.latOffset) * MAP_CALIBRATION.scale;
   
   return { x, y };
 }
@@ -91,24 +104,27 @@ export default function ChinaIndustrialMap({
         <div className="relative w-full h-full max-w-6xl max-h-[700px]">
           {/* 中国地图 SVG */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <svg
-              viewBox="0 0 1000 738"
-              className="w-full h-full"
-              style={{
-                filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.2))',
-              }}
-            >
-              {/* 加载外部 SVG 作为 image - 使用带省份边界的地图 */}
-              <image
-                href="/china-provinces-map.svg"
-                width="1000"
-                height="738"
-                opacity="0.4"
+            <div className="relative w-full h-full">
+              <svg
+                viewBox="0 0 1000 738"
+                className="w-full h-full"
+                preserveAspectRatio="xMidYMid meet"
                 style={{
-                  filter: 'brightness(0) saturate(100%) invert(50%) sepia(100%) saturate(400%) hue-rotate(160deg)',
+                  filter: 'drop-shadow(0 0 20px rgba(0, 212, 255, 0.4))',
                 }}
-              />
-            </svg>
+              >
+                {/* 省份地图 - 增强可见度 */}
+                <image
+                  href="/china-provinces-map.svg"
+                  width="1000"
+                  height="738"
+                  opacity="0.65"
+                  style={{
+                    filter: 'brightness(1.2) contrast(1.3) saturate(0.8) hue-rotate(160deg)',
+                  }}
+                />
+              </svg>
+            </div>
           </div>
 
           {/* 产业带标注层 */}
