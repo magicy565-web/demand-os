@@ -16,6 +16,10 @@ export function IndustrialMapHero() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [mapScale, setMapScale] = useState<number>(1);
+  const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   // 加载产业带数据
   useEffect(() => {
@@ -66,6 +70,7 @@ export function IndustrialMapHero() {
     }
   };
 
+  // 返回值前重置地图状态
   if (loading) {
     return (
       <section className="relative w-full h-screen flex items-center justify-center bg-slate-950">
@@ -79,6 +84,40 @@ export function IndustrialMapHero() {
       </section>
     );
   }
+
+  // 处理鼠标按下
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (mapScale <= 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - mapPosition.x, y: e.clientY - mapPosition.y });
+  };
+
+  // 处理鼠标移动
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || mapScale <= 1) return;
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    
+    // 限制拖动范围
+    const maxX = (mapScale - 1) * (mapContainerRef.current?.offsetWidth || 0) / 2;
+    const maxY = (mapScale - 1) * (mapContainerRef.current?.offsetHeight || 0) / 2;
+    
+    setMapPosition({
+      x: Math.max(-maxX, Math.min(maxX, newX)),
+      y: Math.max(-maxY, Math.min(maxY, newY))
+    });
+  };
+
+  // 处理鼠标抬起
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // 重置缩放和位置
+  const resetMap = () => {
+    setMapScale(1);
+    setMapPosition({ x: 0, y: 0 });
+  };
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-slate-950">
@@ -111,8 +150,22 @@ export function IndustrialMapHero() {
       </motion.div>
 
       {/* 中国产业带地图 - 占据全屏 */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div style={{ transform: `scale(${mapScale})`, transformOrigin: 'center center', transition: 'transform 0.3s ease' }}>
+      <div 
+        ref={mapContainerRef}
+        className="absolute inset-0 overflow-hidden bg-slate-950 cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <div 
+          style={{ 
+            transform: `scale(${mapScale}) translate(${mapPosition.x / mapScale}px, ${mapPosition.y / mapScale}px)`,
+            transformOrigin: 'center center',
+            transition: isDragging ? 'none' : 'transform 0.3s ease'
+          }}
+          className="w-full h-full origin-center"
+        >
           <ChinaIndustrialMap
             industrialBelts={filteredBelts}
             onBeltClick={handleBeltClick}
@@ -128,19 +181,34 @@ export function IndustrialMapHero() {
         transition={{ duration: 0.8, delay: 0.6 }}
       >
         <button
-          onClick={() => setMapScale(Math.min(mapScale + 0.2, 2))}
+          onClick={() => {
+            setMapScale(Math.min(mapScale + 0.2, 2));
+            setMapPosition({ x: 0, y: 0 });
+          }}
           className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
           title="放大"
         >
           <ZoomIn className="w-5 h-5" />
         </button>
         <button
-          onClick={() => setMapScale(Math.max(mapScale - 0.2, 0.8))}
+          onClick={() => {
+            setMapScale(Math.max(mapScale - 0.2, 0.8));
+            setMapPosition({ x: 0, y: 0 });
+          }}
           className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30"
           title="缩小"
         >
           <ZoomOut className="w-5 h-5" />
         </button>
+        {mapScale !== 1 && (
+          <button
+            onClick={resetMap}
+            className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30 text-xs font-medium"
+            title="重置"
+          >
+            重置
+          </button>
+        )}
         <div className="text-xs text-slate-400 text-center mt-1">{Math.round(mapScale * 100)}%</div>
       </motion.div>
 
