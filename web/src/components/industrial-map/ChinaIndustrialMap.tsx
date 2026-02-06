@@ -116,7 +116,7 @@ export default function ChinaIndustrialMap({
 
       {/* 中国地图容器 */}
       <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
-        <div className="relative w-full h-full max-w-6xl max-h-[700px]">
+        <div className="relative w-full h-full">
           {/* 中国地图 SVG */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-full">

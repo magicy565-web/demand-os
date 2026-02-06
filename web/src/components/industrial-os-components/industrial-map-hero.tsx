@@ -87,14 +87,14 @@ export function IndustrialMapHero() {
 
   // 处理鼠标按下
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (mapScale <= 1) return;
+    if (mapScale <= 0.8) return; // 小于等于0.8不允许拖动
     setIsDragging(true);
     setDragStart({ x: e.clientX - mapPosition.x, y: e.clientY - mapPosition.y });
   };
 
   // 处理鼠标移动
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || mapScale <= 1) return;
+    if (!isDragging || mapScale <= 0.8) return; // 小于等于0.8不允许拖动
     const newX = e.clientX - dragStart.x;
     const newY = e.clientY - dragStart.y;
     
@@ -115,7 +115,7 @@ export function IndustrialMapHero() {
 
   // 重置缩放和位置
   const resetMap = () => {
-    setMapScale(1);
+    setMapScale(0.8);
     setMapPosition({ x: 0, y: 0 });
   };
 
@@ -136,7 +136,7 @@ export function IndustrialMapHero() {
           <p className="text-cyan-100 text-lg mb-2 font-semibold">
             中国产业带智能导航
           </p>
-          <p className="text-slate-300/80 text-sm leading-relaxed mb-6">
+          <p className="text-cyan-200/90 text-sm leading-relaxed mb-6">
             点击产业带标注，探索智能采购解决方案
           </p>
           
@@ -205,7 +205,7 @@ export function IndustrialMapHero() {
         >
           <ZoomOut className="w-5 h-5" />
         </button>
-        {mapScale !== 1 && (
+        {mapScale !== 0.8 && (
           <button
             onClick={resetMap}
             className="p-3 bg-cyan-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-cyan-300 hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10 hover:bg-cyan-500/30 text-xs font-medium"
@@ -214,7 +214,7 @@ export function IndustrialMapHero() {
             重置
           </button>
         )}
-        <div className="text-xs text-slate-400 text-center mt-1">{Math.round(mapScale * 100)}%</div>
+        <div className="text-xs text-cyan-200 text-center mt-1 font-medium">{Math.round(mapScale * 100)}%</div>
       </motion.div>
 
       {/* 左侧筛选面板 */}
