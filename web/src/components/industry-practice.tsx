@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
@@ -8,6 +10,7 @@ const industries = [
     nameEn: "Consumer Electronics",
     description: "智能硬件、可穿戴设备、智能家居生态",
     growth: "+24%",
+    pdfUrl: "/消费电子.pdf",
   },
   {
     id: "02",
@@ -15,6 +18,7 @@ const industries = [
     nameEn: "Beauty & Personal Care",
     description: "护肤、彩妆、个人护理产品出海",
     growth: "+31%",
+    pdfUrl: null,
   },
   {
     id: "03",
@@ -22,6 +26,7 @@ const industries = [
     nameEn: "Home & Living",
     description: "家具、家纺、厨房用品全球化",
     growth: "+18%",
+    pdfUrl: "/家居生活.pdf",
   },
   {
     id: "04",
@@ -29,6 +34,7 @@ const industries = [
     nameEn: "Sports & Outdoor",
     description: "运动装备、户外用品、健身器材",
     growth: "+27%",
+    pdfUrl: null,
   },
   {
     id: "05",
@@ -36,6 +42,7 @@ const industries = [
     nameEn: "Baby & Maternity",
     description: "婴童用品、孕产妇护理产品",
     growth: "+22%",
+    pdfUrl: null,
   },
   {
     id: "06",
@@ -43,6 +50,7 @@ const industries = [
     nameEn: "Pet Economy",
     description: "宠物食品、用品、智能设备",
     growth: "+35%",
+    pdfUrl: "/宠物经济.pdf",
   },
 ]
 
@@ -59,7 +67,7 @@ export function IndustryPractice() {
             </h2>
           </div>
           <p className="text-sm text-muted-foreground max-w-md lg:text-right leading-relaxed">
-            我们深耕六大核心行业，以专业洞察与本土化经验助力您的全球化征程。
+            我们深耕六大核心行业，以专业洞察与本土化经验助力您的全球化征程。 ➡<span className="text-cobalt font-medium">点击查看报告</span>
           </p>
         </div>
 
@@ -93,6 +101,18 @@ export function IndustryPractice() {
                   <div className="lg:col-span-6">
                     <p className="text-sm text-muted-foreground">
                       {industry.description}
+                      {industry.pdfUrl && (
+                        <a
+                          href={industry.pdfUrl}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="ml-2 text-cobalt font-medium hover:text-cobalt/80 transition-colors inline-flex items-center gap-1"
+                        >
+                          <span>➡查看报告</span>
+                        </a>
+                      )}
                     </p>
                   </div>
 

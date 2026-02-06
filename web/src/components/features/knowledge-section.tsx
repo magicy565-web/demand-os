@@ -1,33 +1,35 @@
-import Link from "next/link"
 import { FileText, Download } from "lucide-react"
 
 const reports = [
   {
     id: 1,
-    title: "2026年全球贸易展望",
-    titleEn: "Global Trade Outlook 2026",
-    category: "Annual Report",
-    description: "全面解读跨境电商市场格局变化与增长机遇",
-    fileSize: "PDF / 4.2MB",
+    title: "宠物经济",
+    titleEn: "Pet Economy Report",
+    category: "White Paper",
+    description: "深入分析宠物经济产业链、消费趋势与商机",
+    fileSize: "PDF",
     color: "bg-cobalt/20",
+    pdfUrl: "/宠物经济.pdf",
   },
   {
     id: 2,
-    title: "算法经济学",
-    titleEn: "The Economics of Algorithms",
+    title: "家居生活",
+    titleEn: "Home & Living Report",
     category: "White Paper",
-    description: "平台算法如何重塑跨境电商的流量分配与竞争格局",
-    fileSize: "PDF / 2.8MB",
+    description: "家居生活消费升级趋势、供应链优化与品牌机会",
+    fileSize: "PDF",
     color: "bg-navy-light/30",
+    pdfUrl: "/家居生活.pdf",
   },
   {
     id: 3,
-    title: "本地化生存指南",
-    titleEn: "Localization Survival Guide",
-    category: "Playbook",
-    description: "从文化适应到供应链优化的全面本地化手册",
-    fileSize: "PDF / 3.5MB",
+    title: "消费电子",
+    titleEn: "Consumer Electronics Report",
+    category: "White Paper",
+    description: "消费电子产业变革、技术创新与市场前景分析",
+    fileSize: "PDF",
     color: "bg-cobalt-muted/20",
+    pdfUrl: "/消费电子.pdf",
   },
 ]
 
@@ -48,9 +50,12 @@ export function KnowledgeSection() {
         {/* Reports Grid - Clean & Professional */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reports.map((report) => (
-            <Link
+            <a
               key={report.id}
-              href={`#report-${report.id}`}
+              href={report.pdfUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
               className="group block"
             >
               {/* Card Container */}
@@ -87,7 +92,7 @@ export function KnowledgeSection() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
 
@@ -95,12 +100,9 @@ export function KnowledgeSection() {
         <div className="mt-16 pt-12 border-t border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-navy mb-2">探索更多洞察</h3>
-              <p className="text-sm text-slate">访问我们的完整知识库，获取超过50篇行业研究报告</p>
+              <h3 className="text-lg font-semibold text-navy mb-2">下载行业白皮书</h3>
+              <p className="text-sm text-slate">了解市场洞察，把握行业机会</p>
             </div>
-            <Link href="#all-insights" className="btn-primary">
-              浏览全部研究 →
-            </Link>
           </div>
         </div>
       </div>
