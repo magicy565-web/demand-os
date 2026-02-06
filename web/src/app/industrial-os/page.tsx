@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/Footer"
+import { IndustrialMapHero } from "@/components/industrial-os-components/industrial-map-hero"
 import { HeroSection } from "@/components/industrial-os-components/hero-section"
 import { StyleTuner } from "@/components/industrial-os-components/style-tuner"
 import { CommandBar } from "@/components/industrial-os-components/command-bar"
@@ -14,7 +15,9 @@ export default function IndustrialOSPage() {
     <div className="min-h-screen bg-gradient-to-br from-surface via-paper-mist to-paper-warm">
       <Header />
       
-      <main className="pt-16 lg:pt-20">
+      <IndustrialMapHero />
+      
+      <main className="pt-0" id="hero-section">
         <HeroSection />
         <StyleTuner />
         <TimelineWars />

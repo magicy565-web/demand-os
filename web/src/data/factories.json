@@ -1,0 +1,23 @@
+[
+  { "id": 1, "name": "深圳宏达智能科技有限公司", "industrial_belt_id": 1, "main_products": ["智能手表", "蓝牙耳机"], "moq": 500, "lead_time": 15, "certifications": ["CE", "FCC", "RoHS"], "status": "verified" },
+  { "id": 2, "name": "深圳精密电路板制造厂", "industrial_belt_id": 1, "main_products": ["多层PCB", "FPC软板"], "moq": 50, "lead_time": 7, "certifications": ["ISO9001", "UL"], "status": "verified" },
+  
+  { "id": 3, "name": "宁波精工模具有限公司", "industrial_belt_id": 2, "main_products": ["精密注塑模", "铝合金压铸"], "moq": 1, "lead_time": 35, "certifications": ["ISO9001"], "status": "verified" },
+  { "id": 4, "name": "宁波远航汽配厂", "industrial_belt_id": 2, "main_products": ["汽车内饰件", "保险杠"], "moq": 200, "lead_time": 25, "certifications": ["IATF16949"], "status": "pending" },
+
+  { "id": 5, "name": "佛山创意家居制品厂", "industrial_belt_id": 3, "main_products": ["人体工学椅", "办公沙发"], "moq": 50, "lead_time": 20, "certifications": ["FSC"], "status": "verified" },
+  { "id": 6, "name": "佛山岩板建材集团", "industrial_belt_id": 3, "main_products": ["大理石瓷砖", "岩板台面"], "moq": 500, "lead_time": 10, "certifications": ["CCC", "ISO14001"], "status": "verified" },
+
+  { "id": 7, "name": "义乌璀璨饰品加工厂", "industrial_belt_id": 4, "main_products": ["合金项链", "锆石耳环"], "moq": 120, "lead_time": 5, "certifications": [], "status": "verified" },
+  { "id": 8, "name": "义乌环球毛绒玩具厂", "industrial_belt_id": 4, "main_products": ["毛绒公仔", "安抚玩偶"], "moq": 1000, "lead_time": 15, "certifications": ["EN71"], "status": "verified" },
+
+  { "id": 9, "name": "苏州锦绣丝绸工艺厂", "industrial_belt_id": 5, "main_products": ["真丝围巾", "丝绸睡衣"], "moq": 50, "lead_time": 20, "certifications": ["OEKO-TEX"], "status": "verified" },
+  
+  { "id": 10, "name": "广州希音供应链制衣厂", "industrial_belt_id": 6, "main_products": ["印花T恤", "连衣裙"], "moq": 100, "lead_time": 7, "certifications": ["BSCI"], "status": "verified" },
+  { "id": 11, "name": "广州时尚牛仔水洗厂", "industrial_belt_id": 6, "main_products": ["牛仔裤", "牛仔外套"], "moq": 300, "lead_time": 12, "certifications": [], "status": "pending" },
+
+  { "id": 12, "name": "永康动力五金工具有限公司", "industrial_belt_id": 7, "main_products": ["电钻", "角磨机"], "moq": 200, "lead_time": 30, "certifications": ["GS", "UL"], "status": "verified" },
+
+  { "id": 13, "name": "澄海星际模型玩具有限公司", "industrial_belt_id": 8, "main_products": ["遥控无人机", "遥控车"], "moq": 200, "lead_time": 20, "certifications": ["RED", "FCC"], "status": "verified" },
+  { "id": 14, "name": "澄海益智积木厂", "industrial_belt_id": 8, "main_products": ["ABS积木", "拼装模型"], "moq": 500, "lead_time": 15, "certifications": ["3C"], "status": "verified" }
+]
