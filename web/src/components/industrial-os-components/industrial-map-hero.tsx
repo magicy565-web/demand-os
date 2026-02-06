@@ -11,6 +11,7 @@ export function IndustrialMapHero() {
   const [filteredBelts, setFilteredBelts] = useState<IndustrialBelt[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [filterMode, setFilterMode] = useState<'province' | 'category'>('province');
   const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -33,11 +34,9 @@ export function IndustrialMapHero() {
   useEffect(() => {
     let filtered = industrialBelts;
     
-    if (selectedProvince !== 'all') {
+    if (filterMode === 'province' && selectedProvince !== 'all') {
       filtered = filtered.filter(belt => belt.province === selectedProvince);
-    }
-    
-    if (selectedCategory !== 'all') {
+    } else if (filterMode === 'category' && selectedCategory !== 'all') {
       filtered = filtered.filter(belt => 
         belt.core_products.some(product => 
           product.toLowerCase().includes(selectedCategory.toLowerCase())
@@ -46,7 +45,7 @@ export function IndustrialMapHero() {
     }
     
     setFilteredBelts(filtered);
-  }, [selectedProvince, selectedCategory, industrialBelts]);
+  }, [selectedProvince, selectedCategory, filterMode, industrialBelts]);
 
   const handleBeltClick = (belt: IndustrialBelt) => {
     // 平滑滚动到下一个区域
@@ -120,14 +119,15 @@ export function IndustrialMapHero() {
         {/* 筛选按钮 */}
         <motion.button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-3 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-700/50 text-white hover:bg-slate-800/80 transition-colors"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 backdrop-blur-md rounded-xl border border-cyan-400/30 text-white hover:border-cyan-400/60 transition-all shadow-lg shadow-cyan-500/10"
+          whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(34, 211, 238, 0.3)" }}
+          whileTap={{ scale: 0.95 }}
         >
-          <Filter className="w-4 h-4 text-cyan-400" />
-          <span className="text-sm font-medium">筛选产业带</span>
-          {(selectedProvince !== 'all' || selectedCategory !== 'all') && (
-            <span className="ml-1 px-2 py-0.5 bg-cyan-500/20 text-cyan-400 text-xs rounded-full">
+          <Filter className="w-5 h-5 text-cyan-300" />
+          <span className="text-sm font-semibold text-cyan-50">筛选产业带</span>
+          {((filterMode === 'province' && selectedProvince !== 'all') || 
+            (filterMode === 'category' && selectedCategory !== 'all')) && (
+            <span className="ml-1 px-2.5 py-0.5 bg-cyan-400 text-slate-900 text-xs font-bold rounded-full">
               {filteredBelts.length}
             </span>
           )}
@@ -137,41 +137,100 @@ export function IndustrialMapHero() {
         <AnimatePresence>
           {showFilters && (
             <motion.div
-              className="mt-3 p-4 bg-slate-900/90 backdrop-blur-md rounded-lg border border-slate-700/50 min-w-[280px]"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              className="mt-3 p-5 bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-xl border border-cyan-400/20 shadow-2xl shadow-cyan-500/20 min-w-[320px]"
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
-              {/* 省份筛选 */}
+              {/* 筛选模式切换 */}
               <div className="mb-4">
-                <label className="block text-xs text-slate-400 mb-2">按省份</label>
-                <select
-                  value={selectedProvince}
-                  onChange={(e) => setSelectedProvince(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
-                >
-                  <option value="all">全部省份</option>
-                  <option value="Guangdong">广东省</option>
-                  <option value="Zhejiang">浙江省</option>
-                  <option value="Jiangsu">江苏省</option>
-                 <option value="家具">家居家具</option>
-                  <option value="小商品">小商品</option>
-                  <option value="纺织">纺织丝绸</option>
-                  <option value="服装">服装</option>
-                  <option value="五金">五金工具</option>
-                  <option value="玩具">玩具</option>
-                </select>
+                <div className="flex gap-2 p-1 bg-slate-800/50 rounded-lg">
+                  <button
+                    onClick={() => {
+                      setFilterMode('province');
+                      setSelectedCategory('all');
+                    }}
+                    className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                      filterMode === 'province'
+                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                    }`}
+                  >
+                    按省份
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFilterMode('category');
+                      setSelectedProvince('all');
+                    }}
+                    className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                      filterMode === 'category'
+                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                    }`}
+                  >
+                    按类别
+                  </button>
+                </div>
               </div>
 
+              {/* 省份筛选 */}
+              {filterMode === 'province' && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label className="block text-xs font-medium text-cyan-300 mb-2">选择省份</label>
+                  <select
+                    value={selectedProvince}
+                    onChange={(e) => setSelectedProvince(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-800/80 border border-slate-600/50 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  >
+                    <option value="all">全部省份</option>
+                    <option value="Guangdong">广东省</option>
+                    <option value="Zhejiang">浙江省</option>
+                    <option value="Jiangsu">江苏省</option>
+                  </select>
+                </motion.div>
+              )}
+
+              {/* 产品类别筛选 */}
+              {filterMode === 'category' && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label className="block text-xs font-medium text-cyan-300 mb-2">选择产品类别</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-800/80 border border-slate-600/50 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  >
+                    <option value="all">全部类别</option>
+                    <option value="电子">电子信息</option>
+                    <option value="模具">模具制造</option>
+                    <option value="家具">家居家具</option>
+                    <option value="小商品">小商品</option>
+                    <option value="纺织">纺织丝绸</option>
+                    <option value="服装">服装</option>
+                    <option value="五金">五金工具</option>
+                    <option value="玩具">玩具</option>
+                  </select>
+                </motion.div>
+              )}
+
               {/* 重置按钮 */}
-              {(selectedProvince !== 'all' || selectedCategory !== 'all') && (
+              {((filterMode === 'province' && selectedProvince !== 'all') || 
+                (filterMode === 'category' && selectedCategory !== 'all')) && (
                 <button
                   onClick={() => {
                     setSelectedProvince('all');
                     setSelectedCategory('all');
                   }}
-                  className="w-full px-3 py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-lg text-xs text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2"
+                  className="w-full mt-4 px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 rounded-lg text-xs text-slate-300 hover:text-white transition-all flex items-center justify-center gap-2"
                 >
                   <X className="w-3 h-3" />
                   重置筛选
@@ -179,9 +238,10 @@ export function IndustrialMapHero() {
               )}
 
               {/* 结果统计 */}
-              <div className="mt-3 pt-3 border-t border-slate-700/50">
-                <div className="text-xs text-slate-400">
-                  显示 <span className="text-cyan-400 font-semibold">{filteredBelts.length}</span> 个产业带
+              <div className="mt-4 pt-4 border-t border-slate-700/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">筛选结果</span>
+                  <span className="text-sm font-bold text-cyan-400">{filteredBelts.length} 个产业带</span>
                 </div>
               </div>
             </motion.div>
