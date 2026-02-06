@@ -11,58 +11,58 @@ interface ChinaIndustrialMapProps {
 }
 
 /**
- * 手动校准的产业带位置映射表
- * 针对SimpleMaps中国地图 SVG (1000x738)
- * 基于实际地理位置和 SVG 显示效果精确校准
+ * 精确的产业带位置映射表
+ * 基于SimpleMaps SVG文件中真实城市坐标的线性回归计算
+ * 参考点: 北京(682.1,324.3), 上海(756.1,492.6), 广东中心(638.0,609.9)
+ * 转换系数: 经度14.596像素/度, 纬度17.030像素/度
  */
-const BELT_POSITION_FIXES: Record<number, { x: number; y: number }> = {
-  1: { x: 72.5, y: 62.0 },  // 深圳电子信息产业带
-  2: { x: 78.5, y: 44.0 },  // 宁波模具与注塑产业带
-  3: { x: 66.0, y: 67.0 },  // 佛山泛家居产业带
-  4: { x: 68.5, y: 51.0 },  // 义乌小商品产业带
-  5: { x: 73.0, y: 40.0 },  // 苏州纺织丝绸产业带
-  6: { x: 70.0, y: 65.0 },  // 广州番禺服装产业带
-  7: { x: 72.0, y: 56.0 },  // 永康五金工具产业带
-  8: { x: 80.5, y: 68.5 },  // 汕头澄海玩具产业带
+const BELT_POSITION_ACCURATE: Record<number, { x: number; y: number }> = {
+  1: { x: 64.8, y: 84.0 },  // 深圳 (SVG: 647.9,619.9)
+  2: { x: 75.7, y: 67.1 },  // 宁波 (SVG: 757.2,495.1)
+  3: { x: 63.4, y: 82.9 },  // 佛山 (SVG: 634.2,611.7)
+  4: { x: 73.6, y: 68.4 },  // 义乌 (SVG: 735.7,504.8)
+  5: { x: 74.3, y: 63.8 },  // 苏州 (SVG: 743.2,470.8)
+  6: { x: 63.8, y: 83.1 },  // 广州 (SVG: 638.0,613.3)
+  7: { x: 73.5, y: 69.3 },  // 永康 (SVG: 735.2,511.6)
+  8: { x: 68.7, y: 81.9 },  // 汕头 (SVG: 687.4,604.3)
 };
 
 /**
- * 使用校准表获取产业带位置
+ * 使用精确坐标获取产业带位置
  */
 function getBeltPosition(beltId: number, lat: number, lng: number) {
-  // 优先使用校准表中的固定位置
-  if (BELT_POSITION_FIXES[beltId]) {
-    return BELT_POSITION_FIXES[beltId];
+  // 使用根据真实SVG参考点计算的精确位置
+  if (BELT_POSITION_ACCURATE[beltId]) {
+    return BELT_POSITION_ACCURATE[beltId];
   }
   
-  // 备用：使用公式推算（用于未来添加的产业带）
+  // 备用：使用算法推算（用于未来添加的产业带）
   return latLngToSVGPercent(lat, lng);
 }
 
 /**
- * 经纬度转换为 SVG 坐标（百分比）- 备用算法
- * 基于改进的 Mercator 投影映射
+ * 经纬度转换为 SVG 坐标（百分比）
+ * 基于SimpleMaps真实参考点的线性回归算法
+ * 参考点: 北京(116.40°,39.90°)→(682.1,324.3), 上海(121.47°,31.23°)→(756.1,492.6)
  */
 function latLngToSVGPercent(lat: number, lng: number) {
-  // SimpleMaps 中国地图的坐标系范围
-  const CHINA_BOUNDS = {
-    minLat: 18.2,   // 最南端（南海南部）
-    maxLat: 53.5,   // 最北端（黑龙江北部）
-    minLng: 73.5,   // 最西端（新疆西部）
-    maxLng: 135.1,  // 最东端（黑龙江东部）
-  };
+  // 基于SVG真实坐标的转换系数 (viewBox: 1000x738)
+  const LNG_SCALE = 14.596;  // 像素/度 (经度)
+  const LAT_SCALE = 17.030;  // 像素/度 (纬度)
+  const BEIJING_LNG = 116.40;
+  const BEIJING_LAT = 39.90;
+  const BEIJING_SVG_X = 682.1;
+  const BEIJING_SVG_Y = 324.3;
   
-  const SVG_WIDTH = 1000;
-  const SVG_HEIGHT = 738;
+  // 计算SVG像素坐标
+  const svgX = (lng - BEIJING_LNG) * LNG_SCALE + BEIJING_SVG_X;
+  const svgY = (BEIJING_LAT - lat) * LAT_SCALE + BEIJING_SVG_Y;
+
   
-  // 线性映射（Mercator 简化版）
-  const x = ((lng - CHINA_BOUNDS.minLng) / (CHINA_BOUNDS.maxLng - CHINA_BOUNDS.minLng)) * SVG_WIDTH;
-  const y = ((CHINA_BOUNDS.maxLat - lat) / (CHINA_BOUNDS.maxLat - CHINA_BOUNDS.minLat)) * SVG_HEIGHT;
-  
-  // 转换为百分比
+  // 转换为百分比 (viewBox: 1000x738)
   return {
-    x: (x / SVG_WIDTH) * 100,
-    y: (y / SVG_HEIGHT) * 100,
+    x: Math.max(0, Math.min(100, (svgX / 1000) * 100)),
+    y: Math.max(0, Math.min(100, (svgY / 738) * 100)),
   };
 }
 
