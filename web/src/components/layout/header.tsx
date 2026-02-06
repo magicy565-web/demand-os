@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronRight } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 const navItems = [
   { label: "线上展会", href: "/webinar", isExternal: true },
@@ -14,17 +15,36 @@ const navItems = [
 ]
 
 export function Header() {
+  const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isNearFooter, setIsNearFooter] = useState(false)
+  const [isImmersiveMode, setIsImmersiveMode] = useState(false)
 
-  // 监听滚动，添加阴影效果
+  const isIndustrialOSPage = pathname === '/industrial-os'
+
+  // 监听滚动，判断是否接近footer和是否在沉浸式模式中显示
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
+      const scrollTop = window.scrollY
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+
+      setScrolled(scrollTop > 10)
+
+      // 检查是否接近footer（最后500px）
+      const distanceToBottom = documentHeight - (scrollTop + windowHeight)
+      setIsNearFooter(distanceToBottom < 500)
     }
+
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // 在industrial-os页面启用沉浸式模式
+  useEffect(() => {
+    setIsImmersiveMode(isIndustrialOSPage && !isNearFooter)
+  }, [isIndustrialOSPage, isNearFooter])
 
   // 移动菜单打开时禁止页面滚动
   useEffect(() => {
@@ -39,7 +59,13 @@ export function Header() {
   }, [mobileMenuOpen])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[999] bg-white/95 backdrop-blur-xl transition-all duration-300 ${scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"}`}>
+    <header 
+      className={`fixed top-0 left-0 right-0 z-[999] bg-white/95 backdrop-blur-xl transition-all duration-500 ${
+        scrolled ? "shadow-elevated border-b border-gray-200/50" : "border-b border-gray-100/50"
+      } ${
+        isImmersiveMode ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
+      }`}
+    >
       <div className="container-editorial safe-area-inset-left safe-area-inset-right">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo with Badge */}
