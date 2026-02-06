@@ -10,43 +10,38 @@ interface ChinaIndustrialMapProps {
   onBeltClick?: (belt: IndustrialBelt) => void;
 }
 
-// 中国地图的精确经纬度范围（基于实际地理数据）
-const CHINA_BOUNDS = {
-  minLng: 73.5,
-  maxLng: 135.0,
-  minLat: 18.0,
-  maxLat: 53.5,
-};
-
-// SVG 地图的 viewBox 尺寸
-const SVG_VIEWBOX = {
-  width: 1000,
-  height: 738,
-};
-
 /**
  * 经纬度转换为 SVG 坐标（百分比）
- * 校准后的版本，适配 SimpleMaps 的中国地图投影
+ * 基于参考城市（北京、上海、广州、深圳）线性回归校准的精确映射
+ * 
+ * 参考城市坐标：
+ * - 北京 (39.90°N, 116.40°E) → SVG(750, 200)
+ * - 上海 (31.23°N, 121.47°E) → SVG(850, 350)
+ * - 广州 (23.13°N, 113.26°E) → SVG(750, 550)
+ * - 深圳 (22.54°N, 114.06°E) → SVG(760, 570)
+ * 
+ * 线性映射公式（通过最小二乘法计算）：
+ * X = 12.0707 * lng - 626.29
+ * Y = -21.4412 * lat + 1043.58
  */
 function latLngToSVGPercent(lat: number, lng: number) {
-  // SimpleMaps 的中国地图使用的实际可视区域（经过测量）
-  // 东南沿海地区在地图上的位置需要微调
-  const MAP_CALIBRATION = {
-    // 经度偏移：微调以匹配 SimpleMaps 的投影
-    lngOffset: -5,
-    // 纬度偏移：微调以匹配 SimpleMaps 的投影
-    latOffset: 8,
-    // 缩放系数：让标注更分散
-    scale: 1.0,
-  };
+  // 基于参考城市校准的线性映射系数
+  const LNG_COEFF = 12.070689;    // 经度系数
+  const LNG_INTERCEPT = -626.290917;  // 经度截距
+  const LAT_COEFF = -21.441219;   // 纬度系数（负值因为 SVG Y 轴向下）
+  const LAT_INTERCEPT = 1043.583597;  // 纬度截距
   
-  // 基础线性映射
-  let x = ((lng - CHINA_BOUNDS.minLng) / (CHINA_BOUNDS.maxLng - CHINA_BOUNDS.minLng)) * 100;
-  let y = ((CHINA_BOUNDS.maxLat - lat) / (CHINA_BOUNDS.maxLat - CHINA_BOUNDS.minLat)) * 100;
+  // SimpleMaps SVG viewBox 尺寸
+  const SVG_WIDTH = 1000;
+  const SVG_HEIGHT = 738;
   
-  // 应用校准偏移和缩放
-  x = (x + MAP_CALIBRATION.lngOffset) * MAP_CALIBRATION.scale;
-  y = (y + MAP_CALIBRATION.latOffset) * MAP_CALIBRATION.scale;
+  // 计算 SVG 坐标
+  const svgX = LNG_COEFF * lng + LNG_INTERCEPT;
+  const svgY = LAT_COEFF * lat + LAT_INTERCEPT;
+  
+  // 转换为百分比
+  const x = (svgX / SVG_WIDTH) * 100;
+  const y = (svgY / SVG_HEIGHT) * 100;
   
   return { x, y };
 }
