@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IndustrialBelt } from '@/types/industrial';
 import IndustrialBeltTooltip from './IndustrialBeltTooltip';
@@ -100,25 +100,15 @@ export default function ChinaIndustrialMap({
           {/* 中国地图 SVG */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-full">
-              <svg
-                viewBox="0 0 1000 738"
-                className="w-full h-full"
-                preserveAspectRatio="xMidYMid meet"
+              <img
+                src="/china-provinces-map.svg"
+                alt="中国省份地图"
+                className="absolute inset-0 w-full h-full object-cover"
                 style={{
-                  filter: 'drop-shadow(0 0 20px rgba(0, 212, 255, 0.4))',
+                  filter: 'brightness(1.2) contrast(1.3) saturate(0.8) hue-rotate(160deg) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4))',
+                  opacity: 0.65,
                 }}
-              >
-                {/* 省份地图 - 增强可见度 */}
-                <image
-                  href="/china-provinces-map.svg"
-                  width="1000"
-                  height="738"
-                  opacity="0.65"
-                  style={{
-                    filter: 'brightness(1.2) contrast(1.3) saturate(0.8) hue-rotate(160deg)',
-                  }}
-                />
-              </svg>
+              />
             </div>
           </div>
 
