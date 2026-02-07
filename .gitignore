@@ -19,8 +19,20 @@ out/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.err
+*.out
+dev.log
+server.log
+start.log
+build.log
 
-# OS generated files
+# Temporary and test files
+temp/
+.temp/
+tmp/
+test-*.js
+*.test.js
+web/test-*.js
 .DS_Store
 .DS_Store?
 ._*
