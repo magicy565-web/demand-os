@@ -30,11 +30,37 @@ export const AgentWorkboard: React.FC = () => {
 
   const handleStart = async () => {
     setIsProcessing(true);
-    const agent = new ViralTrackerAgentFlow((updatedSteps) => {
-      setSteps(updatedSteps);
-    });
-    await agent.run(inputUrl);
-    setIsProcessing(false);
+    setSteps([]);
+    
+    try {
+      // 调用后端 API 执行 Agent Flow
+      const response = await fetch('/api/agent/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tiktokUrl: inputUrl }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Agent Flow API request failed');
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.steps) {
+        setSteps(data.steps);
+      }
+    } catch (error) {
+      console.error('Agent Flow Error:', error);
+      // 如果 API 失败，回退到客户端执行
+      const agent = new ViralTrackerAgentFlow((updatedSteps) => {
+        setSteps(updatedSteps);
+      });
+      await agent.run(inputUrl);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const allLogs = steps.flatMap(s => s.log);
