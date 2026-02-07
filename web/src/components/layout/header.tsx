@@ -1,9 +1,9 @@
 'use client';
 
 import Link from "next/link"
-import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
-import { Menu, X, TrendingUp, Factory, Zap, BookOpen, Shield, User } from "lucide-react"
+import { Menu, X, Home, TrendingUp, Factory, Zap, BookOpen, Shield, User } from "lucide-react"
 
 interface HeaderProps {
   onNavigate?: (view: string) => void;
@@ -13,14 +13,18 @@ interface HeaderProps {
 export function Header({ onNavigate, currentView = 'opportunities' }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
 
-  const navItems = [
+  // 判断是否在爆款追踪器页面
+  const isViralTrackerPage = pathname === '/viral-tracker'
+
+  const navItems = isViralTrackerPage ? [
     { label: "爆款商机", value: "opportunities", icon: <Zap className="w-4 h-4" /> },
     { label: "认证工厂", value: "directory", icon: <Factory className="w-4 h-4" /> },
     { label: "案例库", value: "case-studies", icon: <BookOpen className="w-4 h-4" /> },
     { label: "认证体系", value: "certification", icon: <Shield className="w-4 h-4" /> },
     { label: "工作台", value: "workspace", icon: <User className="w-4 h-4" /> },
-  ]
+  ] : []
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,20 +72,51 @@ export function Header({ onNavigate, currentView = 'opportunities' }: HeaderProp
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-2">
-            {navItems.map((item) => (
+            {/* 首页链接 */}
+            <Link
+              href="/"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                pathname === '/'
+                  ? 'bg-slate-900 text-white shadow-lg'
+                  : scrolled
+                  ? 'text-slate-700 hover:bg-slate-100'
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              <span>首页</span>
+            </Link>
+
+            {/* 爆款追踪器链接 */}
+            <Link
+              href="/viral-tracker"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                pathname === '/viral-tracker'
+                  ? 'bg-slate-900 text-white shadow-lg'
+                  : scrolled
+                  ? 'text-slate-700 hover:bg-slate-100'
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span>爆款追踪器</span>
+            </Link>
+
+            {/* 爆款追踪器页面内的子导航 */}
+            {isViralTrackerPage && navItems.map((item) => (
               <button
                 key={item.value}
                 onClick={() => onNavigate?.(item.value)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${
                   currentView === item.value
-                    ? 'bg-slate-900 text-white shadow-lg'
+                    ? 'bg-blue-600 text-white shadow-lg'
                     : scrolled
                     ? 'text-slate-700 hover:bg-slate-100'
                     : 'text-white/90 hover:bg-white/10'
                 }`}
               >
                 {item.icon}
-                {item.label}
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
@@ -100,23 +135,43 @@ export function Header({ onNavigate, currentView = 'opportunities' }: HeaderProp
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-200 shadow-2xl">
-          <nav className="px-6 py-4 space-y-2">
-            {navItems.map((item) => (
+        <div className="md:hidden fixed inset-0 top-20 bg-white z-30 overflow-y-auto">
+          <nav className="flex flex-col p-6 gap-2">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
+                pathname === '/' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <Home className="w-5 h-5" />
+              <span>首页</span>
+            </Link>
+
+            <Link
+              href="/viral-tracker"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
+                pathname === '/viral-tracker' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>爆款追踪器</span>
+            </Link>
+
+            {isViralTrackerPage && navItems.map((item) => (
               <button
                 key={item.value}
                 onClick={() => {
-                  onNavigate?.(item.value);
-                  setMobileMenuOpen(false);
+                  onNavigate?.(item.value)
+                  setMobileMenuOpen(false)
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
-                  currentView === item.value
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-700 hover:bg-slate-100'
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-left transition-all ${
+                  currentView === item.value ? 'bg-blue-600 text-white' : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 {item.icon}
-                {item.label}
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
