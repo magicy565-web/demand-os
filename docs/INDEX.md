@@ -2,6 +2,20 @@
 
 本文件夹包含所有项目文档。按主题分类如下：
 
+## 🤖 AI 工作流与对话生成 (核心功能)
+- [**对话式工作流生成交付文档**](./CONVERSATIONAL_WORKFLOW_DELIVERY.md) - 对标 Accio 的对话式生成功能说明。
+- [**对话式工作流生成架构**](./CONVERSATIONAL_WORKFLOW_GENERATION_ARCHITECTURE.md) - 详细的 API 设计与 Prompt 工程。
+- [**Accio 框架设计方案**](./ACCIO_FRAMEWORK_DESIGN.md) - 项目深度对标 Accio 的原始设计思路。
+
+## 🎨 UI/UX 优化与视觉升级
+- [**UI/UX 优化交付文档**](./PHASE3_UI_UX_OPTIMIZATION_DELIVERY.md) - Phase 3 之后的视觉与交互升级总结。
+- [**UI/UX 实施报告**](./PHASE3_UI_UX_IMPLEMENTATION_REPORT.md) - 编辑器组件、节点设计、市场页面的实现细节。
+- [**UI/UX 优化方案**](./PHASE3_UI_UX_OPTIMIZATION_PLAN.md) - 针对政府展示场景的视觉重构方案。
+
+## 📅 项目阶段规划与报告
+- [**Phase 3 规划文档**](./PHASE3_PLANNING.md) - 工作流可视化的最初规划。
+- [**Phase 3 完成报告**](./PHASE3_COMPLETION_REPORT.md) - 核心可视化功能的阶段性总结。
+
 ## 核心项目文档
 - [项目总结](./PROJECT_SUMMARY.md) - 项目概览
 - [README](../README.md) - 主项目文档（根目录）
