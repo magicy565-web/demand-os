@@ -46,10 +46,14 @@ export async function directusRequest(
 ) {
   const url = `${DIRECTUS_URL}${endpoint}`;
   
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
   };
+
+  // 合并现有的 headers
+  if (options.headers && typeof options.headers === 'object') {
+    Object.assign(headers, options.headers);
+  }
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
