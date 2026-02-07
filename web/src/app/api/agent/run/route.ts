@@ -1,20 +1,37 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { ViralTrackerAgentFlow } from '@/lib/agent-engine-v2';
 
-export async function POST(request: Request) {
-  const { tiktokUrl } = await request.json();
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { tiktokUrl } = body;
 
-  if (!tiktokUrl) {
-    return NextResponse.json({ error: 'TikTok URL is required' }, { status: 400 });
+    if (!tiktokUrl) {
+      return NextResponse.json(
+        { error: 'TikTok URL is required' },
+        { status: 400 }
+      );
+    }
+
+    // 创建 Agent Flow 实例
+    const agent = new ViralTrackerAgentFlow();
+
+    // 运行 Agent Flow
+    const result = await agent.run(tiktokUrl);
+
+    return NextResponse.json({
+      success: true,
+      result,
+      steps: agent.getSteps(),
+    });
+  } catch (error) {
+    console.error('Agent Flow API Error:', error);
+    return NextResponse.json(
+      {
+        error: 'Agent Flow execution failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
-
-  // 注意：由于这是一个模拟实时流的 Agent，
-  // 在真实的 API 环境中，我们可能会使用 WebSocket 或 Server-Sent Events (SSE) 来推送进度。
-  // 这里我们返回一个成功的响应，具体的进度由前端模拟的 Agent 逻辑处理。
-  
-  return NextResponse.json({ 
-    message: 'Agent Flow Initiated',
-    status: 'success',
-    timestamp: new Date().toISOString()
-  });
 }
