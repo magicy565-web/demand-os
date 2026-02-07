@@ -1,16 +1,11 @@
 /**
  * Agent Flow Engine V2 (Production Grade with Nova AI)
  * 实现了真正的后端逻辑：趋势监测、工厂匹配、ROI 预测
+ * 
+ * NOTE: OpenAI API 调用已移至后端 API 路由，避免在浏览器中暴露 API Key
  */
 
 import { directus, Factory, Demand, RFQ } from './directus';
-import OpenAI from 'openai';
-
-// Nova AI 配置
-const openai = new OpenAI({
-  apiKey: 'sk-LIs2MGKmDuGZhcfHbvLs1EiWHPwm2ELf3E8JkJXlFXgFLPBM',
-  baseURL: 'https://api.nova-oss.com/v1',
-});
 
 export interface AgentStep {
   id: string;
@@ -140,56 +135,34 @@ export class ViralTrackerAgentFlow {
     await this.delay(800);
 
     try {
-      // 使用 Nova AI 分析 TikTok 视频
-      this.addLog('step-1', 'Calling Nova AI for video content analysis...');
+      // 使用后端 API 分析 TikTok 视频
+      this.addLog('step-1', 'Calling API for video content analysis...');
       await this.delay(600);
 
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in analyzing viral TikTok trends and identifying product opportunities. Analyze the given TikTok URL and extract: product name, category, engagement metrics, and lifecycle stage.',
-          },
-          {
-            role: 'user',
-            content: `Analyze this TikTok video: ${tiktokUrl}. 
-            
-Please provide a JSON response with:
-{
-  "productName": "string",
-  "category": "string (e.g., Electronics, Home & Garden, Fashion)",
-  "views": number,
-  "likes": number,
-  "trendScore": number (0-100),
-  "lifecycle": "emerging | explosive | mature",
-  "keyFeatures": ["feature1", "feature2"]
-}`,
-          },
-        ],
-        temperature: 0.7,
+      const response = await fetch('/api/agent/analyze-traffic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tiktokUrl }),
       });
 
-      const aiResponse = completion.choices[0].message.content;
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const aiResponse = await response.json();
       this.addLog('step-1', 'AI analysis completed');
       await this.delay(500);
 
       // 解析 AI 响应
-      let parsedData;
-      try {
-        parsedData = JSON.parse(aiResponse || '{}');
-      } catch {
-        // 如果 AI 返回的不是标准 JSON，使用模拟数据
-        parsedData = {
-          productName: 'Portable Neck Fan - Silent Pro',
-          category: 'Electronics',
-          views: 2400000,
-          likes: 450000,
-          trendScore: 95,
-          lifecycle: 'explosive',
-          keyFeatures: ['portable', 'silent', 'rechargeable', 'summer'],
-        };
-      }
+      let parsedData = aiResponse.analysis || {
+        productName: 'Portable Neck Fan - Silent Pro',
+        category: 'Electronics',
+        views: 2400000,
+        likes: 450000,
+        trendScore: 95,
+        lifecycle: 'explosive',
+        keyFeatures: ['portable', 'silent', 'rechargeable', 'summer'],
+      };
 
       this.addLog('step-1', `Detected product: ${parsedData.productName}`);
       await this.delay(500);
@@ -248,57 +221,31 @@ Please provide a JSON response with:
       this.addLog('step-2', `Found ${factoryList.length} certified factories in database`);
       await this.delay(600);
 
-      // 使用 AI 进行智能匹配
-      this.addLog('step-2', 'Using AI to match factories with product requirements...');
+      // 使用后端 API 进行智能匹配
+      this.addLog('step-2', 'Using API to match factories with product requirements...');
       await this.delay(700);
 
-      const matchingPrompt = `
-Product: ${this.result?.productName}
-Category: ${this.result?.category}
-
-Available Factories:
-${factoryList.slice(0, 5).map((f: any, i: number) => `${i + 1}. ${f.name} - ${f.main_products || 'General Manufacturing'}`).join('\n')}
-
-Please rank these factories by match score (0-100) and provide reasons. Return JSON:
-{
-  "matches": [
-    {
-      "factoryIndex": number,
-      "matchScore": number,
-      "reasons": ["reason1", "reason2"]
-    }
-  ]
-}
-`;
-
-      const matchCompletion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in supply chain management and factory matching.',
-          },
-          {
-            role: 'user',
-            content: matchingPrompt,
-          },
-        ],
-        temperature: 0.5,
+      const matchResponse = await fetch('/api/agent/match-factories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productName: this.result?.productName,
+          category: this.result?.category,
+          factories: factoryList.slice(0, 5),
+        }),
       });
 
-      const matchResponse = matchCompletion.choices[0].message.content;
-      let matchData;
-      try {
-        matchData = JSON.parse(matchResponse || '{}');
-      } catch {
-        // 使用模拟匹配数据
-        matchData = {
-          matches: [
-            { factoryIndex: 0, matchScore: 98, reasons: ['Specializes in portable electronics', 'Has CE and FCC certifications'] },
-            { factoryIndex: 1, matchScore: 85, reasons: ['Experience with consumer electronics', 'Good production capacity'] },
-          ],
-        };
+      if (!matchResponse.ok) {
+        throw new Error(`Matching API error: ${matchResponse.statusText}`);
       }
+
+      const matchResponseData = await matchResponse.json();
+      let matchData = matchResponseData.matches || {
+        matches: [
+          { factoryIndex: 0, matchScore: 98, reasons: ['Specializes in portable electronics', 'Has CE and FCC certifications'] },
+          { factoryIndex: 1, matchScore: 85, reasons: ['Experience with consumer electronics', 'Good production capacity'] },
+        ],
+      };
 
       // 构建匹配结果
       this.result!.matchedFactories = matchData.matches.map((match: any) => {
@@ -337,62 +284,32 @@ Please rank these factories by match score (0-100) and provide reasons. Return J
     await this.delay(700);
 
     try {
-      // 使用 AI 计算定价
-      const pricingPrompt = `
-Product: ${this.result?.productName}
-Category: ${this.result?.category}
-Trend Score: ${this.result?.trendScore}
-
-Calculate realistic pricing for:
-1. Dropshipping (single unit)
-2. Wholesale (500+ units)
-3. Exclusive supply (5000+ units)
-
-Return JSON:
-{
-  "dropshipping": { "price": number, "moq": 1 },
-  "wholesale": { "price": number, "moq": 500 },
-  "exclusive": { "price": number, "moq": 5000 },
-  "estimatedRevenue": number,
-  "estimatedProfit": number,
-  "profitMargin": number,
-  "paybackDays": number,
-  "riskLevel": "low" | "medium" | "high"
-}
-`;
-
-      const pricingCompletion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in e-commerce pricing and financial analysis.',
-          },
-          {
-            role: 'user',
-            content: pricingPrompt,
-          },
-        ],
-        temperature: 0.5,
+      // 使用后端 API 计算定价
+      const pricingResponse = await fetch('/api/agent/calculate-pricing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productName: this.result?.productName,
+          category: this.result?.category,
+          trendScore: this.result?.trendScore,
+        }),
       });
 
-      const pricingResponse = pricingCompletion.choices[0].message.content;
-      let pricingData;
-      try {
-        pricingData = JSON.parse(pricingResponse || '{}');
-      } catch {
-        // 使用模拟定价数据
-        pricingData = {
-          dropshipping: { price: 8.5, moq: 1 },
-          wholesale: { price: 3.2, moq: 500 },
-          exclusive: { price: 2.85, moq: 5000 },
-          estimatedRevenue: 125000,
-          estimatedProfit: 73000,
-          profitMargin: 58.4,
-          paybackDays: 14,
-          riskLevel: 'low',
-        };
+      if (!pricingResponse.ok) {
+        throw new Error(`Pricing API error: ${pricingResponse.statusText}`);
       }
+
+      const pricingResponseData = await pricingResponse.json();
+      let pricingData = pricingResponseData.pricing || {
+        dropshipping: { price: 8.5, moq: 1 },
+        wholesale: { price: 3.2, moq: 500 },
+        exclusive: { price: 2.85, moq: 5000 },
+        estimatedRevenue: 125000,
+        estimatedProfit: 73000,
+        profitMargin: 58.4,
+        paybackDays: 14,
+        riskLevel: 'low',
+      };
 
       this.result!.pricingTiers = {
         dropshipping: pricingData.dropshipping,
