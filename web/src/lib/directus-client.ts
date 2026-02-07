@@ -55,8 +55,17 @@ export async function directusRequest(
     Object.assign(headers, options.headers);
   }
 
+  // Use provided token or get server-side token
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
+  } else if (typeof window === 'undefined') {
+    // Server-side: use environment credentials
+    const email = process.env.DIRECTUS_EMAIL;
+    const password = process.env.DIRECTUS_PASSWORD;
+    if (email && password) {
+      const serverToken = await getDirectusToken(email, password);
+      headers['Authorization'] = `Bearer ${serverToken}`;
+    }
   }
 
   try {

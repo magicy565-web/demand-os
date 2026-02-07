@@ -19,14 +19,13 @@ interface VisionAnalysisResult {
  */
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const userId = formData.get('userId') as string;
 
-    if (!token || !userId) {
+    if (!userId) {
       return NextResponse.json(
-        { error: 'Missing authentication or userId' },
+        { error: 'Missing userId' },
         { status: 400 }
       );
     }
@@ -108,8 +107,7 @@ export async function POST(request: NextRequest) {
       {
         method: 'POST',
         body: JSON.stringify(imageAnalysisData),
-      },
-      token
+      }
     );
 
     return NextResponse.json({
