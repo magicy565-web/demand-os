@@ -8,7 +8,7 @@ const initOpenAI = () => {
     const OpenAI = require('openai').default;
     openai = new OpenAI({
       apiKey: process.env.NOVA_AI_API_KEY || '',
-      baseURL: 'https://api.nova-oss.com/v1',
+      baseURL: 'https://once.novai.su/v1',
     });
   }
   return openai;
@@ -49,7 +49,7 @@ Return JSON:
 `;
 
     const pricingCompletion = await initOpenAI().chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: process.env.NOVA_AI_MODEL || '[逆次]o4-mini',
       messages: [
         {
           role: 'system',

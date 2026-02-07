@@ -1,66 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// 延迟初始化 OpenAI 确保只在服务端执行
-let openai: any;
-
-const initOpenAI = () => {
-  if (!openai) {
-    const OpenAI = require('openai').default;
-    openai = new OpenAI({
-      apiKey: process.env.NOVA_AI_API_KEY || '',
-      baseURL: 'https://api.nova-oss.com/v1',
-    });
-  }
-  return openai;
-};
-
 export async function POST(request: NextRequest) {
   try {
     const { tiktokUrl } = await request.json();
 
-    if (!tiktokUrl) {
-      return NextResponse.json(
-        { error: 'TikTok URL is required' },
-        { status: 400 }
-      );
-    }
+    console.log('[Traffic Agent] Analyzing TikTok URL:', tiktokUrl);
 
-    // Call OpenAI API on server side
-    const client = initOpenAI();
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert in analyzing viral TikTok trends and identifying product opportunities. Analyze the given TikTok URL and extract: product name, category, engagement metrics, and lifecycle stage.',
-        },
-        {
-          role: 'user',
-          content: `Analyze this TikTok video: ${tiktokUrl}. 
-            
-Please provide a JSON response with:
+    // 使用原生 fetch 调用 Nova AI API
+    const response = await fetch('https://once.novai.su/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NOVA_AI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: '[逆次]o4-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `你是一个专业的 TikTok 产品分析师。分析给定的 TikTok 视频链接，提取产品信息。
+
+请以 JSON 格式返回分析结果（只返回 JSON，不要其他文字）：
 {
-  "productName": "string",
-  "category": "string (e.g., Electronics, Home & Garden, Fashion)",
-  "views": number,
-  "likes": number,
-  "trendScore": number (0-100),
-  "lifecycle": "emerging | explosive | mature",
-  "keyFeatures": ["feature1", "feature2"]
-}`,
-        },
-      ],
-      temperature: 0.7,
+  "productName": "产品名称",
+  "category": "产品类别",
+  "views": 观看数（数字）,
+  "likes": 点赞数（数字）,
+  "trendScore": 趋势分数（0-100）,
+  "lifecycle": "emerging/explosive/mature",
+  "keyFeatures": ["特征1", "特征2", "特征3"]
+}`
+          },
+          {
+            role: 'user',
+            content: `分析这个 TikTok 视频：${tiktokUrl}`
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
     });
 
-    const aiResponse = completion.choices[0].message.content;
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[Traffic Agent] API Error:', response.status, errorText);
+      throw new Error(`Nova AI API error: ${response.status}`);
+    }
 
-    // Parse AI response
+    const data = await response.json();
+    console.log('[Traffic Agent] API Response:', data);
+
+    const aiContent = data.choices[0]?.message?.content || '';
+    console.log('[Traffic Agent] AI Content:', aiContent);
+
+    // 解析 AI 响应
     let analysis;
     try {
-      analysis = JSON.parse(aiResponse || '{}');
-    } catch {
-      // Fallback to mock data if parsing fails
+      // 尝试提取 JSON
+      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        analysis = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No JSON found in response');
+      }
+    } catch (parseError) {
+      console.error('[Traffic Agent] JSON Parse Error:', parseError);
+      // 使用默认数据
       analysis = {
         productName: 'Portable Neck Fan - Silent Pro',
         category: 'Electronics',
@@ -72,18 +77,29 @@ Please provide a JSON response with:
       };
     }
 
+    console.log('[Traffic Agent] Final Analysis:', analysis);
+
     return NextResponse.json({
       success: true,
       analysis,
     });
-  } catch (error) {
-    console.error('Traffic Analysis API Error:', error);
-    return NextResponse.json(
-      {
-        error: 'Traffic analysis failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+
+  } catch (error: any) {
+    console.error('[Traffic Agent] Error:', error);
+    
+    return NextResponse.json({
+      success: false,
+      error: error.message || 'Unknown error',
+      // 返回默认数据以便测试流程
+      analysis: {
+        productName: 'Portable Neck Fan - Silent Pro',
+        category: 'Electronics',
+        views: 2400000,
+        likes: 450000,
+        trendScore: 95,
+        lifecycle: 'explosive',
+        keyFeatures: ['portable', 'silent', 'rechargeable', 'summer'],
       },
-      { status: 500 }
-    );
+    });
   }
 }
