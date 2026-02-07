@@ -74,62 +74,69 @@ export function IndustryPractice() {
         {/* Industry Index List */}
         <div className="border-t border-border/60">
           {industries.map((industry) => (
-            <Link
+            <div
               key={industry.id}
-              href={`#industry-${industry.id}`}
-              className="group block border-b border-border/60 py-7 lg:py-9 transition-all duration-300 hover:bg-paper-warm hover:px-4 hover:-mx-4"
+              className="group border-b border-border/60 py-7 lg:py-9 transition-all duration-300 hover:bg-paper-warm hover:px-4 hover:-mx-4"
             >
-              <div className="flex items-center gap-5 lg:gap-10">
-                {/* Index Number */}
-                <span className="heading-serif text-2xl lg:text-4xl text-navy/15 group-hover:text-electric-blue/30 w-12 lg:w-20 shrink-0 transition-colors duration-300">
-                  {industry.id}
-                </span>
+              <Link
+                href={`#industry-${industry.id}`}
+                className="block"
+              >
+                <div className="flex items-center gap-5 lg:gap-10">
+                  {/* Index Number */}
+                  <span className="heading-serif text-2xl lg:text-4xl text-navy/15 group-hover:text-electric-blue/30 w-12 lg:w-20 shrink-0 transition-colors duration-300">
+                    {industry.id}
+                  </span>
 
-                {/* Main Content */}
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-8 items-center">
-                  {/* Industry Name */}
-                  <div className="lg:col-span-3">
-                    <h3 className="heading-serif text-xl lg:text-2xl text-navy group-hover:text-cobalt transition-colors duration-300">
-                      {industry.name}
-                    </h3>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                      {industry.nameEn}
-                    </span>
-                  </div>
+                  {/* Main Content */}
+                  <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-8 items-center">
+                    {/* Industry Name */}
+                    <div className="lg:col-span-3">
+                      <h3 className="heading-serif text-xl lg:text-2xl text-navy group-hover:text-cobalt transition-colors duration-300">
+                        {industry.name}
+                      </h3>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                        {industry.nameEn}
+                      </span>
+                    </div>
 
-                  {/* Description */}
-                  <div className="lg:col-span-6">
-                    <p className="text-sm text-muted-foreground">
-                      {industry.description}
-                      {industry.pdfUrl && (
-                        <a
-                          href={industry.pdfUrl}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="ml-2 text-cobalt font-medium hover:text-cobalt/80 transition-colors inline-flex items-center gap-1"
-                        >
-                          <span>➡查看报告</span>
-                        </a>
-                      )}
-                    </p>
-                  </div>
+                    {/* Description */}
+                    <div className="lg:col-span-6">
+                      <p className="text-sm text-muted-foreground">
+                        {industry.description}
+                      </p>
+                    </div>
 
-                  {/* Growth */}
-                  <div className="lg:col-span-2 hidden lg:block">
-                    <span className="text-sm font-medium text-cobalt">
-                      {industry.growth} YoY
-                    </span>
-                  </div>
+                    {/* Growth */}
+                    <div className="lg:col-span-2 hidden lg:block">
+                      <span className="text-sm font-medium text-cobalt">
+                        {industry.growth} YoY
+                      </span>
+                    </div>
 
-                  {/* Arrow */}
-                  <div className="lg:col-span-1 hidden lg:flex justify-end">
-                    <ArrowRight className="w-5 h-5 text-navy/30 group-hover:text-navy group-hover:translate-x-1 transition-all duration-300" />
+                    {/* Arrow */}
+                    <div className="lg:col-span-1 hidden lg:flex justify-end">
+                      <ArrowRight className="w-5 h-5 text-navy/30 group-hover:text-navy group-hover:translate-x-1 transition-all duration-300" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+
+              {/* PDF Download Link - Outside Link Component */}
+              {industry.pdfUrl && (
+                <div className="mt-3 text-sm">
+                  <a
+                    href={industry.pdfUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-cobalt font-medium hover:text-cobalt/80 transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>➡查看报告</span>
+                  </a>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>

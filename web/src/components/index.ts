@@ -17,7 +17,6 @@ export { default as McKinseyHero } from "./pages/McKinseyHero";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Features 功能区块组件
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-export { default as FeatureSection } from "./features/FeatureSection";
 export { default as FAQSection } from "./features/FAQSection";
 export { default as CTASection } from "./features/CTASection";
 export { default as PricingSection } from "./features/PricingSection";
