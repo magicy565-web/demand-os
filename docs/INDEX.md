@@ -3,8 +3,10 @@
 本文件夹包含所有项目文档。按主题分类如下：
 
 ## 🤖 AI 工作流与对话生成 (核心功能)
-- [**对话式工作流生成交付文档**](./CONVERSATIONAL_WORKFLOW_DELIVERY.md) - 对标 Accio 的对话式生成功能说明。
-- [**对话式工作流生成架构**](./CONVERSATIONAL_WORKFLOW_GENERATION_ARCHITECTURE.md) - 详细的 API 设计与 Prompt 工程。
+- [**对话式执行引擎交付文档**](./CONVERSATIONAL_EXECUTION_ENGINE_DELIVERY.md) - ⭐ 最新实现，状态机驱动的对话式执行引擎。
+- [**对话式执行引擎架构**](./CONVERSATIONAL_EXECUTION_ENGINE_ARCHITECTURE.md) - 状态机设计、API 规范和实施计划。
+- [**对话式工作流生成交付文档**](./CONVERSATIONAL_WORKFLOW_DELIVERY.md) - 对标 Accio 的对话式生成功能说明（已废弃）。
+- [**对话式工作流生成架构**](./CONVERSATIONAL_WORKFLOW_GENERATION_ARCHITECTURE.md) - 详细的 API 设计与 Prompt 工程（已废弃）。
 - [**Accio 框架设计方案**](./ACCIO_FRAMEWORK_DESIGN.md) - 项目深度对标 Accio 的原始设计思路。
 
 ## 🎨 UI/UX 优化与视觉升级
