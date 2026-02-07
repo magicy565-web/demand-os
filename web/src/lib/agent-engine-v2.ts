@@ -242,6 +242,7 @@ export class ViralTrackerAgentFlow {
         body: JSON.stringify({
           productName: this.result?.productName,
           category: this.result?.category,
+          keyFeatures: this.result?.keyFeatures,
           factories: factoryList.slice(0, 5),
         }),
       });

@@ -16,13 +16,34 @@ const initOpenAI = () => {
 
 export async function POST(request: NextRequest) {
   try {
-    const { productName, category, factories } = await request.json();
+    const { productName, category, factories, keyFeatures, moqPreference } = await request.json();
 
-    if (!productName || !category || !factories) {
+    if (!productName || !category) {
       return NextResponse.json(
-        { error: 'Product info and factories are required' },
+        { error: 'Product info is required' },
         { status: 400 }
       );
+    }
+
+    // If factories are not provided, use the new Directus integration
+    if (!factories || factories.length === 0) {
+      console.log('[Match Factories] No factories provided, using Directus integration...');
+      
+      const directusResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/agent/match-factories-directus`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productName, category, keyFeatures, moqPreference }),
+        }
+      );
+
+      if (directusResponse.ok) {
+        const directusData = await directusResponse.json();
+        return NextResponse.json(directusData);
+      }
+      
+      console.warn('[Match Factories] Directus integration failed, continuing with fallback...');
     }
 
     const matchingPrompt = `
@@ -76,6 +97,7 @@ Please rank these factories by match score (0-100) and provide reasons. Return J
     return NextResponse.json({
       success: true,
       matches: matches.matches || [],
+      source: 'ai-matching',
     });
   } catch (error) {
     console.error('Factory Matching API Error:', error);
