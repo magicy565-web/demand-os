@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter, Noto_Serif_SC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { Providers } from '@/providers/theme-provider'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -83,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" className="scroll-smooth">
+    <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Manifest for PWA */}
         <link rel="manifest" href="/manifest.json" />
@@ -95,7 +96,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${playfair.variable} ${inter.variable} ${notoSerifSC.variable} font-sans antialiased min-h-[100svh]`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <Analytics />
       </body>
     </html>
