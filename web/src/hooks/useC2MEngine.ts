@@ -11,11 +11,11 @@ import {
   Material,
   MarketStyle,
   Factory,
+  CostCalculationParams,
 } from '@/types/c2m';
 import {
   calculateCostBreakdown,
   matchFactories,
-  CostCalculationParams,
 } from '@/lib/c2m-engine';
 
 export interface UseC2MEngineOptions {

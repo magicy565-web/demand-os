@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2020",
     "lib": [
       "dom",
       "dom.iterable",
@@ -9,6 +9,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -36,6 +39,14 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "dist",
+    "build",
+    "**/.*",
+    "**/*-old-backup",
+    "**/*-backup",
+    "**/*test*",
+    "**/temp-*"
   ]
 }

@@ -152,8 +152,8 @@ export default function ChinaIndustrialMap({
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.12, duration: 0.6, type: 'spring' }}
-                  onMouseEnter={(e) => handleBeltHover(belt, e)}
-                  onMouseMove={(e) => handleBeltHover(belt, e)}
+                  onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
+                  onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
                   onMouseLeave={handleBeltLeave}
                   onClick={() => handleBeltClickInternal(belt)}
                 >

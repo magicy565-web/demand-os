@@ -21,6 +21,7 @@ export interface AgentResult {
   category: string;
   trendScore: number;
   lifecycle: 'emerging' | 'explosive' | 'mature';
+  keyFeatures?: string[];
   matchedFactories: Array<{
     factoryId: string;
     factoryName: string;
@@ -215,7 +216,7 @@ export class ViralTrackerAgentFlow {
       // 从 Directus 获取工厂数据
       let factoryList: any[] = [];
       try {
-        const factories = await directus.items('factories').readByQuery({
+        const factories = await (directus as any).items('factories').readByQuery({
           limit: -1,
           fields: ['*'],
         });
@@ -416,7 +417,7 @@ export class ViralTrackerAgentFlow {
 
       // 同步到 Directus
       try {
-        await directus.items('demands').createOne({
+        await (directus as any).items('demands').createOne({
           product_name: this.result!.productName,
           category: this.result!.category,
           trend_score: this.result!.trendScore,
