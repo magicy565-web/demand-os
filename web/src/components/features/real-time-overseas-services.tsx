@@ -2,6 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { VideoPlayer } from "@/components/ui/video-player"
+import { motion } from "framer-motion"
 
 export function RealTimeOverseasServices() {
   return (
@@ -13,9 +14,15 @@ export function RealTimeOverseasServices() {
       
       <div className="container-editorial relative z-10">
         {/* 左右布局：左边视频，右边文字 */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
           {/* 左边：视频 */}
-          <div className="relative order-2 lg:order-1">
+          <motion.div 
+            className="relative order-2 lg:order-1"
+            initial={{ opacity: 0, scale: 0.9, x: -30 }}
+            whileInView={{ opacity: 1, scale: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <VideoPlayer
               src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
               title="实时服务海外采购商"
@@ -30,7 +37,13 @@ export function RealTimeOverseasServices() {
           </div>
 
           {/* 右边：文字内容 */}
-          <div className="order-1 lg:order-2">
+          <motion.div 
+            className="order-1 lg:order-2 flex flex-col justify-center"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          >
             <span className="badge badge-blue mb-4 sm:mb-6 inline-flex items-center gap-2">
               <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               Real-Time Services
@@ -87,7 +100,7 @@ export function RealTimeOverseasServices() {
                 体验实时服务
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

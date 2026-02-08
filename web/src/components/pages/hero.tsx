@@ -2,6 +2,7 @@ import { ArrowRight, TrendingUp } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { VideoPlayer } from "@/components/ui/video-player"
+import { motion } from "framer-motion"
 
 export function Hero() {
   return (
@@ -22,9 +23,15 @@ export function Hero() {
       </div>
       
       <div className="container-editorial relative z-10">
-        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-stretch">
           {/* Left Content */}
-          <div className="lg:pr-4">
+          <motion.div 
+            className="lg:pr-4 flex flex-col justify-center"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             {/* Main Headline - 优化排版，增强对比度 */}
             <h1 className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] sm:leading-[1.1] mb-5 sm:mb-8 font-[family-name:var(--font-noto-serif-sc)] font-semibold tracking-tight text-navy drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">
               数字资产全托管
@@ -40,7 +47,13 @@ export function Hero() {
             </p>
             
             {/* CTA Buttons - 增强视觉效果 */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-10 sm:mb-16">
+            <motion.div 
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-10 sm:mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <Link href="/demo" className="btn-primary btn-lg group touch-feedback shadow-lg hover:shadow-xl transition-shadow">
                 <span>进入 Demand-OS</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -49,13 +62,19 @@ export function Hero() {
                 <span>了解企业数字资产全托管业务</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           
           {/* Right: Demand-OS Preview */}
-          <div className="relative lg:pl-4 order-first lg:order-last">
+          <motion.div 
+            className="relative lg:pl-4 order-first lg:order-last"
+            initial={{ opacity: 0, scale: 0.9, y: 50 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+          >
             <VideoPlayer
-              src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%888%E6%97%A5%282%29.mp4"
+              src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
               title="Demand-OS 控制中心"
               subtitle="智能需求匹配系统"
               loop={true}
@@ -68,7 +87,7 @@ export function Hero() {
             
             {/* Decorative */}
             <div className="hidden lg:block absolute -z-10 top-1/2 -translate-y-1/2 right-0 w-80 h-80 bg-emerald-500/15 blur-[100px] rounded-full" />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
