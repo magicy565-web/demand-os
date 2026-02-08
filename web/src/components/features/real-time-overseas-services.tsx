@@ -1,11 +1,9 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { useRef } from "react"
+import { VideoPlayer } from "@/components/ui/video-player"
 
 export function RealTimeOverseasServices() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
   return (
     <section className="section-padding bg-navy text-white overflow-hidden relative">
       {/* Background patterns */}
@@ -18,24 +16,17 @@ export function RealTimeOverseasServices() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* 左边：视频 */}
           <div className="relative order-2 lg:order-1">
-            <div className="aspect-video bg-black border border-white/10 rounded-xl overflow-hidden group shadow-2xl">
-              <video
-                ref={videoRef}
-                loop
-                playsInline
-                controls
-                className="w-full h-full object-cover"
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23000' width='16' height='9'/%3E%3Cpath fill='%23fff' d='M6.5 3L10.5 6l-4 3V3z'/%3E%3C/svg%3E"
-              >
-                <source
-                  src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            {/* 装饰性光晕 */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-brand-blue/20 to-gold/20 blur-2xl -z-10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <VideoPlayer
+              src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%882%E6%97%A5%281%29.mp4"
+              title="实时服务海外采购商"
+              subtitle="智能匹配 · 透明定价 · 实时反馈"
+              loop={true}
+              autoPlay={false}
+              controls={true}
+              theme="dark"
+              showInfo={true}
+              className="aspect-video"
+            />
           </div>
 
           {/* 右边：文字内容 */}

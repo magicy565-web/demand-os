@@ -1,6 +1,7 @@
 import { ArrowRight, TrendingUp } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { VideoPlayer } from "@/components/ui/video-player"
 
 export function Hero() {
   return (
@@ -53,38 +54,17 @@ export function Hero() {
           
           {/* Right: Demand-OS Preview */}
           <div className="relative lg:pl-4 order-first lg:order-last">
-            <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer">
-              {/* 静态图片预览 */}
-              <Image
-                src="/images/demand-dashboard.jpg"
-                alt="Demand-OS Dashboard"
-                fill
-                className="object-cover transition-all duration-500 group-hover:scale-105"
-                priority
-                quality={95}
-              />
-              
-              {/* 渐变叠加 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent" />
-              {/* 底部信息条 */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950/95 via-slate-900/80 to-transparent backdrop-blur-sm">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white font-bold text-lg mb-1">Demand-OS 控制中心</p>
-                    <p className="text-white/70 text-sm">智能需求匹配系统</p>
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowRight className="w-6 h-6 text-emerald-400" />
-                  </div>
-                </div>
-              </div>
-              
-              {/* 动效光晕 */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-emerald-500/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-500/20 rounded-full blur-3xl" />
-              </div>
-            </div>
+            <VideoPlayer
+              src="https://demand-os-discord.oss-cn-hangzhou.aliyuncs.com/2%E6%9C%888%E6%97%A5%282%29.mp4"
+              title="Demand-OS 控制中心"
+              subtitle="智能需求匹配系统"
+              loop={true}
+              autoPlay={false}
+              controls={true}
+              theme="dark"
+              showInfo={true}
+              className="aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3]"
+            />
             
             {/* Decorative */}
             <div className="hidden lg:block absolute -z-10 top-1/2 -translate-y-1/2 right-0 w-80 h-80 bg-emerald-500/15 blur-[100px] rounded-full" />
