@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
-import { Menu, X, ChevronRight, Sparkles, Factory, TrendingUp, Zap, Users, BookOpen, Search as SearchIcon, Building2, Package, Rocket, BarChart, MessageSquare, Target, Award, Globe, ShoppingCart, Wand2 } from "lucide-react"
+import { Menu, X, ChevronDown, Sparkles, Factory, TrendingUp, Zap, Users, BookOpen, Search as SearchIcon, Building2, Package, Rocket, BarChart, MessageSquare, Target, Award, Globe, ShoppingCart, Wand2, MapPin } from "lucide-react"
 
 interface NavItem {
   title: string;
@@ -28,57 +28,44 @@ interface MegaMenu {
   };
 }
 
-const accioMenu: MegaMenu = {
-  title: "Accio",
+const demandOSMenu: MegaMenu = {
+  title: "需求操作系统",
   groups: [
     {
-      title: "AI 采购助手",
+      title: "AI 智能助手",
       items: [
-        { title: "Accio 主页", href: "/accio", description: "AI智能采购，一问搞定", icon: Wand2, highlight: true },
-        { title: "需求分析", href: "/accio", description: "智能分析采购需求", icon: Target },
-        { title: "供应商推荐", href: "/accio", description: "精准推荐供应商", icon: Users },
+        { title: "Accio 智能采购", href: "/accio", description: "AI智能采购，一问搞定", icon: Wand2, highlight: true, badge: "推荐" },
+        { title: "Agent 市场", href: "/agents-v3", description: "浏览所有智能代理", icon: Sparkles },
+        { title: "聊天转工作流", href: "/chat-to-workflow", description: "快速创建自定义 Agent", icon: MessageSquare, badge: "新功能" },
       ],
     },
-  ],
-  featured: {
-    title: "Accio - 智能采购助手",
-    description: "使用 AI 自然语言描述您的需求，Accio 将为您智能匹配全球供应商和产品。",
-    href: "/accio",
-  },
-};
-
-const demandOSMenu: MegaMenu = {
-  title: "Demand-OS",
-  groups: [
     {
-      title: "智能代理",
+      title: "专业 Agent",
       items: [
-        { title: "Agent 市场", href: "/agents-v3", description: "浏览所有智能代理", icon: Sparkles, badge: "热门" },
-        { title: "需求捕获 Agent", href: "/agent-list/demand-capture", description: "智能捕获全球采购需求", icon: Target },
-        { title: "选品分析 Agent", href: "/agent-list/product-selection", description: "基于数据的智能选品", icon: BarChart },
-        { title: "供应商匹配 Agent", href: "/agent-list/supplier-matching", description: "精准匹配优质供应商", icon: Users },
-        { title: "内容创作 Agent", href: "/agent-list/content-creation", description: "AI 驱动内容生成", icon: Sparkles },
-        { title: "数据分析 Agent", href: "/agent-list/data-analysis", description: "深度商业洞察", icon: BarChart },
-        { title: "聊天转工作流", href: "/chat-to-workflow", description: "快速创建自定义 Agent", icon: MessageSquare, badge: "新功能" },
+        { title: "需求捕获", href: "/agent-list/demand-capture", description: "智能捕获全球采购需求", icon: Target },
+        { title: "选品分析", href: "/agent-list/product-selection", description: "基于数据的智能选品", icon: BarChart },
+        { title: "供应商匹配", href: "/agent-list/supplier-matching", description: "精准匹配优质供应商", icon: Users },
+        { title: "内容创作", href: "/agent-list/content-creation", description: "AI 驱动内容生成", icon: Sparkles },
+        { title: "数据分析", href: "/agent-list/data-analysis", description: "深度商业洞察", icon: BarChart },
       ],
     },
     {
       title: "热门工具",
       items: [
-        { title: "爆款追踪器", href: "/viral-tracker", description: "追踪热门产品趋势", icon: TrendingUp, highlight: true },
+        { title: "爆款追踪器", href: "/viral-tracker", description: "追踪热门产品趋势", icon: TrendingUp },
         { title: "Discord 工作区", href: "/discord", description: "团队协作与社区", icon: MessageSquare },
       ],
     },
   ],
   featured: {
-    title: "开始使用 Demand-OS",
+    title: "开始使用需求操作系统",
     description: "AI 驱动的智能采购与供应链管理平台，帮助您快速连接全球供应商。",
     href: "/home-v2",
   },
 };
 
 const solutionMenu: MegaMenu = {
-  title: "Solution",
+  title: "解决方案",
   groups: [
     {
       title: "核心方案",
@@ -106,7 +93,7 @@ const solutionMenu: MegaMenu = {
 };
 
 const casesMenu: MegaMenu = {
-  title: "Cases",
+  title: "成功案例",
   groups: [
     {
       title: "行业案例",
@@ -120,7 +107,7 @@ const casesMenu: MegaMenu = {
       title: "更多内容",
       items: [
         { title: "成功故事集", href: "/cases/success-stories", description: "客户成功故事", icon: Award },
-        { title: "案例总览", href: "/cases", description: "浏览所有案例", icon: Award, highlight: true },
+        { title: "案例总览", href: "/cases", description: "浏览所有案例", icon: Award },
       ],
     },
   ],
@@ -132,12 +119,18 @@ const casesMenu: MegaMenu = {
 };
 
 const industryOSMenu: MegaMenu = {
-  title: "Industry-OS",
+  title: "行业操作系统",
   groups: [
+    {
+      title: "产业地图",
+      items: [
+        { title: "中国产业带地图", href: "/industrial-os", description: "可视化产业带分布", icon: MapPin, highlight: true, badge: "地图" },
+      ],
+    },
     {
       title: "行业分类",
       items: [
-        { title: "行业总览", href: "/industry-os", description: "探索各行业机会", icon: Building2, badge: "总览" },
+        { title: "行业总览", href: "/industry-os", description: "探索各行业机会", icon: Building2 },
         { title: "消费电子", href: "/industry-os/consumer-electronics", description: "智能设备、可穿戴", icon: Zap },
         { title: "美妆个护", href: "/industry-os/beauty-personal-care", description: "护肤品、彩妆", icon: Sparkles },
         { title: "家居生活", href: "/industry-os/home-living", description: "家具、家纺、厨具", icon: Building2 },
@@ -149,24 +142,24 @@ const industryOSMenu: MegaMenu = {
     {
       title: "工厂网络",
       items: [
-        { title: "工厂总览", href: "/factory-list", description: "浏览所有工厂", icon: Factory, badge: "总览" },
+        { title: "工厂总览", href: "/factory-list", description: "浏览所有工厂", icon: Factory },
         { title: "认证工厂目录", href: "/factory-list/certified", description: "经过认证的优质工厂", icon: Award },
         { title: "产能匹配系统", href: "/factory-list/capacity-matching", description: "智能匹配工厂产能", icon: BarChart },
         { title: "工厂入驻申请", href: "/factory-list/apply", description: "申请加入工厂网络", icon: Rocket },
         { title: "展厅", href: "/showrooms", description: "工厂展示空间", icon: Building2 },
-        { title: "全球信任工厂", href: "/global-trust", description: "高信誉工厂推荐", icon: Globe, highlight: true },
+        { title: "全球信任工厂", href: "/global-trust", description: "高信誉工厂推荐", icon: Globe },
       ],
     },
   ],
   featured: {
     title: "连接全球优质工厂",
-    description: "覆盖 7 大行业，认证工厂网络，智能产能匹配。",
-    href: "/factory-list",
+    description: "覆盖 7 大行业，认证工厂网络，智能产能匹配，可视化产业带地图。",
+    href: "/industrial-os",
   },
 };
 
 const learnMoreMenu: MegaMenu = {
-  title: "Learn More",
+  title: "了解更多",
   groups: [
     {
       title: "资源中心",
@@ -179,14 +172,13 @@ const learnMoreMenu: MegaMenu = {
   ],
 };
 
-const allMenus = [accioMenu, demandOSMenu, solutionMenu, casesMenu, industryOSMenu, learnMoreMenu];
+const allMenus = [demandOSMenu, solutionMenu, casesMenu, industryOSMenu, learnMoreMenu];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
   const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const menuContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -217,35 +209,44 @@ export function Header() {
   const handleMenuLeave = () => {
     menuTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null)
-    }, 200) // 200ms 延迟，给用户移动鼠标的时间
+    }, 200)
   }
 
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? "bg-white/98 backdrop-blur-xl shadow-lg border-b border-gray-200" 
-          : "bg-white/95 backdrop-blur-md border-b border-gray-100"
+          ? "bg-white shadow-lg border-b border-blue-100" 
+          : "bg-white border-b border-gray-100"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo - Demand-OS Text Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative px-3 py-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-black text-lg tracking-tight">D-OS</span>
-              </div>
-            </div>
+          {/* Logo - Modern Blue Design */}
+          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity group">
+            {/* SVG Logo */}
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-105">
+              <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
+              <path d="M12 14C12 12.8954 12.8954 12 14 12H18C20.2091 12 22 13.7909 22 16C22 18.2091 20.2091 20 18 20H14C12.8954 20 12 19.1046 12 18V14Z" fill="white"/>
+              <path d="M22 22C22 20.8954 22.8954 20 24 20H26C27.1046 20 28 20.8954 28 22V26C28 27.1046 27.1046 28 26 28H24C22.8954 28 22 27.1046 22 26V22Z" fill="white" fillOpacity="0.8"/>
+              <circle cx="16" cy="26" r="2" fill="white" fillOpacity="0.6"/>
+              <defs>
+                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#2563EB"/>
+                  <stop offset="1" stopColor="#1D4ED8"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            
             <div className="hidden sm:block">
-              <div className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Demand-OS</div>
-              <div className="text-xs text-gray-500">数智产业园</div>
+              <div className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Demand-OS
+              </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1" ref={menuContainerRef}>
+          <nav className="hidden lg:flex items-center gap-1">
             {allMenus.map((menu, index) => (
               <div
                 key={index}
@@ -256,18 +257,18 @@ export function Header() {
                 <button 
                   className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center gap-2 ${
                     activeMenu === index
-                      ? "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                   }`}
                 >
                   {menu.title}
-                  <ChevronRight className={`w-4 h-4 transition-transform ${activeMenu === index ? "rotate-90" : ""}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${activeMenu === index ? "rotate-180" : ""}`} />
                 </button>
 
-                {/* Mega Menu Dropdown - 固定位置防止闪烁 */}
+                {/* Mega Menu Dropdown */}
                 {activeMenu === index && (
                   <div 
-                    className="absolute top-full left-0 mt-2 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200"
+                    className="absolute top-full left-0 mt-2 w-[800px] bg-white rounded-2xl shadow-2xl border border-blue-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200"
                     onMouseEnter={() => handleMenuEnter(index)}
                     onMouseLeave={handleMenuLeave}
                   >
@@ -277,7 +278,7 @@ export function Header() {
                         <div className="grid grid-cols-2 gap-6">
                           {menu.groups.map((group, groupIndex) => (
                             <div key={groupIndex}>
-                              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+                              <h3 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3">
                                 {group.title}
                               </h3>
                               <div className="space-y-1">
@@ -289,22 +290,22 @@ export function Header() {
                                       href={item.href}
                                       className={`group/item flex items-start gap-3 p-3 rounded-lg transition-all ${
                                         item.highlight
-                                          ? "bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100"
+                                          ? "bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
                                           : "hover:bg-gray-50"
                                       }`}
                                     >
                                       {Icon && (
-                                        <div className={`mt-0.5 ${item.highlight ? "text-emerald-600" : "text-gray-400 group-hover/item:text-gray-600"}`}>
+                                        <div className={`mt-0.5 ${item.highlight ? "text-blue-600" : "text-gray-400 group-hover/item:text-blue-600"}`}>
                                           <Icon className="w-5 h-5" />
                                         </div>
                                       )}
                                       <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                          <span className={`font-semibold text-sm ${item.highlight ? "text-emerald-900" : "text-gray-900"}`}>
+                                          <span className={`font-semibold text-sm ${item.highlight ? "text-blue-900" : "text-gray-900"}`}>
                                             {item.title}
                                           </span>
                                           {item.badge && (
-                                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
                                               {item.badge}
                                             </span>
                                           )}
@@ -324,10 +325,10 @@ export function Header() {
 
                       {/* Featured Section */}
                       {menu.featured && (
-                        <div className="w-80 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-6 border-l border-emerald-100">
+                        <div className="w-80 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 border-l border-blue-100">
                           <div className="h-full flex flex-col justify-between">
                             <div>
-                              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-bold text-emerald-700 mb-4">
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-bold text-blue-700 mb-4">
                                 <Sparkles className="w-3.5 h-3.5" />
                                 推荐
                               </div>
@@ -340,10 +341,10 @@ export function Header() {
                             </div>
                             <Link
                               href={menu.featured.href}
-                              className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold text-sm hover:shadow-xl transition-all hover:scale-105"
+                              className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-sm hover:shadow-xl transition-all hover:scale-105"
                             >
                               立即开始
-                              <ChevronRight className="w-4 h-4" />
+                              <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
                             </Link>
                           </div>
                         </div>
@@ -358,7 +359,7 @@ export function Header() {
           {/* CTA Button */}
           <Link
             href="/accio"
-            className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold hover:shadow-xl transition-all hover:scale-105"
+            className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-sm font-semibold hover:shadow-xl transition-all hover:scale-105"
           >
             <Wand2 className="w-4 h-4" />
             Accio
@@ -367,7 +368,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden p-2.5 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+            className="lg:hidden p-2.5 text-gray-700 hover:bg-blue-50 rounded-xl transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "关闭菜单" : "打开菜单"}
           >
@@ -388,13 +389,13 @@ export function Header() {
             <div className="p-4 space-y-6">
               {allMenus.map((menu, menuIndex) => (
                 <div key={menuIndex} className="space-y-3">
-                  <div className="px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl">
-                    <h3 className="font-bold text-base text-emerald-900">{menu.title}</h3>
+                  <div className="px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl">
+                    <h3 className="font-bold text-base text-blue-900">{menu.title}</h3>
                   </div>
                   
                   {menu.groups.map((group, groupIndex) => (
                     <div key={groupIndex} className="space-y-2">
-                      <h4 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <h4 className="px-4 text-xs font-bold text-blue-600 uppercase tracking-wider">
                         {group.title}
                       </h4>
                       <div className="space-y-1">
@@ -406,23 +407,23 @@ export function Header() {
                               href={item.href}
                               className={`flex items-start gap-3 px-4 py-3 rounded-xl transition-all ${
                                 item.highlight
-                                  ? "bg-gradient-to-r from-emerald-50 to-teal-50"
+                                  ? "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200"
                                   : "hover:bg-gray-50"
                               }`}
                               onClick={() => setMobileMenuOpen(false)}
                             >
                               {Icon && (
-                                <div className={`mt-0.5 ${item.highlight ? "text-emerald-600" : "text-gray-400"}`}>
+                                <div className={`mt-0.5 ${item.highlight ? "text-blue-600" : "text-gray-400"}`}>
                                   <Icon className="w-5 h-5" />
                                 </div>
                               )}
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                  <span className={`font-semibold text-sm ${item.highlight ? "text-emerald-900" : "text-gray-900"}`}>
+                                  <span className={`font-semibold text-sm ${item.highlight ? "text-blue-900" : "text-gray-900"}`}>
                                     {item.title}
                                   </span>
                                   {item.badge && (
-                                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
                                       {item.badge}
                                     </span>
                                   )}
@@ -431,7 +432,7 @@ export function Header() {
                                   {item.description}
                                 </p>
                               </div>
-                              <ChevronRight className="w-5 h-5 text-gray-300 mt-0.5" />
+                              <ChevronDown className="w-5 h-5 text-gray-300 mt-0.5 rotate-[-90deg]" />
                             </Link>
                           );
                         })}
@@ -443,7 +444,7 @@ export function Header() {
               
               <Link
                 href="/accio"
-                className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
+                className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Wand2 className="w-5 h-5" />
