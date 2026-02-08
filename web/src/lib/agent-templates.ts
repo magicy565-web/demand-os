@@ -84,10 +84,11 @@ export const overseasSourcingAgent: AgentWorkflow = {
  */
 export const factoryODMAgent: AgentWorkflow = {
   id: 'factory-odm',
-  name: '工厂委托开发 Agent',
-  description: '基于产品需求，匹配工厂，评估开发周期和成本',
+  name: '工厂产能委托发布 Agent',
+  description: '通过对话式交互，逐步引导工厂用户上传产品信息和特定需求，智能匹配采购商',
   category: '委托开发',
   icon: '🏭',
+  conversational: true,
   nodes: [
     {
       id: 'input-1',

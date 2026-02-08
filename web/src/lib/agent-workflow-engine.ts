@@ -24,6 +24,7 @@ export interface AgentWorkflow {
   description: string;
   category: string;
   icon?: string;
+  conversational?: boolean; // 是否为对话式 Agent
   nodes: WorkflowNode[];
   edges: WorkflowEdge[];
   variables?: Record<string, any>;

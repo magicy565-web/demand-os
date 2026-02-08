@@ -25,7 +25,12 @@ export default function AgentMarketplace() {
   });
 
   const handleUseTemplate = (templateId: string) => {
-    router.push(`/agents/${templateId}`);
+    const template = agentTemplates.find(t => t.id === templateId);
+    if (template?.conversational) {
+      router.push(`/agents/${templateId}/chat`);
+    } else {
+      router.push(`/agents/${templateId}`);
+    }
   };
 
   return (
