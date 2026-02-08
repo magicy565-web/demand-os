@@ -35,7 +35,7 @@ const demandOSMenu: MegaMenu = {
       title: "AI 智能助手",
       items: [
         { title: "Accio 智能采购", href: "/accio", description: "AI智能采购，一问搞定", icon: Wand2, highlight: true, badge: "推荐" },
-        { title: "Agent 市场", href: "/agents-v3", description: "浏览所有智能代理", icon: Sparkles },
+        { title: "Agent 市场", href: "/agents-intro", description: "浏览所有智能代理", icon: Sparkles },
         { title: "聊天转工作流", href: "/chat-to-workflow", description: "快速创建自定义 Agent", icon: MessageSquare, badge: "新功能" },
       ],
     },
@@ -81,7 +81,7 @@ const solutionMenu: MegaMenu = {
       items: [
         { title: "战略咨询", href: "/strategy-consulting", description: "专业战略咨询", icon: Target },
         { title: "TikTok 联盟", href: "/tiktok-alliance", description: "TikTok 生态合作", icon: Users },
-        { title: "解决方案总览", href: "/solution", description: "浏览所有解决方案", icon: Sparkles },
+        { title: "解决方案总览", href: "/solutions-intro", description: "浏览所有解决方案", icon: Sparkles },
       ],
     },
   ],
@@ -107,7 +107,7 @@ const casesMenu: MegaMenu = {
       title: "更多内容",
       items: [
         { title: "成功故事集", href: "/cases/success-stories", description: "客户成功故事", icon: Award },
-        { title: "案例总览", href: "/cases", description: "浏览所有案例", icon: Award },
+        { title: "案例总览", href: "/cases-intro", description: "浏览所有案例", icon: Award },
       ],
     },
   ],
@@ -142,7 +142,7 @@ const industryOSMenu: MegaMenu = {
     {
       title: "工厂网络",
       items: [
-        { title: "工厂总览", href: "/factory-list", description: "浏览所有工厂", icon: Factory },
+        { title: "工厂总览", href: "/factory-intro", description: "浏览所有工厂", icon: Factory },
         { title: "认证工厂目录", href: "/factory-list/certified", description: "经过认证的优质工厂", icon: Award },
         { title: "产能匹配系统", href: "/factory-list/capacity-matching", description: "智能匹配工厂产能", icon: BarChart },
         { title: "工厂入驻申请", href: "/factory-list/apply", description: "申请加入工厂网络", icon: Rocket },
