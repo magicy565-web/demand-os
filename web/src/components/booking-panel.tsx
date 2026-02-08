@@ -117,7 +117,7 @@ export function BookingPanel({
         </p>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 [&>div>div]:!block">
         <div className="p-5 space-y-5">
           <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 p-4">
             <div className="flex items-start gap-3">
