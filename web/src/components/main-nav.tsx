@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { navigationConfig } from '@/config/navigation';
+import { navigationConfig } from '@/config/navigation.tsx';
 import {
   NavigationMenu,
   NavigationMenuContent,
