@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronRight, Sparkles, Factory, TrendingUp, Zap, Users, BookOpen, Search as SearchIcon, Building2, Package, Rocket, BarChart, MessageSquare, Target, Award, Globe, ShoppingCart } from "lucide-react"
 
@@ -26,12 +25,11 @@ interface MegaMenu {
     title: string;
     description: string;
     href: string;
-    image?: string;
   };
 }
 
 const demandOSMenu: MegaMenu = {
-  title: "数智产业园 OS",
+  title: "Demand-OS",
   groups: [
     {
       title: "智能代理",
@@ -52,36 +50,70 @@ const demandOSMenu: MegaMenu = {
         { title: "Discord 工作区", href: "/discord", description: "团队协作与社区", icon: MessageSquare },
       ],
     },
+  ],
+  featured: {
+    title: "开始使用 Demand-OS",
+    description: "AI 驱动的智能采购与供应链管理平台，帮助您快速连接全球供应商。",
+    href: "/home-v2",
+  },
+};
+
+const solutionMenu: MegaMenu = {
+  title: "Solution",
+  groups: [
     {
-      title: "解决方案",
+      title: "核心方案",
       items: [
         { title: "30天出海路径", href: "/solution/30-day-pathway", description: "快速启动跨境电商", icon: Rocket },
         { title: "数字资产全托管", href: "/solution/digital-asset-management", description: "一站式资产管理", icon: Package },
         { title: "TikTok Shop 启动", href: "/solution/tiktok-shop-launch", description: "TikTok 电商方案", icon: ShoppingCart },
         { title: "供应链优化", href: "/solution/supply-chain-optimization", description: "端到端优化", icon: BarChart },
-        { title: "战略咨询", href: "/strategy-consulting", description: "专业战略咨询", icon: Target },
-        { title: "TikTok 联盟", href: "/tiktok-alliance", description: "TikTok 生态合作", icon: Users },
       ],
     },
     {
-      title: "成功案例",
+      title: "增值服务",
       items: [
-        { title: "案例总览", href: "/cases", description: "浏览所有案例", icon: Award },
-        { title: "消费电子案例", href: "/cases/consumer-electronics", description: "消费电子成功案例", icon: Award },
-        { title: "美妆个护案例", href: "/cases/beauty-personal-care", description: "美妆行业案例", icon: Award },
-        { title: "家居生活案例", href: "/cases/home-living", description: "家居行业案例", icon: Award },
+        { title: "战略咨询", href: "/strategy-consulting", description: "专业战略咨询", icon: Target },
+        { title: "TikTok 联盟", href: "/tiktok-alliance", description: "TikTok 生态合作", icon: Users },
+        { title: "解决方案总览", href: "/solution", description: "浏览所有解决方案", icon: Sparkles },
       ],
     },
   ],
   featured: {
-    title: "开始使用数智产业园 OS",
-    description: "AI 驱动的智能采购与供应链管理平台，帮助您快速连接全球供应商，优化业务流程。",
-    href: "/home-v2",
+    title: "完整解决方案",
+    description: "从需求分析到交付执行，为您提供一站式的商业解决方案。",
+    href: "/solution",
+  },
+};
+
+const casesMenu: MegaMenu = {
+  title: "Cases",
+  groups: [
+    {
+      title: "行业案例",
+      items: [
+        { title: "消费电子案例", href: "/cases/consumer-electronics", description: "消费电子成功案例", icon: Zap },
+        { title: "美妆个护案例", href: "/cases/beauty-personal-care", description: "美妆行业案例", icon: Sparkles },
+        { title: "家居生活案例", href: "/cases/home-living", description: "家居行业案例", icon: Building2 },
+      ],
+    },
+    {
+      title: "更多内容",
+      items: [
+        { title: "成功故事集", href: "/cases/success-stories", description: "客户成功故事", icon: Award },
+        { title: "案例总览", href: "/cases", description: "浏览所有案例", icon: Award, highlight: true },
+      ],
+    },
+  ],
+  featured: {
+    title: "成功案例库",
+    description: "探索我们的客户如何通过 Demand-OS 实现业务增长。",
+    href: "/cases",
   },
 };
 
 const industryOSMenu: MegaMenu = {
-  title: "行业操作系统",
+  title: "Industry-OS",
   groups: [
     {
       title: "行业分类",
@@ -109,13 +141,13 @@ const industryOSMenu: MegaMenu = {
   ],
   featured: {
     title: "连接全球优质工厂",
-    description: "覆盖 7 大行业，认证工厂网络，智能产能匹配，助力您快速找到最合适的生产伙伴。",
+    description: "覆盖 7 大行业，认证工厂网络，智能产能匹配。",
     href: "/factory-list",
   },
 };
 
 const learnMoreMenu: MegaMenu = {
-  title: "了解更多",
+  title: "Learn More",
   groups: [
     {
       title: "资源中心",
@@ -128,7 +160,7 @@ const learnMoreMenu: MegaMenu = {
   ],
 };
 
-const allMenus = [demandOSMenu, industryOSMenu, learnMoreMenu];
+const allMenus = [demandOSMenu, solutionMenu, casesMenu, industryOSMenu, learnMoreMenu];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -164,22 +196,17 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity group">
+          {/* Logo - Demand-OS Text Logo */}
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity group">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <Image 
-                src="/images/logo.png" 
-                alt="数智产业园 OS" 
-                width={48}
-                height={48}
-                className="relative h-12 w-12 object-contain"
-                priority
-              />
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+              <div className="relative px-3 py-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
+                <span className="text-white font-black text-lg tracking-tight">D-OS</span>
+              </div>
             </div>
             <div className="hidden sm:block">
-              <div className="text-lg font-bold text-gray-900">数智产业园 OS</div>
-              <div className="text-xs text-gray-500">Demand-OS</div>
+              <div className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Demand-OS</div>
+              <div className="text-xs text-gray-500">数智产业园</div>
             </div>
           </Link>
 
@@ -323,8 +350,8 @@ export function Header() {
             <div className="p-4 space-y-6">
               {allMenus.map((menu, menuIndex) => (
                 <div key={menuIndex} className="space-y-3">
-                  <div className="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl">
-                    <h3 className="font-bold text-base text-gray-900">{menu.title}</h3>
+                  <div className="px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl">
+                    <h3 className="font-bold text-base text-emerald-900">{menu.title}</h3>
                   </div>
                   
                   {menu.groups.map((group, groupIndex) => (
