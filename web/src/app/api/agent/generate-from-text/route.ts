@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || 'sk-LIs2MGKmDuGZhcfHbvLs1EiWHPwm2ELf3E8JkJXlFXgFLPBM',
+  baseURL: process.env.OPENAI_BASE_URL || 'https://once.novai.su/v1',
 });
 
 // 节点类型定义
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     // 调用 OpenAI API
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4.1-mini', // 使用环境变量中配置的模型
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini', // 使用环境变量中配置的模型
       messages: [
         {
           role: 'system',

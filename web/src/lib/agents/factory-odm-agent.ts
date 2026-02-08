@@ -4,7 +4,8 @@ import { Agent, Step, StepResult } from './types';
 import { OpenAI } from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || process.env.NOVA_AI_API_KEY || 'sk-LIs2MGKmDuGZhcfHbvLs1EiWHPwm2ELf3E8JkJXlFXgFLPBM',
+  baseURL: process.env.OPENAI_BASE_URL || process.env.NOVA_AI_BASE_URL || 'https://once.novai.su/v1',
 });
 
 export const factoryODMAgent: Agent = {
