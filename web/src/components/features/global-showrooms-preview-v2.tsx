@@ -5,6 +5,7 @@ import { Building2, Globe2, Users, TrendingUp, ArrowRight, MapPin, Clock, Sparkl
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ThreeErrorBoundary } from "@/components/three-error-boundary";
 
 // Dynamically import the 3D building component
 const Building3D = dynamic(
@@ -185,7 +186,9 @@ export function GlobalShowroomsPreviewV2() {
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="relative aspect-[4/3] bg-black/40 rounded-2xl overflow-hidden border border-white/10 backdrop-blur-sm shadow-2xl">
-              <Building3D selectedFloor={null} selectedZone={null} />
+              <ThreeErrorBoundary>
+                <Building3D selectedFloor={null} selectedZone={null} />
+              </ThreeErrorBoundary>
               
               {/* Interactive hint */}
               <motion.div
