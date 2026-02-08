@@ -1,26 +1,149 @@
-import { 
-  Building, 
-  Cpu, 
-  Factory, 
-  Lightbulb, 
-  Book, 
-  Home,
-  Flame,
-  MessageSquare,
-  Newspaper,
-  Info
-} from 'lucide-react';
+import React from 'react';
+
+// SVG Icons as React components
+export const DemandOSIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const IndustryOSIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="14" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="3" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="14" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const LearnMoreIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export interface NavItem {
+  title: string;
+  href?: string;
+  icon?: React.ComponentType;
+  description?: string;
+  items?: NavItem[];
+}
 
 export const navigationConfig = {
   mainNav: [
     {
-      title: "首页",
-      href: "/home-v2",
-      icon: Home,
+      title: "数智产业园 OS",
+      icon: DemandOSIcon,
+      items: [
+        {
+          title: "Agent 市场",
+          href: "/agents-v3",
+          description: "浏览所有智能代理，自动化您的业务流程",
+        },
+        {
+          title: "需求捕获 Agent",
+          href: "/agent-list/demand-capture",
+          description: "智能捕获全球电商平台的采购需求",
+        },
+        {
+          title: "选品分析 Agent",
+          href: "/agent-list/product-selection",
+          description: "基于市场数据的智能选品分析",
+        },
+        {
+          title: "供应商匹配 Agent",
+          href: "/agent-list/supplier-matching",
+          description: "精准匹配优质供应商资源",
+        },
+        {
+          title: "内容创作 Agent",
+          href: "/agent-list/content-creation",
+          description: "AI 驱动的产品内容生成",
+        },
+        {
+          title: "数据分析 Agent",
+          href: "/agent-list/data-analysis",
+          description: "深度数据分析与商业洞察",
+        },
+        {
+          title: "聊天转工作流",
+          href: "/chat-to-workflow",
+          description: "快速创建自定义 Agent 工作流",
+        },
+        {
+          title: "爆款追踪器",
+          href: "/viral-tracker",
+          description: "追踪热门产品趋势，发现市场机会",
+        },
+        {
+          title: "Discord 工作区",
+          href: "/discord",
+          description: "Discord 集成功能与社区协作",
+        },
+        {
+          title: "解决方案总览",
+          href: "/solution",
+          description: "探索所有解决方案",
+        },
+        {
+          title: "30天出海路径",
+          href: "/solution/30-day-pathway",
+          description: "快速启动跨境电商业务",
+        },
+        {
+          title: "数字资产全托管",
+          href: "/solution/digital-asset-management",
+          description: "一站式数字资产管理服务",
+        },
+        {
+          title: "TikTok Shop 启动",
+          href: "/solution/tiktok-shop-launch",
+          description: "TikTok 电商快速启动方案",
+        },
+        {
+          title: "供应链优化",
+          href: "/solution/supply-chain-optimization",
+          description: "端到端供应链优化服务",
+        },
+        {
+          title: "战略咨询",
+          href: "/strategy-consulting",
+          description: "专业战略咨询服务",
+        },
+        {
+          title: "TikTok 联盟",
+          href: "/tiktok-alliance",
+          description: "TikTok 生态合作",
+        },
+        {
+          title: "成功案例",
+          href: "/cases",
+          description: "浏览所有成功案例",
+        },
+        {
+          title: "消费电子案例",
+          href: "/cases/consumer-electronics",
+          description: "消费电子行业成功案例",
+        },
+        {
+          title: "美妆个护案例",
+          href: "/cases/beauty-personal-care",
+          description: "美妆个护行业成功案例",
+        },
+        {
+          title: "家居生活案例",
+          href: "/cases/home-living",
+          description: "家居生活行业成功案例",
+        },
+      ],
     },
     {
-      title: "Industry-OS",
-      icon: Building,
+      title: "行业操作系统",
+      icon: IndustryOSIcon,
       items: [
         {
           title: "行业总览",
@@ -57,53 +180,6 @@ export const navigationConfig = {
           href: "/industry-os/pet-economy",
           description: "宠物食品、宠物用品、宠物服务",
         },
-      ],
-    },
-    {
-      title: "Agent List",
-      icon: Cpu,
-      items: [
-        {
-          title: "Agent 市场",
-          href: "/agents-v3",
-          description: "浏览所有智能代理",
-        },
-        {
-          title: "需求捕获 Agent",
-          href: "/agent-list/demand-capture",
-          description: "智能捕获全球电商平台的采购需求",
-        },
-        {
-          title: "选品分析 Agent",
-          href: "/agent-list/product-selection",
-          description: "基于市场数据的智能选品分析",
-        },
-        {
-          title: "供应商匹配 Agent",
-          href: "/agent-list/supplier-matching",
-          description: "精准匹配优质供应商资源",
-        },
-        {
-          title: "内容创作 Agent",
-          href: "/agent-list/content-creation",
-          description: "AI 驱动的产品内容生成",
-        },
-        {
-          title: "数据分析 Agent",
-          href: "/agent-list/data-analysis",
-          description: "深度数据分析与商业洞察",
-        },
-        {
-          title: "聊天转工作流",
-          href: "/chat-to-workflow",
-          description: "快速创建自定义 Agent",
-        },
-      ],
-    },
-    {
-      title: "Factory List",
-      icon: Factory,
-      items: [
         {
           title: "工厂总览",
           href: "/factory-list",
@@ -137,91 +213,9 @@ export const navigationConfig = {
       ],
     },
     {
-      title: "Solution",
-      icon: Lightbulb,
+      title: "了解更多",
+      icon: LearnMoreIcon,
       items: [
-        {
-          title: "解决方案总览",
-          href: "/solution",
-          description: "探索所有解决方案",
-        },
-        {
-          title: "30天出海路径",
-          href: "/solution/30-day-pathway",
-          description: "快速启动跨境电商业务",
-        },
-        {
-          title: "数字资产全托管",
-          href: "/solution/digital-asset-management",
-          description: "一站式数字资产管理服务",
-        },
-        {
-          title: "TikTok Shop 启动",
-          href: "/solution/tiktok-shop-launch",
-          description: "TikTok 电商快速启动方案",
-        },
-        {
-          title: "供应链优化",
-          href: "/solution/supply-chain-optimization",
-          description: "端到端供应链优化服务",
-        },
-        {
-          title: "战略咨询",
-          href: "/strategy-consulting",
-          description: "专业战略咨询服务",
-        },
-        {
-          title: "TikTok 联盟",
-          href: "/tiktok-alliance",
-          description: "TikTok 生态合作",
-        },
-      ],
-    },
-    {
-      title: "Cases",
-      icon: Book,
-      items: [
-        {
-          title: "案例总览",
-          href: "/cases",
-          description: "浏览所有成功案例",
-        },
-        {
-          title: "消费电子案例",
-          href: "/cases/consumer-electronics",
-          description: "消费电子行业成功案例",
-        },
-        {
-          title: "美妆个护案例",
-          href: "/cases/beauty-personal-care",
-          description: "美妆个护行业成功案例",
-        },
-        {
-          title: "家居生活案例",
-          href: "/cases/home-living",
-          description: "家居生活行业成功案例",
-        },
-        {
-          title: "成功故事集",
-          href: "/cases/success-stories",
-          description: "客户成功故事与案例分享",
-        },
-      ],
-    },
-    {
-      title: "热门工具",
-      icon: Flame,
-      items: [
-        {
-          title: "病毒式追踪",
-          href: "/viral-tracker",
-          description: "追踪热门产品趋势",
-        },
-        {
-          title: "Discord 工作区",
-          href: "/discord",
-          description: "Discord 集成功能",
-        },
         {
           title: "搜索",
           href: "/search",
