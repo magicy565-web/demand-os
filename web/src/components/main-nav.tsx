@@ -1,76 +1,66 @@
+
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { 
-  Home, 
-  MessageSquare, 
-  Sparkles, 
-  Database, 
-  Settings,
-  Menu,
-  X
-} from 'lucide-react';
-import { useState } from 'react';
-
-const navItems = [
-  {
-    title: '首页',
-    href: '/',
-    icon: Home,
-  },
-  {
-    title: '对话',
-    href: '/chat',
-    icon: MessageSquare,
-  },
-  {
-    title: 'Agent 市场',
-    href: '/agents',
-    icon: Sparkles,
-  },
-  {
-    title: '数据管理',
-    href: '/data',
-    icon: Database,
-  },
-  {
-    title: '设置',
-    href: '/settings',
-    icon: Settings,
-  },
-];
+import { navigationConfig } from '@/config/navigation';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
+import { Menu, X } from 'lucide-react';
+import { Button } from './ui/button';
 
 export function MainNav() {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center space-x-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          
-          return (
-            <Link key={item.href} href={item.href}>
-              <Button
-                variant={isActive ? 'default' : 'ghost'}
-                className={cn(
-                  'gap-2',
-                  isActive && 'bg-primary text-primary-foreground'
-                )}
-              >
-                <Icon className="w-4 h-4" />
-                {item.title}
-              </Button>
-            </Link>
-          );
-        })}
-      </nav>
+      <NavigationMenu className="hidden md:flex">
+        <NavigationMenuList>
+          {navigationConfig.mainNav.map((item) =>
+            item.items ? (
+              <NavigationMenuItem key={item.title}>
+                <NavigationMenuTrigger>
+                  <item.icon className="w-4 h-4 mr-2" />
+                  {item.title}
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {item.items.map((subItem) => (
+                      <ListItem
+                        key={subItem.title}
+                        title={subItem.title}
+                        href={subItem.href}
+                      >
+                        {subItem.description}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem key={item.href}>
+                <Link href={item.href} legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <item.icon className="w-4 h-4 mr-2" />
+                    {item.title}
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            )
+          )}
+        </NavigationMenuList>
+      </NavigationMenu>
 
       {/* Mobile Menu Button */}
       <Button
@@ -79,39 +69,80 @@ export function MainNav() {
         className="md:hidden"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       >
-        {mobileMenuOpen ? (
-          <X className="w-5 h-5" />
-        ) : (
-          <Menu className="w-5 h-5" />
-        )}
+        {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </Button>
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b shadow-lg z-50">
           <nav className="flex flex-col p-4 space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-              
-              return (
-                <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant={isActive ? 'default' : 'ghost'}
-                    className={cn(
-                      'w-full justify-start gap-2',
-                      isActive && 'bg-primary text-primary-foreground'
-                    )}
+            {navigationConfig.mainNav.map((item) => (
+              <div key={item.title}>
+                {item.items ? (
+                  <div className="space-y-2">
+                    <p className="font-bold px-4 py-2">{item.title}</p>
+                    {item.items.map((subItem) => (
+                      <Link
+                        key={subItem.href}
+                        href={subItem.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block"
+                      >
+                        <Button
+                          variant={pathname === subItem.href ? 'secondary' : 'ghost'}
+                          className="w-full justify-start gap-2 pl-8"
+                        >
+                          {subItem.title}
+                        </Button>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block"
                   >
-                    <Icon className="w-4 h-4" />
-                    {item.title}
-                  </Button>
-                </Link>
-              );
-            })}
+                    <Button
+                      variant={pathname === item.href ? 'default' : 'ghost'}
+                      className="w-full justify-start gap-2"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.title}
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            ))}
           </nav>
         </div>
       )}
     </>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<'a'>,
+  React.ComponentPropsWithoutRef<'a'>
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = 'ListItem';
