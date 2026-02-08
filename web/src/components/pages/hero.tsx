@@ -40,8 +40,8 @@ export function Hero() {
             
             {/* CTA Buttons - 增强视觉效果 */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-10 sm:mb-16">
-              <Link href="/console" className="btn-primary btn-lg group touch-feedback shadow-lg hover:shadow-xl transition-shadow">
-                <span>申请系统演示</span>
+              <Link href="/demo" className="btn-primary btn-lg group touch-feedback shadow-lg hover:shadow-xl transition-shadow">
+                <span>进入 Demand-OS</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <Link href="#timeline" className="btn-link justify-center sm:justify-start py-3 sm:py-0 group font-semibold">
