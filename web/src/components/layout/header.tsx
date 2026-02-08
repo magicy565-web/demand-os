@@ -39,16 +39,7 @@ const demandOSMenu: MegaMenu = {
         { title: "聊天转工作流", href: "/chat-to-workflow", description: "快速创建自定义 Agent", icon: MessageSquare, badge: "新功能" },
       ],
     },
-    {
-      title: "专业 Agent",
-      items: [
-        { title: "需求捕获", href: "/agent-list/demand-capture", description: "智能捕获全球采购需求", icon: Target },
-        { title: "选品分析", href: "/agent-list/product-selection", description: "基于数据的智能选品", icon: BarChart },
-        { title: "供应商匹配", href: "/agent-list/supplier-matching", description: "精准匹配优质供应商", icon: Users },
-        { title: "内容创作", href: "/agent-list/content-creation", description: "AI 驱动内容生成", icon: Sparkles },
-        { title: "数据分析", href: "/agent-list/data-analysis", description: "深度商业洞察", icon: BarChart },
-      ],
-    },
+
     {
       title: "热门工具",
       items: [
@@ -67,15 +58,7 @@ const demandOSMenu: MegaMenu = {
 const solutionMenu: MegaMenu = {
   title: "解决方案",
   groups: [
-    {
-      title: "核心方案",
-      items: [
-        { title: "30天出海路径", href: "/solution/30-day-pathway", description: "快速启动跨境电商", icon: Rocket },
-        { title: "数字资产全托管", href: "/solution/digital-asset-management", description: "一站式资产管理", icon: Package },
-        { title: "TikTok Shop 启动", href: "/solution/tiktok-shop-launch", description: "TikTok 电商方案", icon: ShoppingCart },
-        { title: "供应链优化", href: "/solution/supply-chain-optimization", description: "端到端优化", icon: BarChart },
-      ],
-    },
+
     {
       title: "增值服务",
       items: [
@@ -127,18 +110,7 @@ const industryOSMenu: MegaMenu = {
         { title: "中国产业带地图", href: "/industrial-os", description: "可视化产业带分布", icon: MapPin, highlight: true, badge: "地图" },
       ],
     },
-    {
-      title: "行业分类",
-      items: [
-        { title: "行业总览", href: "/industry-os", description: "探索各行业机会", icon: Building2 },
-        { title: "消费电子", href: "/industry-os/consumer-electronics", description: "智能设备、可穿戴", icon: Zap },
-        { title: "美妆个护", href: "/industry-os/beauty-personal-care", description: "护肤品、彩妆", icon: Sparkles },
-        { title: "家居生活", href: "/industry-os/home-living", description: "家具、家纺、厨具", icon: Building2 },
-        { title: "运动户外", href: "/industry-os/sports-outdoor", description: "运动装备、户外用品", icon: Target },
-        { title: "母婴", href: "/industry-os/baby-maternity", description: "婴儿用品、儿童玩具", icon: Users },
-        { title: "宠物经济", href: "/industry-os/pet-economy", description: "宠物食品、用品", icon: Users },
-      ],
-    },
+
     {
       title: "工厂网络",
       items: [

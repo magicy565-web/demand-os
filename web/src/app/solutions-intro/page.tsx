@@ -129,8 +129,8 @@ export default function SolutionsIntroPage() {
         </motion.div>
       </section>
 
-      {/* Solutions Grid */}
-      <section className="py-32 px-4 bg-gradient-to-b from-white to-gray-50">
+      {/* Solutions Grid - REMOVED */}
+      {/* <section className="py-32 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12">
             {solutions.map((solution, index) => {
@@ -202,7 +202,7 @@ export default function SolutionsIntroPage() {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Benefits Section */}
       <section className="py-32 px-4 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50">
