@@ -432,7 +432,10 @@ function Scene({
         target={[0, 1.2, 0]}
       />
 
-      <Environment preset="apartment" />
+      {/* Environment with error handling for HDRI loading */}
+      <Suspense fallback={null}>
+        <Environment preset="apartment" />
+      </Suspense>
 
       {/* Post-processing effects */}
       <EffectComposer multisampling={4}>

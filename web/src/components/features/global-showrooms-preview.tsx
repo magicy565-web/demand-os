@@ -5,6 +5,7 @@ import { Building2, Globe2, Users, TrendingUp, ArrowRight, MapPin } from "lucide
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
+import { ThreeErrorBoundary } from "@/components/three-error-boundary";
 
 // Dynamically import the 3D building component
 const Building3D = dynamic(
@@ -85,7 +86,9 @@ export function GlobalShowroomsPreview() {
             className="relative"
           >
             <div className="aspect-[4/3] bg-black/40 rounded-2xl overflow-hidden border border-white/10 backdrop-blur-sm">
-              <Building3D selectedFloor={null} selectedZone={null} />
+              <ThreeErrorBoundary>
+                <Building3D selectedFloor={null} selectedZone={null} />
+              </ThreeErrorBoundary>
             </div>
             <motion.div
               initial={{ opacity: 0, y: 10 }}

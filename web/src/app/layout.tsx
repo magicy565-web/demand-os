@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter, Noto_Serif_SC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/providers/theme-provider'
+import { ErrorSuppressor } from '@/components/error-suppressor'
 // MainHeader removed - navigation only on home page
 import './globals.css'
 
@@ -97,6 +98,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${playfair.variable} ${inter.variable} ${notoSerifSC.variable} font-sans antialiased min-h-[100svh]`}>
+        <ErrorSuppressor />
         <Providers>
           <main className="min-h-screen">
             {children}
