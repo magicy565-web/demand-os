@@ -152,7 +152,7 @@ export function VideoPlayer({
 
       {/* Controls Bar */}
       {controls && (showControls || hovering) && (
-        <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-${isDark ? 'black' : 'white'}/80 to-transparent p-4 transition-opacity duration-300`}>
+        <div className={`absolute bottom-0 left-0 right-0 ${isDark ? 'bg-gradient-to-t from-black/80' : 'bg-gradient-to-t from-white/80'} to-transparent p-4 transition-opacity duration-300`}>
           {/* Progress Bar */}
           <div
             className="w-full h-1 bg-white/20 rounded-full cursor-pointer mb-3 hover:h-1.5 transition-all group/progress"
