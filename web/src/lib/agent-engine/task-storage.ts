@@ -2,8 +2,16 @@
 
 import { Task } from '../agents/types';
 
+// 使用 global 对象避免在开发环境中重新初始化
+declare global {
+  var __tasks: Map<string, Task> | undefined;
+}
+
 // 内存存储
-const tasks: Map<string, Task> = new Map();
+const tasks: Map<string, Task> = global.__tasks || new Map();
+if (!global.__tasks) {
+  global.__tasks = tasks;
+}
 
 export async function saveTask(taskId: string, task: Partial<Task>): Promise<void> {
   const existingTask = tasks.get(taskId);
