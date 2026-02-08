@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter, Noto_Serif_SC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/providers/theme-provider'
-import { MainHeader } from '@/components/main-header'
+// MainHeader removed - navigation only on home page
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -98,8 +98,7 @@ export default function RootLayout({
       </head>
       <body className={`${playfair.variable} ${inter.variable} ${notoSerifSC.variable} font-sans antialiased min-h-[100svh]`}>
         <Providers>
-          <MainHeader />
-          <main className="min-h-[calc(100svh-4rem)]">
+          <main className="min-h-screen">
             {children}
           </main>
         </Providers>
