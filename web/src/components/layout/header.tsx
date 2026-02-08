@@ -1,8 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Menu, X, ChevronRight, Sparkles, Factory, TrendingUp, Zap, Users, BookOpen, Search as SearchIcon, Building2, Package, Rocket, BarChart, MessageSquare, Target, Award, Globe, ShoppingCart } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Menu, X, ChevronRight, Sparkles, Factory, TrendingUp, Zap, Users, BookOpen, Search as SearchIcon, Building2, Package, Rocket, BarChart, MessageSquare, Target, Award, Globe, ShoppingCart, Wand2 } from "lucide-react"
 
 interface NavItem {
   title: string;
@@ -27,6 +27,25 @@ interface MegaMenu {
     href: string;
   };
 }
+
+const accioMenu: MegaMenu = {
+  title: "Accio",
+  groups: [
+    {
+      title: "AI 采购助手",
+      items: [
+        { title: "Accio 主页", href: "/accio", description: "AI智能采购，一问搞定", icon: Wand2, highlight: true },
+        { title: "需求分析", href: "/accio", description: "智能分析采购需求", icon: Target },
+        { title: "供应商推荐", href: "/accio", description: "精准推荐供应商", icon: Users },
+      ],
+    },
+  ],
+  featured: {
+    title: "Accio - 智能采购助手",
+    description: "使用 AI 自然语言描述您的需求，Accio 将为您智能匹配全球供应商和产品。",
+    href: "/accio",
+  },
+};
 
 const demandOSMenu: MegaMenu = {
   title: "Demand-OS",
@@ -160,12 +179,14 @@ const learnMoreMenu: MegaMenu = {
   ],
 };
 
-const allMenus = [demandOSMenu, solutionMenu, casesMenu, industryOSMenu, learnMoreMenu];
+const allMenus = [accioMenu, demandOSMenu, solutionMenu, casesMenu, industryOSMenu, learnMoreMenu];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
+  const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const menuContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -185,6 +206,19 @@ export function Header() {
       document.body.style.overflow = ""
     }
   }, [mobileMenuOpen])
+
+  const handleMenuEnter = (index: number) => {
+    if (menuTimeoutRef.current) {
+      clearTimeout(menuTimeoutRef.current)
+    }
+    setActiveMenu(index)
+  }
+
+  const handleMenuLeave = () => {
+    menuTimeoutRef.current = setTimeout(() => {
+      setActiveMenu(null)
+    }, 200) // 200ms 延迟，给用户移动鼠标的时间
+  }
 
   return (
     <header 
@@ -211,13 +245,13 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1" ref={menuContainerRef}>
             {allMenus.map((menu, index) => (
               <div
                 key={index}
                 className="relative"
-                onMouseEnter={() => setActiveMenu(index)}
-                onMouseLeave={() => setActiveMenu(null)}
+                onMouseEnter={() => handleMenuEnter(index)}
+                onMouseLeave={handleMenuLeave}
               >
                 <button 
                   className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center gap-2 ${
@@ -230,9 +264,13 @@ export function Header() {
                   <ChevronRight className={`w-4 h-4 transition-transform ${activeMenu === index ? "rotate-90" : ""}`} />
                 </button>
 
-                {/* Mega Menu Dropdown */}
+                {/* Mega Menu Dropdown - 固定位置防止闪烁 */}
                 {activeMenu === index && (
-                  <div className="absolute top-full left-0 mt-2 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
+                  <div 
+                    className="absolute top-full left-0 mt-2 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200"
+                    onMouseEnter={() => handleMenuEnter(index)}
+                    onMouseLeave={handleMenuLeave}
+                  >
                     <div className="flex">
                       {/* Main Content */}
                       <div className="flex-1 p-6">
@@ -319,11 +357,11 @@ export function Header() {
 
           {/* CTA Button */}
           <Link
-            href="/home-v2"
+            href="/accio"
             className="hidden lg:inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold hover:shadow-xl transition-all hover:scale-105"
           >
-            <Sparkles className="w-4 h-4" />
-            开始使用
+            <Wand2 className="w-4 h-4" />
+            Accio
           </Link>
 
           {/* Mobile Menu Button */}
@@ -404,12 +442,12 @@ export function Header() {
               ))}
               
               <Link
-                href="/home-v2"
+                href="/accio"
                 className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Sparkles className="w-5 h-5" />
-                开始使用
+                <Wand2 className="w-5 h-5" />
+                Accio - 智能采购
               </Link>
             </div>
           </nav>
