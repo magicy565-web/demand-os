@@ -134,9 +134,18 @@ export async function POST(request: NextRequest) {
       isCompleted,
     });
   } catch (error: any) {
-    console.error('Error in converse API:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : '';
+    
+    console.error('Error in converse API:', errorMessage);
+    console.error('Error stack:', errorStack);
+    
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { 
+        error: 'Internal server error', 
+        details: errorMessage,
+        ...(process.env.NODE_ENV === 'development' && { stack: errorStack })
+      },
       { status: 500 }
     );
   }

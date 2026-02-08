@@ -26,15 +26,16 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
             : 'bg-primary text-primary-foreground'
         }`}
       >
-        <ReactMarkdown
-          className="prose prose-sm dark:prose-invert max-w-none"
-          components={{
-            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-          }}
-        >
-          {content}
-        </ReactMarkdown>
+        <div className="prose prose-sm dark:prose-invert max-w-none">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
       </div>
 
       {!isSystem && (
