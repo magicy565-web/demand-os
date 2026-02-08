@@ -15,6 +15,8 @@ export function suppressNonCriticalErrors() {
     /Vercel Web Analytics/i,
     /_vercel\/insights/i,
     /Failed to load script from .*insights/i,
+    /Failed to load resource.*_vercel/i,
+    /404.*_vercel/i,
     /lebombo_1k\.hdr/i,
     /Failed to fetch.*hdri/i,
     /THREE\.WebGLRenderer.*Context Lost/i,
