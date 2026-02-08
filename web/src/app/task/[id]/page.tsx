@@ -46,15 +46,34 @@ export default function TaskPage() {
   useEffect(() => {
     // 轮询任务状态
     const fetchTask = async () => {
-      const response = await fetch(`/api/agent/status?taskId=${taskId}`);
-      const data = await response.json();
-      setTask(data);
+      try {
+        const response = await fetch(`/api/agent/status?taskId=${taskId}`);
+        if (!response.ok) {
+          console.error('Failed to fetch task status:', response.status, response.statusText);
+          return;
+        }
+        const data = await response.json();
+        setTask({
+          id: data.taskId || taskId,
+          query: data.query || '任务进行中...',
+          steps: (data.plan || data.steps || []).map((step: any) => ({
+            id: step.id,
+            title: step.name || step.title || '步骤',
+            status: step.status || 'pending',
+            result: step.result,
+          })),
+          finalResult: data.results || data.finalResult,
+        });
+      } catch (error) {
+        console.error('Error fetching task:', error);
+      }
     };
 
-    fetchTask();
-    const interval = setInterval(fetchTask, 2000);
-
-    return () => clearInterval(interval);
+    if (taskId) {
+      fetchTask();
+      const interval = setInterval(fetchTask, 5000);
+      return () => clearInterval(interval);
+    }
   }, [taskId]);
 
   if (!task) {
@@ -168,53 +187,59 @@ export default function TaskPage() {
             </div>
 
             <div className="space-y-4">
-              {task.steps.map((step, index) => (
-                <div key={step.id} className="flex items-start gap-4">
-                  {/* 状态图标 */}
-                  <div className="flex-shrink-0 mt-1">
-                    {step.status === "completed" && (
-                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                        <Check size={14} className="text-white" />
-                      </div>
-                    )}
-                    {step.status === "in_progress" && (
-                      <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                        <Loader2 size={14} className="text-white animate-spin" />
-                      </div>
-                    )}
-                    {step.status === "pending" && (
-                      <div className="w-6 h-6 bg-gray-300 rounded-full" />
-                    )}
-                    {step.status === "failed" && (
-                      <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                        <AlertCircle size={14} className="text-white" />
-                      </div>
+              {task.steps && task.steps.length > 0 ? (
+                task.steps.map((step, index) => (
+                  <div key={step.id} className="flex items-start gap-4">
+                    {/* 状态图标 */}
+                    <div className="flex-shrink-0 mt-1">
+                      {step.status === "completed" && (
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check size={14} className="text-white" />
+                        </div>
+                      )}
+                      {step.status === "in_progress" && (
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                          <Loader2 size={14} className="text-white animate-spin" />
+                        </div>
+                      )}
+                      {step.status === "pending" && (
+                        <div className="w-6 h-6 bg-gray-300 rounded-full" />
+                      )}
+                      {step.status === "failed" && (
+                        <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                          <AlertCircle size={14} className="text-white" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 步骤内容 */}
+                    <div className="flex-1">
+                      <h3 className="font-medium mb-1">
+                        第{index + 1}步：{step.title}
+                      </h3>
+                      {step.status === "in_progress" && (
+                        <p className="text-sm text-gray-600">正在执行中...</p>
+                      )}
+                      {step.status === "completed" && step.result && (
+                        <div className="mt-2 p-3 bg-white rounded-lg border border-gray-200">
+                          <pre className="text-sm text-gray-700 whitespace-pre-wrap">
+                            {JSON.stringify(step.result, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 连接线 */}
+                    {index < task.steps.length - 1 && (
+                      <div className="absolute left-[37px] w-0.5 h-8 bg-gray-300 mt-6" />
                     )}
                   </div>
-
-                  {/* 步骤内容 */}
-                  <div className="flex-1">
-                    <h3 className="font-medium mb-1">
-                      第{index + 1}步：{step.title}
-                    </h3>
-                    {step.status === "in_progress" && (
-                      <p className="text-sm text-gray-600">正在执行中...</p>
-                    )}
-                    {step.status === "completed" && step.result && (
-                      <div className="mt-2 p-3 bg-white rounded-lg border border-gray-200">
-                        <pre className="text-sm text-gray-700 whitespace-pre-wrap">
-                          {JSON.stringify(step.result, null, 2)}
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 连接线 */}
-                  {index < task.steps.length - 1 && (
-                    <div className="absolute left-[37px] w-0.5 h-8 bg-gray-300 mt-6" />
-                  )}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  暂无执行步骤
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
