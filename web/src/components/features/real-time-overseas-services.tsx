@@ -34,7 +34,7 @@ export function RealTimeOverseasServices() {
               showInfo={true}
               className="aspect-video"
             />
-          </div>
+          </motion.div>
 
           {/* 右边：文字内容 */}
           <motion.div 
