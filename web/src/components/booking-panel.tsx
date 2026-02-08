@@ -40,6 +40,8 @@ import {
 } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { zhCN } from "date-fns/locale";
+import { BookingFormDialog } from "@/components/booking-form-dialog";
+import type { BookingFormData } from "@/lib/booking-types";
 
 interface BookingPanelProps {
   selectedFloor: number | null;
@@ -67,6 +69,7 @@ export function BookingPanel({
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [wechatCopied, setWechatCopied] = useState(false);
   const [appointmentBooked, setAppointmentBooked] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
 
   const handleCopyWechat = async () => {
     await navigator.clipboard.writeText("EX_VIP_2026");
@@ -79,15 +82,16 @@ export function BookingPanel({
     setTimeout(() => setAppointmentBooked(false), 3000);
   };
 
-  const handleBooking = async () => {
+  const handleBooking = () => {
     if (!selectedZone || selectedZone.status !== "available") return;
+    setShowBookingForm(true);
+  };
 
-    setIsBooking(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsBooking(false);
+  const handleBookingComplete = (booking: BookingFormData) => {
+    console.log("Booking completed:", booking);
+    setShowBookingForm(false);
     setBookingSuccess(true);
-
-    setTimeout(() => setBookingSuccess(false), 3000);
+    setTimeout(() => setBookingSuccess(false), 5000);
   };
 
   const totalDays =
@@ -476,19 +480,10 @@ export function BookingPanel({
               className="w-full h-12 text-base font-semibold rounded-xl shadow-lg shadow-primary/20"
               size="lg"
               onClick={handleBooking}
-              disabled={isBooking || !dateRange.from || !dateRange.to}
+              disabled={!dateRange.from || !dateRange.to}
             >
-              {isBooking ? (
-                <>
-                  <span className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  Reserve Zone
-                  <ChevronRightIcon className="ml-2 h-5 w-5" />
-                </>
-              )}
+              Reserve Zone
+              <ChevronRightIcon className="ml-2 h-5 w-5" />
             </Button>
           )}
         </div>
@@ -505,6 +500,18 @@ export function BookingPanel({
           </div>
         </div>
       )}
+
+      {/* Booking Form Dialog */}
+      <BookingFormDialog
+        open={showBookingForm}
+        onOpenChange={setShowBookingForm}
+        selectedZone={selectedZone}
+        selectedFloor={selectedFloorData}
+        dateRange={dateRange}
+        totalDays={totalDays}
+        totalPrice={totalPrice}
+        onBookingComplete={handleBookingComplete}
+      />
     </div>
   );
 }
