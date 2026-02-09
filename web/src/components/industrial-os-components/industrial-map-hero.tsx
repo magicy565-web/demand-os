@@ -83,7 +83,7 @@ export function IndustrialMapHero() {
     <section className="relative w-full h-screen overflow-hidden bg-slate-950">
       {/* 左侧信息面板 */}
       <motion.div
-        className="absolute left-6 top-8 z-20 pointer-events-none"
+        className="absolute left-6 top-8 z-20 pointer-events-auto"
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -110,7 +110,7 @@ export function IndustrialMapHero() {
       </motion.div>
 
       {/* 中国产业带地图 - 占据全屏 */}
-      <div className="absolute inset-0 bg-slate-950 overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 bg-slate-950 overflow-hidden flex items-center justify-center pointer-events-auto">
         <ChinaIndustrialMap
           industrialBelts={filteredBelts}
           onBeltClick={handleBeltClick}

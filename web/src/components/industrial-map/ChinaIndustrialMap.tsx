@@ -133,7 +133,7 @@ export default function ChinaIndustrialMap({
           </div>
 
           {/* 产业带标注层 */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 pointer-events-auto">
             {industrialBelts.map((belt, index) => {
               const pos = getBeltPosition(belt.id, belt.coordinates.lat, belt.coordinates.lng);
               
@@ -143,7 +143,7 @@ export default function ChinaIndustrialMap({
               return (
                 <motion.div
                   key={belt.id}
-                  className="absolute cursor-pointer group z-10"
+                  className="absolute cursor-pointer group z-10 pointer-events-auto"
                   style={{
                     left: `${pos.x}%`,
                     top: `${pos.y}%`,
@@ -273,13 +273,15 @@ export default function ChinaIndustrialMap({
         </div>
       </div>
 
-      {/* Tooltip */}
+      {/* Tooltip - 使用固定定位确保不被裁剪 */}
       <AnimatePresence>
         {hoveredBelt && (
-          <IndustrialBeltTooltipEnhanced
-            belt={hoveredBelt}
-            position={tooltipPosition}
-          />
+          <div className="fixed z-50 pointer-events-auto">
+            <IndustrialBeltTooltipEnhanced
+              belt={hoveredBelt}
+              position={tooltipPosition}
+            />
+          </div>
         )}
       </AnimatePresence>
     </div>
