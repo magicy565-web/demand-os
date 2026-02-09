@@ -69,7 +69,7 @@ export default function IndustrialBeltTooltipEnhanced({ belt, position }: Indust
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
-        transform: 'translate(20px, -50%)',
+        transform: 'translate(0, -50%)',
       }}
       initial={{ opacity: 0, scale: 0.9, x: -10 }}
       animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -86,7 +86,7 @@ export default function IndustrialBeltTooltipEnhanced({ belt, position }: Indust
         
         {/* 卡片主体 - 添加最大高度和滚动 */}
         <motion.div 
-          className={`relative bg-gradient-to-br ${colorScheme.bg} backdrop-blur-xl border-2 ${colorScheme.border} rounded-2xl shadow-2xl p-6 min-w-[360px] pointer-events-auto group cursor-pointer overflow-hidden max-h-[85vh] flex flex-col`}
+          className={`relative bg-gradient-to-br ${colorScheme.bg} backdrop-blur-xl border-2 ${colorScheme.border} rounded-2xl shadow-2xl p-6 min-w-[360px] pointer-events-auto group cursor-pointer overflow-y-auto max-h-[85vh]`}
           whileHover={{ y: -4, boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)` }}
         >
           {/* 背景装饰 */}

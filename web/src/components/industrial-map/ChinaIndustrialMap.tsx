@@ -76,13 +76,13 @@ export default function ChinaIndustrialMap({
 
   const handleBeltHover = (belt: IndustrialBelt, event: React.MouseEvent) => {
     setHoveredBelt(belt);
-    if (mapRef.current) {
-      const rect = mapRef.current.getBoundingClientRect();
-      setTooltipPosition({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-      });
-    }
+    // 使用事件目标的坐标来计算 Tooltip 位置
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    setTooltipPosition({
+      x: rect.right + 10,  // 在标注点右侧显示
+      y: rect.top,
+    });
   };
 
   const handleBeltLeave = () => {
