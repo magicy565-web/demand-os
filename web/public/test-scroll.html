@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showrooms 滚动测试工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f1729;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+        .test-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 3px solid #60a5fa;
+            border-radius: 4px;
+        }
+        .test-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .test-item code {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 5px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .status.pass {
+            background: #10b981;
+            color: white;
+        }
+        .status.fail {
+            background: #ef4444;
+            color: white;
+        }
+        .status.unknown {
+            background: #f59e0b;
+            color: white;
+        }
+        button {
+            background: #60a5fa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #3b82f6;
+        }
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .link-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .link-section a {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .link-section a:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Showrooms 预订面板滚动测试</h1>
+        
+        <div class="link-section">
+            <a href="http://localhost:3000/showrooms" target="_blank">📍 打开Showrooms页面</a>
+            <a href="http://localhost:3000" target="_blank">🏠 返回首页</a>
+        </div>
+
+        <div class="grid">
+            <!-- 检查项 -->
+            <div class="card">
+                <h2>🔍 检查项</h2>
+                
+                <div class="test-item">
+                    <strong>1. 预订面板高度</strong>
+                    <div id="check1"></div>
+                    <button onclick="checkPanelHeight()">检查高度</button>
+                    <div class="output" id="output1"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>2. ScrollArea 是否存在</strong>
+                    <div id="check2"></div>
+                    <button onclick="checkScrollArea()">检查ScrollArea</button>
+                    <div class="output" id="output2"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>3. 溢出属性检查</strong>
+                    <div id="check3"></div>
+                    <button onclick="checkOverflow()">检查overflow</button>
+                    <div class="output" id="output3"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>4. Flex 布局检查</strong>
+                    <div id="check4"></div>
+                    <button onclick="checkFlexLayout()">检查flex</button>
+                    <div class="output" id="output4"></div>
+                </div>
+            </div>
+
+            <!-- 诊断工具 -->
+            <div class="card">
+                <h2>🛠️ 诊断工具</h2>
+                
+                <div class="test-item">
+                    <strong>5. 测试滚动功能</strong>
+                    <button onclick="testScroll()">开始测试滚动</button>
+                    <div class="output" id="output5"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>6. 手动滚动测试</strong>
+                    <button onclick="scrollToBottom()">滚动到底部</button>
+                    <button onclick="scrollToTop()">滚动到顶部</button>
+                    <div class="output" id="output6"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>7. 显示完整结构</strong>
+                    <button onclick="showStructure()">显示DOM结构</button>
+                    <div class="output" id="output7"></div>
+                </div>
+
+                <div class="test-item">
+                    <strong>8. 清除缓存并刷新</strong>
+                    <button onclick="clearCache()">清除缓存</button>
+                    <div class="output" id="output8"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检查预订面板高度
+        function checkPanelHeight() {
+            const output = document.getElementById('output1');
+            // 寻找预订面板（右侧有border-l的容器）
+            let panel = document.querySelector('.lg\\:grid-cols-\\[1fr_450px\\] > :last-child');
+            if (!panel) {
+                panel = document.querySelector('[class*="border-l"]');
+            }
+            if (!panel) {
+                // 尝试查找所有700px高度的容器
+                const allDivs = document.querySelectorAll('div[class*="h-\\[700px\\]"]');
+                panel = allDivs[1]; // 第二个应该是右侧面板
+            }
+            
+            if (!panel) {
+                output.textContent = '❌ 未找到预订面板\n正在查找700px高度的容器...';
+                const divs = Array.from(document.querySelectorAll('div'));
+                const found = divs.find(d => d.offsetHeight === 700 && d.textContent.includes('Global'));
+                if (found) {
+                    output.textContent = '✓ 找到了预订面板！\n正在重新扫描...';
+                    setTimeout(checkPanelHeight, 500);
+                }
+                return;
+            }
+            
+            const height = panel.offsetHeight;
+            const computedStyle = window.getComputedStyle(panel);
+            const scrollable = panel.scrollHeight > panel.clientHeight;
+            
+            output.textContent = `✓ 面板已找到
+高度: ${height}px
+内容高度: ${panel.scrollHeight}px
+溢出: ${computedStyle.overflow}
+显示: ${computedStyle.display}
+可滚动: ${scrollable ? '是' : '否'}
+${height >= 700 ? '✓ 高度正确 (≥700px)' : '❌ 高度不足 (<700px)'}`;
+        }
+
+        // 检查ScrollArea
+        function checkScrollArea() {
+            const output = document.getElementById('output2');
+            // ScrollArea 通常是 role="presentation" 的 div
+            let scrollArea = document.querySelector('[role="presentation"]');
+            
+            if (!scrollArea) {
+                // 尝试找overflow-y的div
+                const allDivs = Array.from(document.querySelectorAll('div'));
+                scrollArea = allDivs.find(d => {
+                    const style = window.getComputedStyle(d);
+                    return style.overflowY === 'auto' && d.offsetHeight > 0 && d.scrollHeight > d.offsetHeight;
+                });
+            }
+            
+            if (!scrollArea) {
+                output.textContent = '❌ 未找到可滚动的ScrollArea\n尝试在页面加载完成后重试';
+                return;
+            }
+            
+            const computedStyle = window.getComputedStyle(scrollArea);
+            output.textContent = `✓ ScrollArea已找到
+显示: ${computedStyle.display}
+溢出Y: ${computedStyle.overflowY}
+高度: ${scrollArea.offsetHeight}px
+内容高度: ${scrollArea.scrollHeight}px
+可滚动: ${scrollArea.scrollHeight > scrollArea.offsetHeight ? '是' : '否'}`;
+        }
+
+        // 检查溢出属性
+        function checkOverflow() {
+            const output = document.getElementById('output3');
+            const panel = document.querySelector('[class*="border-l"]');
+            
+            if (!panel) {
+                output.textContent = '❌ 未找到预订面板';
+                return;
+            }
+            
+            const children = Array.from(panel.children);
+            let info = '面板子元素overflow属性:\n\n';
+            
+            children.forEach((child, index) => {
+                const style = window.getComputedStyle(child);
+                info += `[${index}] ${child.className || 'div'}\n`;
+                info += `  overflow: ${style.overflow}\n`;
+                info += `  height: ${child.offsetHeight}px\n`;
+                info += `  flex: ${style.flex}\n\n`;
+            });
+            
+            output.textContent = info;
+        }
+
+        // 检查Flex布局
+        function checkFlexLayout() {
+            const output = document.getElementById('output4');
+            const panel = document.querySelector('[class*="border-l"]');
+            
+            if (!panel) {
+                output.textContent = '❌ 未找到预订面板';
+                return;
+            }
+            
+            const style = window.getComputedStyle(panel);
+            const parentGrid = panel.parentElement;
+            const parentStyle = window.getComputedStyle(parentGrid);
+            
+            output.textContent = `预订面板布局:
+display: ${style.display}
+flex-direction: ${style.flexDirection}
+flex: ${style.flex}
+
+父容器(Grid):
+display: ${parentStyle.display}
+grid-template-columns: ${parentStyle.gridTemplateColumns}
+align-items: ${parentStyle.alignItems}
+
+${style.display === 'flex' ? '✓ Flex布局正确' : '❌ 非Flex布局'}`;
+        }
+
+        // 测试滚动
+        function testScroll() {
+            const output = document.getElementById('output5');
+            const scrollArea = document.querySelector('[role="presentation"]');
+            
+            if (!scrollArea) {
+                output.textContent = '❌ 未找到可滚动区域';
+                return;
+            }
+            
+            const scrollable = scrollArea.scrollHeight > scrollArea.clientHeight;
+            output.textContent = `是否可滚动: ${scrollable ? '✓ 是' : '❌ 否'}
+可见高度: ${scrollArea.clientHeight}px
+总内容高度: ${scrollArea.scrollHeight}px
+可滚动距离: ${scrollArea.scrollHeight - scrollArea.clientHeight}px
+
+${scrollable ? '✓ 内容超出容器，应该可以滚动' : '❌ 内容未超出容器'}`;
+        }
+
+        // 滚动到底部
+        function scrollToBottom() {
+            const output = document.getElementById('output6');
+            const scrollArea = document.querySelector('[role="presentation"]');
+            
+            if (scrollArea) {
+                scrollArea.scrollTop = scrollArea.scrollHeight;
+                output.textContent = `✓ 已滚动到底部\n当前滚动位置: ${scrollArea.scrollTop}px`;
+            } else {
+                output.textContent = '❌ 未找到可滚动区域';
+            }
+        }
+
+        // 滚动到顶部
+        function scrollToTop() {
+            const output = document.getElementById('output6');
+            const scrollArea = document.querySelector('[role="presentation"]');
+            
+            if (scrollArea) {
+                scrollArea.scrollTop = 0;
+                output.textContent = `✓ 已滚动到顶部\n当前滚动位置: ${scrollArea.scrollTop}px`;
+            } else {
+                output.textContent = '❌ 未找到可滚动区域';
+            }
+        }
+
+        // 显示DOM结构
+        function showStructure() {
+            const output = document.getElementById('output7');
+            const panel = document.querySelector('[class*="border-l"]');
+            
+            if (!panel) {
+                output.textContent = '❌ 未找到预订面板';
+                return;
+            }
+            
+            let html = panel.innerHTML;
+            // 限制长度
+            if (html.length > 500) {
+                html = html.substring(0, 500) + '...\n[内容已截断]';
+            }
+            output.textContent = html;
+        }
+
+        // 清除缓存
+        function clearCache() {
+            const output = document.getElementById('output8');
+            // 清除localStorage
+            localStorage.clear();
+            // 清除sessionStorage
+            sessionStorage.clear();
+            // 如果可能，清除serviceWorker缓存
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            output.textContent = `✓ 缓存已清除
+刷新页面以加载最新版本
+(按 F5 或 Ctrl+R 刷新)`;
+        }
+
+        // 页面加载时自动检查
+        window.addEventListener('load', function() {
+            console.log('测试工具已加载');
+            // 自动检查一些基本项
+            setTimeout(() => {
+                checkPanelHeight();
+                checkScrollArea();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

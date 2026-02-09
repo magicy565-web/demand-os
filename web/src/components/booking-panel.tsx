@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Popover,
   PopoverContent,
@@ -107,8 +106,8 @@ export function BookingPanel({
   const zoneImage = selectedZone ? getZoneImage(selectedZone.id) : undefined;
 
   return (
-    <div className="flex h-full flex-col bg-background/80 backdrop-blur-xl border-l border-gray-200 dark:border-gray-800">
-      <div className="border-b border-gray-200 dark:border-gray-800 p-5 bg-gradient-to-r from-primary/5 to-transparent">
+    <div className="flex h-full w-full flex-col bg-background/80 backdrop-blur-xl border-l border-gray-200 dark:border-gray-800">
+      <div className="border-b border-gray-200 dark:border-gray-800 p-5 bg-gradient-to-r from-primary/5 to-transparent flex-shrink-0">
         <h2 className="text-xl font-bold text-foreground tracking-tight">
           Global Exhibition Center
         </h2>
@@ -117,8 +116,8 @@ export function BookingPanel({
         </p>
       </div>
 
-      <ScrollArea className="flex-1 [&>div>div]:!block">
-        <div className="p-5 space-y-5">
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="p-5 space-y-5 w-full">
           <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 p-4">
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20">
@@ -126,7 +125,7 @@ export function BookingPanel({
               </div>
               <div>
                 <p className="font-semibold text-amber-900 dark:text-amber-200 text-sm">
-                  项目于2026年6月正式开始招商
+                  项目�?026�?月正式开始招�?
                 </p>
                 <p className="text-xs text-amber-700 dark:text-amber-400/80 mt-1">
                   Project starts recruiting in June 2026
@@ -452,7 +451,7 @@ export function BookingPanel({
               {appointmentBooked ? (
                 <div className="flex items-center justify-center gap-2 rounded-xl bg-green-500/10 p-3 text-green-600 border border-green-500/20">
                   <CheckCircleIcon className="h-4 w-4" />
-                  <span className="text-sm font-medium">预约成功！销售将于24小时内联系您 | Appointment booked! We'll contact you within 24 hours.</span>
+                  <span className="text-sm font-medium">预约成功！销售将�?4小时内联系您 | Appointment booked! We'll contact you within 24 hours.</span>
                 </div>
               ) : (
                 <Button
@@ -466,7 +465,7 @@ export function BookingPanel({
             </CardContent>
           </Card>
         </div>
-      </ScrollArea>
+      </div>
 
       {selectedZone && selectedZone.status === "available" && selectedZone.price > 0 && (
         <div className="border-t border-gray-200/50 dark:border-gray-800/50 p-5 bg-gradient-to-t from-background to-transparent">

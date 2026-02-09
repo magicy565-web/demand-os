@@ -78,7 +78,7 @@ export default function ShowroomsPage() {
             </p>
           </div>
           <div className="max-w-[1600px] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-6 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-6">
               <div className="bg-black/40 rounded-2xl overflow-hidden border border-white/10 h-[700px]">
                 <ThreeErrorBoundary>
                   <Building3D
@@ -89,7 +89,7 @@ export default function ShowroomsPage() {
                   />
                 </ThreeErrorBoundary>
               </div>
-              <div className="bg-black/40 rounded-2xl overflow-hidden border border-white/10 h-[700px] min-h-[700px]">
+              <div className="bg-black/40 rounded-2xl border border-white/10 h-[700px] overflow-y-auto">
                 <BookingPanel
                   selectedFloor={selectedFloor}
                   selectedZone={selectedZone}

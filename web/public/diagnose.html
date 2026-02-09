@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速诊断 - Showrooms 滚动</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #0f0; padding: 20px; }
+        .box { border: 1px solid #0f0; padding: 10px; margin: 10px 0; }
+        button { background: #0f0; color: #000; border: none; padding: 8px 15px; cursor: pointer; }
+        pre { background: #111; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h2>🔧 Showrooms 滚动诊断</h2>
+    <div class="box">
+        <button onclick="diagnose()">运行诊断</button>
+        <button onclick="testScroll()">测试滚动</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        function diagnose() {
+            let output = '=== SHOWROOMS 页面诊断 ===\n\n';
+            
+            // 1. 检查页面是否加载
+            output += '1. 页面加载状态: ' + document.readyState + '\n';
+            
+            // 2. 查找所有高度为700px的容器
+            output += '\n2. 查找700px高度容器:\n';
+            const containers700 = Array.from(document.querySelectorAll('div')).filter(d => d.offsetHeight === 700);
+            output += `   找到 ${containers700.length} 个\n`;
+            containers700.forEach((c, i) => {
+                const style = window.getComputedStyle(c);
+                output += `   [${i}] overflow: ${style.overflow}, overflowY: ${style.overflowY}\n`;
+                output += `       width: ${c.offsetWidth}, height: ${c.offsetHeight}\n`;
+                output += `       scrollHeight: ${c.scrollHeight}, clientHeight: ${c.clientHeight}\n`;
+                output += `       可滚动: ${c.scrollHeight > c.clientHeight ? '是' : '否'}\n`;
+            });
+            
+            // 3. 查找booking-panel
+            output += '\n3. 查找BookingPanel内容:\n';
+            const bookingHeader = document.body.textContent.includes('Global Exhibition Center');
+            output += `   包含"Global Exhibition Center": ${bookingHeader ? '✓' : '✗'}\n`;
+            
+            // 4. 查找ScrollArea
+            output += '\n4. 查找ScrollArea:\n';
+            const scrollAreas = document.querySelectorAll('[role="presentation"]');
+            output += `   找到 ${scrollAreas.length} 个 ScrollArea\n`;
+            scrollAreas.forEach((sa, i) => {
+                const style = window.getComputedStyle(sa);
+                output += `   [${i}] h:${sa.offsetHeight}px scroll:${sa.scrollHeight}px overflow:${style.overflow}\n`;
+            });
+            
+            // 5. 查找所有可滚动元素
+            output += '\n5. 所有可滚动元素:\n';
+            const scrollable = Array.from(document.querySelectorAll('div')).filter(
+                d => d.scrollHeight > d.clientHeight && d.offsetHeight > 0
+            );
+            output += `   找到 ${scrollable.length} 个\n`;
+            scrollable.slice(0, 5).forEach((s, i) => {
+                const h = s.offsetHeight;
+                const sh = s.scrollHeight;
+                const diff = sh - h;
+                output += `   [${i}] h:${h}px sh:${sh}px (diff:${diff}px)\n`;
+            });
+            
+            document.getElementById('output').textContent = output;
+        }
+        
+        function testScroll() {
+            let output = '=== 测试滚动 ===\n\n';
+            
+            // 查找最有可能的可滚动容器
+            const containers700 = Array.from(document.querySelectorAll('div')).filter(d => d.offsetHeight === 700);
+            
+            if (containers700.length >= 2) {
+                const rightPanel = containers700[1];
+                const scrollable = rightPanel.scrollHeight > rightPanel.clientHeight;
+                
+                output += `右侧面板:\n`;
+                output += `  高度: ${rightPanel.offsetHeight}px\n`;
+                output += `  内容高度: ${rightPanel.scrollHeight}px\n`;
+                output += `  可见高度: ${rightPanel.clientHeight}px\n`;
+                output += `  可滚动: ${scrollable ? '✓ 是' : '✗ 否'}\n\n`;
+                
+                if (scrollable) {
+                    output += '尝试滚动到底部...\n';
+                    rightPanel.scrollTop = rightPanel.scrollHeight;
+                    output += `滚动位置: ${rightPanel.scrollTop}px\n`;
+                    output += `最大滚动: ${rightPanel.scrollHeight - rightPanel.clientHeight}px\n`;
+                } else {
+                    output += '内容未超出容器，无需滚动\n';
+                }
+            } else {
+                output += '❌ 未找到700px高度的容器\n';
+            }
+            
+            document.getElementById('output').textContent = output;
+        }
+        
+        // 页面加载完成后自动诊断
+        window.addEventListener('load', function() {
+            setTimeout(diagnose, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>右侧面板CSS检查</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #0f0; padding: 20px; line-height: 1.8; }
+        .box { border: 1px solid #0f0; padding: 15px; margin: 15px 0; background: #001100; }
+        button { background: #0f0; color: #000; border: none; padding: 8px 15px; cursor: pointer; margin: 5px; }
+        pre { background: #111; padding: 10px; overflow-x: auto; color: #0f0; }
+        .info { color: #00ff00; margin: 10px 0; }
+        .error { color: #ff0000; }
+        .warning { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <h2>右侧面板 CSS 检查工具</h2>
+    
+    <div class="box">
+        <button onclick="analyzeRightPanel()">分析右侧面板</button>
+        <button onclick="testScrollability()">测试可滚动性</button>
+        <button onclick="forceScroll()">强制滚动测试</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        function analyzeRightPanel() {
+            const output = document.getElementById('output');
+            let result = '=== 右侧面板分析 ===\n\n';
+            
+            // 找右侧面板容器
+            const allDivs = Array.from(document.querySelectorAll('div[class*="flex"][class*="flex-col"]'));
+            const rightPanel = allDivs.find(div => {
+                const text = div.textContent;
+                return text.includes('Global Exhibition Center') || text.includes('交互式空间预订');
+            });
+            
+            if (!rightPanel) {
+                result += '❌ 未找到右侧面板\n';
+                output.textContent = result;
+                return;
+            }
+            
+            result += '✓ 找到右侧面板\n\n';
+            
+            // 分析主容器
+            const mainStyle = window.getComputedStyle(rightPanel);
+            result += '【主容器】\n';
+            result += `  class: ${rightPanel.className.substring(0, 100)}...\n`;
+            result += `  display: ${mainStyle.display}\n`;
+            result += `  height: ${rightPanel.offsetHeight}px (clientHeight: ${rightPanel.clientHeight}px)\n`;
+            result += `  width: ${rightPanel.offsetWidth}px (clientWidth: ${rightPanel.clientWidth}px)\n`;
+            result += `  overflow: ${mainStyle.overflow}\n`;
+            result += `  overflowY: ${mainStyle.overflowY}\n`;
+            result += `  flex: ${mainStyle.flex}\n\n`;
+            
+            // 分析子元素
+            result += '【子元素】\n';
+            const children = Array.from(rightPanel.children);
+            children.forEach((child, i) => {
+                const style = window.getComputedStyle(child);
+                result += `[${i}] ${child.tagName}\n`;
+                result += `    height: ${child.offsetHeight}px (scrollHeight: ${child.scrollHeight}px)\n`;
+                result += `    overflow: ${style.overflow}\n`;
+                result += `    overflowY: ${style.overflowY}\n`;
+                result += `    flex: ${style.flex}\n\n`;
+                
+                // 检查内部可滚动元素
+                if (child.scrollHeight > child.clientHeight) {
+                    result += `    ⚠ 内容超出: ${child.scrollHeight - child.clientHeight}px\n`;
+                }
+            });
+            
+            output.textContent = result;
+        }
+        
+        function testScrollability() {
+            const output = document.getElementById('output');
+            let result = '=== 滚动性测试 ===\n\n';
+            
+            // 找所有可滚动的div
+            const scrollableElements = Array.from(document.querySelectorAll('div')).filter(div => {
+                return div.scrollHeight > div.clientHeight && div.offsetHeight > 0;
+            });
+            
+            result += `找到 ${scrollableElements.length} 个可滚动元素\n\n`;
+            
+            scrollableElements.slice(0, 10).forEach((elem, i) => {
+                const h = elem.offsetHeight;
+                const sh = elem.scrollHeight;
+                const cH = elem.clientHeight;
+                result += `[${i}] 高度: ${h}px, 内容: ${sh}px, 可滚动: ${sh - cH}px\n`;
+                result += `    overflow: ${window.getComputedStyle(elem).overflow}\n`;
+                result += `    overflowY: ${window.getComputedStyle(elem).overflowY}\n`;
+                if (elem.textContent.length < 100) {
+                    result += `    内容: ${elem.textContent.substring(0, 50)}...\n`;
+                }
+                result += '\n';
+            });
+            
+            output.textContent = result;
+        }
+        
+        function forceScroll() {
+            const output = document.getElementById('output');
+            let result = '=== 强制滚动测试 ===\n\n';
+            
+            // 找包含"Global Exhibition"的容器的父级overflow:auto元素
+            const allDivs = Array.from(document.querySelectorAll('div'));
+            const bookingPanel = allDivs.find(d => d.textContent.includes('Global Exhibition'));
+            
+            if (!bookingPanel) {
+                result += '❌ 找不到booking panel\n';
+                output.textContent = result;
+                return;
+            }
+            
+            result += '找到booking panel\n\n';
+            
+            // 查找其父级中可滚动的div
+            let parent = bookingPanel;
+            let found = false;
+            for (let i = 0; i < 5; i++) {
+                parent = parent.parentElement;
+                if (!parent) break;
+                const style = window.getComputedStyle(parent);
+                result += `Level ${i}: ${parent.tagName} overflow:${style.overflow}\n`;
+                
+                if (parent.scrollHeight > parent.clientHeight) {
+                    result += `  ⚠ 可滚动! scrollHeight:${parent.scrollHeight} > clientHeight:${parent.clientHeight}\n`;
+                    parent.scrollTop = 100;
+                    result += `  → 尝试滚动到位置100\n`;
+                    result += `  → 当前scrollTop: ${parent.scrollTop}\n`;
+                    found = true;
+                }
+            }
+            
+            if (!found) {
+                result += '\n❌ 未找到任何可滚动的父级容器\n';
+            }
+            
+            output.textContent = result;
+        }
+        
+        // 自动分析
+        window.addEventListener('load', function() {
+            setTimeout(analyzeRightPanel, 1000);
+        });
+    </script>
+</body>
+</html>
