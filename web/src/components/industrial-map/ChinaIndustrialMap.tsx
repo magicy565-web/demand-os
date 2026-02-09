@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IndustrialBelt } from '@/types/industrial';
-import IndustrialBeltTooltip from './IndustrialBeltTooltip';
+import IndustrialBeltTooltipEnhanced from './IndustrialBeltTooltip-Enhanced';
 
 interface ChinaIndustrialMapProps {
   industrialBelts: IndustrialBelt[];
@@ -276,7 +276,7 @@ export default function ChinaIndustrialMap({
       {/* Tooltip */}
       <AnimatePresence>
         {hoveredBelt && (
-          <IndustrialBeltTooltip
+          <IndustrialBeltTooltipEnhanced
             belt={hoveredBelt}
             position={tooltipPosition}
           />
