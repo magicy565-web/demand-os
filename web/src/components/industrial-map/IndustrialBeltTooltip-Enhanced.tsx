@@ -65,10 +65,8 @@ export default function IndustrialBeltTooltipEnhanced({ belt, position }: Indust
 
   return (
     <motion.div
-      className="absolute pointer-events-none"
+      className="absolute pointer-events-auto"
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
         transform: 'translate(0, -50%)',
       }}
       initial={{ opacity: 0, scale: 0.9, x: -10 }}

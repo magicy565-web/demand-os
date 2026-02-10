@@ -273,13 +273,19 @@ export default function ChinaIndustrialMap({
         </div>
       </div>
 
-      {/* Tooltip - 使用固定定位确保不被裁剪 */}
+      {/* Tooltip - 使用绝对定位确保显示在地图上方 */}
       <AnimatePresence>
         {hoveredBelt && (
-          <div className="fixed z-50 pointer-events-auto">
+          <div 
+            className="absolute z-50 pointer-events-auto"
+            style={{
+              left: `${tooltipPosition.x}px`,
+              top: `${tooltipPosition.y}px`,
+            }}
+          >
             <IndustrialBeltTooltipEnhanced
               belt={hoveredBelt}
-              position={tooltipPosition}
+              position={{ x: 0, y: 0 }}
             />
           </div>
         )}
