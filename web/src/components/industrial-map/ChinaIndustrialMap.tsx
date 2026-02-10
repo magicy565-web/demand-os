@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IndustrialBelt } from '@/types/industrial';
-import IndustrialBeltTooltipEnhanced from './IndustrialBeltTooltip-Enhanced';
+import IndustrialBeltSidePanel from './IndustrialBeltSidePanel';
 
 interface ChinaIndustrialMapProps {
   industrialBelts: IndustrialBelt[];
@@ -57,12 +57,11 @@ function latLngToSVGPercent(lat: number, lng: number) {
   // 计算SVG像素坐标
   const svgX = (lng - BEIJING_LNG) * LNG_SCALE + BEIJING_SVG_X;
   const svgY = (BEIJING_LAT - lat) * LAT_SCALE + BEIJING_SVG_Y;
-
   
-  // 转换为百分比 (viewBox: 1000x738)
+  // 转换为百分比 (SVG viewBox: 1000x738)
   return {
-    x: Math.max(0, Math.min(100, (svgX / 1000) * 100)),
-    y: Math.max(0, Math.min(100, (svgY / 738) * 100)),
+    x: (svgX / 1000) * 100,
+    y: (svgY / 738) * 100,
   };
 }
 
@@ -70,34 +69,23 @@ export default function ChinaIndustrialMap({
   industrialBelts,
   onBeltClick,
 }: ChinaIndustrialMapProps) {
-  const [hoveredBelt, setHoveredBelt] = useState<IndustrialBelt | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [selectedBelt, setSelectedBelt] = useState<IndustrialBelt | null>(null);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const handleBeltHover = (belt: IndustrialBelt, event: React.MouseEvent) => {
-    console.log('Hover triggered for:', belt.name);
-    setHoveredBelt(belt);
-    // 使用事件目标的坐标来计算 Tooltip 位置
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const newPosition = {
-      x: rect.right + 10,  // 在标注点右侧显示
-      y: rect.top,
-    };
-    console.log('Tooltip position:', newPosition);
-    setTooltipPosition(newPosition);
-  };
-
-  const handleBeltLeave = () => {
-    console.log('Leave triggered');
-    setHoveredBelt(null);
-  };
-
-  const handleBeltClickInternal = (belt: IndustrialBelt) => {
-    console.log('Click triggered for:', belt.name);
+  const handleBeltClick = (belt: IndustrialBelt) => {
+    console.log('Belt clicked:', belt.name);
+    setSelectedBelt(belt);
+    setIsSidePanelOpen(true);
     if (onBeltClick) {
       onBeltClick(belt);
     }
+  };
+
+  const handleCloseSidePanel = () => {
+    setIsSidePanelOpen(false);
+    // 延迟关闭以允许动画完成
+    setTimeout(() => setSelectedBelt(null), 300);
   };
 
   return (
@@ -142,9 +130,6 @@ export default function ChinaIndustrialMap({
             {industrialBelts.map((belt, index) => {
               const pos = getBeltPosition(belt.id, belt.coordinates.lat, belt.coordinates.lng);
               
-              // 调试输出
-              console.log(`${belt.name} (ID: ${belt.id}): lat=${belt.coordinates.lat}, lng=${belt.coordinates.lng} => x=${pos.x.toFixed(2)}%, y=${pos.y.toFixed(2)}%`);
-              
               return (
                 <motion.div
                   key={belt.id}
@@ -154,129 +139,39 @@ export default function ChinaIndustrialMap({
                     top: `${pos.y}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: index * 0.12, duration: 0.6, type: 'spring' }}
-              onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
-                console.log('onMouseEnter event triggered');
-                handleBeltHover(belt, e);
-              }}
-              onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
-              onMouseLeave={() => {
-                console.log('onMouseLeave event triggered');
-                handleBeltLeave();
-              }}
-                  onClick={() => handleBeltClickInternal(belt)}
+                  onClick={() => handleBeltClick(belt)}
                 >
-                  {/* 外层脉冲圆环 */}
+                  {/* 产业带标注点 - 蓝色圆形（点击时有反馈） */}
                   <motion.div
-                    className="absolute rounded-full border-2 border-cyan-400/60"
-                    animate={{
-                      scale: [1, 2.5],
-                      opacity: [0.6, 0],
-                    }}
-                    transition={{
-                      duration: 2.5,
-                      repeat: Infinity,
-                      repeatDelay: 0.3,
-                      ease: 'easeOut',
-                    }}
-                    style={{ 
-                      width: '50px', 
-                      height: '50px', 
-                      left: '-25px', 
-                      top: '-25px',
-                    }}
+                    className="absolute w-4 h-4 bg-cyan-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg"
+                    whileHover={{ scale: 1.3 }}
+                    whileTap={{ scale: 0.9 }}
+                  />
+                  
+                  {/* 脉冲动画环 */}
+                  <motion.div
+                    className="absolute w-4 h-4 border-2 border-cyan-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"
+                    animate={{ scale: [1, 1.5], opacity: [1, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
                   />
 
-                  {/* 中层脉冲圆环 */}
+                  {/* 标签 - 显示产业带名称 */}
                   <motion.div
-                    className="absolute rounded-full border-2 border-cyan-300/40"
-                    animate={{
-                      scale: [1, 2],
-                      opacity: [0.5, 0],
-                    }}
-                    transition={{
-                      duration: 2.5,
-                      repeat: Infinity,
-                      repeatDelay: 0.3,
-                      delay: 0.5,
-                      ease: 'easeOut',
-                    }}
-                    style={{ 
-                      width: '40px', 
-                      height: '40px', 
-                      left: '-20px', 
-                      top: '-20px',
-                    }}
+                    className="absolute left-6 top-0 bg-cyan-500/20 backdrop-blur-md border border-cyan-400/50 rounded-lg px-3 py-2 whitespace-nowrap text-xs text-cyan-200 pointer-events-none"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileHover={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="font-semibold">{belt.name}</div>
+                    <div className="text-xs text-cyan-300/80">点击查看详情</div>
+                  </motion.div>
+
+                  {/* 连接线 */}
+                  <motion.div
+                    className="absolute left-4 top-1/2 w-2 h-px bg-gradient-to-r from-cyan-400 to-transparent"
+                    animate={{ scaleX: [0.5, 1] }}
+                    transition={{ duration: 0.5 }}
                   />
-
-                  {/* 核心发光圆点 */}
-                  <motion.div
-                    className="relative w-4 h-4 bg-cyan-400 rounded-full"
-                    whileHover={{ scale: 1.8 }}
-                    style={{
-                      boxShadow: `
-                        0 0 15px rgba(0, 212, 255, 0.9),
-                        0 0 30px rgba(0, 212, 255, 0.6),
-                        0 0 45px rgba(0, 212, 255, 0.3)
-                      `,
-                    }}
-                  >
-                    {/* 内部高光 */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent" />
-                  </motion.div>
-
-                  {/* 产业带名称标签 */}
-                  <motion.div
-                    className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.12 + 0.4 }}
-                  >
-                    <div className="px-3 py-1.5 bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 rounded-lg shadow-xl">
-                      <div className="text-xs font-bold text-cyan-300 mb-0.5 tracking-wide">
-                        {belt.name}
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-medium">
-                        {belt.factory_count.toLocaleString()}+ 工厂
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* 连接线动画（向外辐射） */}
-                  <svg
-                    className="absolute top-0 left-0 pointer-events-none opacity-0 group-hover:opacity-50 transition-opacity duration-500"
-                    style={{ width: '300px', height: '300px', left: '-150px', top: '-150px' }}
-                  >
-                    {[0, 60, 120, 180, 240, 300].map((angle, i) => {
-                      const rad = (angle * Math.PI) / 180;
-                      const x2 = 150 + Math.cos(rad) * 120;
-                      const y2 = 150 + Math.sin(rad) * 120;
-                      
-                      return (
-                        <motion.line
-                          key={i}
-                          x1="150"
-                          y1="150"
-                          x2={x2}
-                          y2={y2}
-                          stroke="#00d4ff"
-                          strokeWidth="1.5"
-                          strokeDasharray="6 6"
-                          animate={{
-                            strokeDashoffset: [0, -12],
-                          }}
-                          transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            ease: 'linear',
-                            delay: i * 0.1,
-                          }}
-                        />
-                      );
-                    })}
-                  </svg>
                 </motion.div>
               );
             })}
@@ -284,23 +179,12 @@ export default function ChinaIndustrialMap({
         </div>
       </div>
 
-      {/* Tooltip - 使用绝对定位确保显示在地图上方 */}
-      <AnimatePresence>
-        {hoveredBelt && (
-          <div 
-            className="absolute z-[100] pointer-events-auto"
-            style={{
-              left: `${tooltipPosition.x}px`,
-              top: `${tooltipPosition.y}px`,
-            }}
-          >
-            <IndustrialBeltTooltipEnhanced
-              belt={hoveredBelt}
-              position={{ x: 0, y: 0 }}
-            />
-          </div>
-        )}
-      </AnimatePresence>
+      {/* 右侧侧滑卡片面板 */}
+      <IndustrialBeltSidePanel
+        belt={selectedBelt}
+        isOpen={isSidePanelOpen}
+        onClose={handleCloseSidePanel}
+      />
     </div>
   );
 }
