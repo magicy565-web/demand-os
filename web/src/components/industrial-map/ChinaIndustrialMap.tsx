@@ -120,15 +120,15 @@ export default function ChinaIndustrialMap({
       </div>
 
       {/* 中国地图容器 */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
+      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none">
         <div className="relative w-full h-full">
           {/* 中国地图 SVG */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="relative w-full h-full">
               <img
                 src="/china-provinces-map.svg"
                 alt="中国省份地图"
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                 style={{
                   filter: 'brightness(1.2) contrast(1.3) saturate(0.8) hue-rotate(160deg) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4))',
                   opacity: 0.65,
@@ -148,7 +148,7 @@ export default function ChinaIndustrialMap({
               return (
                 <motion.div
                   key={belt.id}
-                  className="absolute cursor-pointer group z-10 pointer-events-auto"
+                  className="absolute cursor-pointer group z-50 pointer-events-auto"
                   style={{
                     left: `${pos.x}%`,
                     top: `${pos.y}%`,
@@ -288,7 +288,7 @@ export default function ChinaIndustrialMap({
       <AnimatePresence>
         {hoveredBelt && (
           <div 
-            className="absolute z-50 pointer-events-auto"
+            className="absolute z-[100] pointer-events-auto"
             style={{
               left: `${tooltipPosition.x}px`,
               top: `${tooltipPosition.y}px`,
