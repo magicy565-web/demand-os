@@ -75,21 +75,26 @@ export default function ChinaIndustrialMap({
   const mapRef = useRef<HTMLDivElement>(null);
 
   const handleBeltHover = (belt: IndustrialBelt, event: React.MouseEvent) => {
+    console.log('Hover triggered for:', belt.name);
     setHoveredBelt(belt);
     // 使用事件目标的坐标来计算 Tooltip 位置
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
-    setTooltipPosition({
+    const newPosition = {
       x: rect.right + 10,  // 在标注点右侧显示
       y: rect.top,
-    });
+    };
+    console.log('Tooltip position:', newPosition);
+    setTooltipPosition(newPosition);
   };
 
   const handleBeltLeave = () => {
+    console.log('Leave triggered');
     setHoveredBelt(null);
   };
 
   const handleBeltClickInternal = (belt: IndustrialBelt) => {
+    console.log('Click triggered for:', belt.name);
     if (onBeltClick) {
       onBeltClick(belt);
     }
@@ -152,9 +157,15 @@ export default function ChinaIndustrialMap({
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.12, duration: 0.6, type: 'spring' }}
-                  onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
-                  onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
-                  onMouseLeave={handleBeltLeave}
+              onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                console.log('onMouseEnter event triggered');
+                handleBeltHover(belt, e);
+              }}
+              onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => handleBeltHover(belt, e)}
+              onMouseLeave={() => {
+                console.log('onMouseLeave event triggered');
+                handleBeltLeave();
+              }}
                   onClick={() => handleBeltClickInternal(belt)}
                 >
                   {/* 外层脉冲圆环 */}
