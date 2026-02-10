@@ -3,11 +3,8 @@ import { Hero } from "@/components/pages/hero"
 import { DemandTicker } from "@/components/demand-ticker"
 import { RealTimeOverseasServices } from "@/components/features/real-time-overseas-services"
 import { GlobalShowroomsPreviewV2 as GlobalShowroomsPreview } from "@/components/features/global-showrooms-preview-v2"
-import { IndustryPractice } from "@/components/industry-practice"
-import { Timeline30Days } from "@/components/timeline-30days"
-import { FactoryEmpowerment } from "@/components/factory-empowerment"
-import { PricingModel } from "@/components/pricing-model"
-import { Leadership } from "@/components/features/leadership"
+
+
 import { KnowledgeSection } from "@/components/features/knowledge-section"
 import { Footer } from "@/components/layout/Footer"
 
@@ -19,11 +16,8 @@ export default function Home() {
       <DemandTicker />
       <RealTimeOverseasServices />
       <GlobalShowroomsPreview />
-      <IndustryPractice />
-      <Timeline30Days />
-      <FactoryEmpowerment />
-      <PricingModel />
-      <Leadership />
+
+
       <KnowledgeSection />
       <Footer />
     </main>

@@ -63,7 +63,7 @@ const solutionMenu: MegaMenu = {
       title: "增值服务",
       items: [
         { title: "战略咨询", href: "/strategy-consulting", description: "专业战略咨询", icon: Target },
-        { title: "TikTok 联盟", href: "/tiktok-alliance", description: "TikTok 生态合作", icon: Users },
+        { title: "TikTok 联盟", href: "/tiktok-alliance", description: "30天出海成功路径", icon: Users },
         { title: "解决方案总览", href: "/solutions-intro", description: "浏览所有解决方案", icon: Sparkles },
       ],
     },
@@ -119,7 +119,7 @@ const industryOSMenu: MegaMenu = {
         { title: "产能匹配系统", href: "/factory-list/capacity-matching", description: "智能匹配工厂产能", icon: BarChart },
         { title: "工厂入驻申请", href: "/factory-list/apply", description: "申请加入工厂网络", icon: Rocket },
         { title: "展厅", href: "/showrooms", description: "工厂展示空间", icon: Building2 },
-        { title: "全球信任工厂", href: "/global-trust", description: "高信誉工厂推荐", icon: Globe },
+        { title: "全球优质工厂", href: "/global-trust", description: "赋能中国工厂出海", icon: Globe },
       ],
     },
   ],

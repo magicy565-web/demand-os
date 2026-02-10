@@ -89,7 +89,7 @@ export default function IndustrialParkSidePanel({ park, isOpen, onClose }: Indus
                   <MapPin className="w-4 h-4" />
                   <span>{park.location} · {park.region}</span>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed">{park.description}</p>
+                <p className="text-sm text-slate-200 leading-relaxed">{park.description}</p>
               </motion.div>
 
               {/* 核心数据 */}
@@ -134,7 +134,7 @@ export default function IndustrialParkSidePanel({ park, isOpen, onClose }: Indus
                 </h3>
                 <div className="space-y-1">
                   {park.advantages.map((advantage, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-sm text-slate-400">
+                    <div key={idx} className="flex items-start gap-2 text-sm text-slate-200">
                       <span className={`${colorScheme.text} mt-1`}>•</span>
                       <span>{advantage}</span>
                     </div>
@@ -158,7 +158,7 @@ export default function IndustrialParkSidePanel({ park, isOpen, onClose }: Indus
                     <motion.span
                       key={idx}
                       whileHover={{ scale: 1.05 }}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border ${colorScheme.border} border-opacity-30 bg-slate-800/50 text-slate-300 hover:border-opacity-60 transition-colors`}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border ${colorScheme.border} border-opacity-30 bg-slate-800/50 text-slate-200 hover:border-opacity-60 transition-colors`}
                     >
                       {product}
                     </motion.span>
@@ -180,8 +180,8 @@ export default function IndustrialParkSidePanel({ park, isOpen, onClose }: Indus
                 <div className="space-y-2">
                   {park.opportunities.map((opp, idx) => (
                     <div key={idx} className={`p-3 rounded-lg bg-slate-800/50 border ${colorScheme.border} border-opacity-30`}>
-                      <div className="font-medium text-sm text-slate-200">{opp.title}</div>
-                      <div className="text-xs text-slate-400 mt-1">{opp.description}</div>
+                      <div className="font-medium text-sm text-white">{opp.title}</div>
+                      <div className="text-xs text-slate-200 mt-1">{opp.description}</div>
                     </div>
                   ))}
                 </div>
@@ -198,11 +198,11 @@ export default function IndustrialParkSidePanel({ park, isOpen, onClose }: Indus
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 text-sm">
                     <Phone className="w-4 h-4 text-slate-500" />
-                    <span className="text-slate-400">{park.contact.phone}</span>
+                    <span className="text-slate-200">{park.contact.phone}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <Mail className="w-4 h-4 text-slate-500" />
-                    <span className="text-slate-400">{park.contact.email}</span>
+                    <span className="text-slate-200">{park.contact.email}</span>
                   </div>
                 </div>
               </motion.div>

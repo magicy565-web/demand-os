@@ -31,7 +31,7 @@ export function IndustrialMapHero() {
       >
         <div className="max-w-sm">
           <h1 className="text-4xl font-black text-cyan-300 mb-1 leading-tight">
-            产业园区
+            链智云·OS
           </h1>
           <div className="h-0.5 w-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mb-3" />
           <p className="text-cyan-100 text-base mb-2 font-semibold">
