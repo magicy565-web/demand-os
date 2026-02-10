@@ -14,6 +14,38 @@ export interface IndustrialBelt {
   status: string;
 }
 
+// 产业园区数据类型定义
+export interface IndustrialPark {
+  id: number;
+  name: string;
+  location: string;
+  region: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  image: string;
+  description: string;
+  stats: {
+    factories: string;
+    categories: number;
+    growth: string;
+    coverage: string;
+  };
+  products: string[];
+  advantages: string[];
+  opportunities: Array<{
+    title: string;
+    description: string;
+  }>;
+  contact: {
+    phone: string;
+    email: string;
+  };
+  markerColor: string;
+  markerIcon: string;
+}
+
 // 工厂数据类型定义
 export interface Factory {
   id: number;

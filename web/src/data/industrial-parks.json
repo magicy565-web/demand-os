@@ -1,0 +1,188 @@
+{
+  "parks": [
+    {
+      "id": 1,
+      "name": "深圳电子信息产业园",
+      "location": "深圳",
+      "region": "广东",
+      "coordinates": {
+        "lat": 22.5,
+        "lng": 114.0
+      },
+      "image": "https://private-us-east-1.manuscdn.com/sessionFile/R0c9ZhwmUyT2pJaWYw3mso/sandbox/LQiqLJd4pm6aTw6TMxrAkQ-img-1_1770687326000_na1fn_aW5kdXN0cmlhbC1wYXJrLXNoZW56aGVu.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80",
+      "description": "全球电子制造中心，华强北供应链辐射全球，研发与打样速度极快。汇聚5000+电子企业，年产值超5000亿元。",
+      "stats": {
+        "factories": "12.0K+",
+        "categories": 4,
+        "growth": "+12%",
+        "coverage": "150+"
+      },
+      "products": ["PCB", "智能穿戴", "消费电子", "半导体"],
+      "advantages": [
+        "全球电子制造中心",
+        "华强北供应链辐射",
+        "研发打样速度快",
+        "产业链完整",
+        "国际竞争力强"
+      ],
+      "opportunities": [
+        {
+          "title": "供应商入驻",
+          "description": "展示您的产品给全球采购商"
+        },
+        {
+          "title": "采购商合作",
+          "description": "寻找优质供应商和产品"
+        },
+        {
+          "title": "产业联动",
+          "description": "参与产业园生态建设"
+        }
+      ],
+      "contact": {
+        "phone": "+86 (0)755-XXXX-XXXX",
+        "email": "contact@shenzhen-park.com"
+      },
+      "markerColor": "cyan",
+      "markerIcon": "🔌"
+    },
+    {
+      "id": 2,
+      "name": "宁波模具与注塑产业园",
+      "location": "宁波",
+      "region": "浙江",
+      "coordinates": {
+        "lat": 29.8,
+        "lng": 121.5
+      },
+      "image": "https://private-us-east-1.manuscdn.com/sessionFile/R0c9ZhwmUyT2pJaWYw3mso/sandbox/LQiqLJd4pm6aTw6TMxrAkQ-img-2_1770687314000_na1fn_aW5kdXN0cmlhbC1wYXJrLW5pbmdibw.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80",
+      "description": "中国最大的模具与注塑产业基地，拥有3000+模具企业，年产值超2000亿元。产品远销全球。",
+      "stats": {
+        "factories": "8.5K+",
+        "categories": 3,
+        "growth": "+15%",
+        "coverage": "120+"
+      },
+      "products": ["精密模具", "注塑制品", "汽车零部件", "消费品模具"],
+      "advantages": [
+        "产业链最完整",
+        "模具技术领先",
+        "生产成本低",
+        "交付周期短",
+        "国际认证齐全"
+      ],
+      "opportunities": [
+        {
+          "title": "模具定制",
+          "description": "为全球客户提供定制模具服务"
+        },
+        {
+          "title": "代工合作",
+          "description": "寻找可靠的代工生产伙伴"
+        },
+        {
+          "title": "技术交流",
+          "description": "参与产业技术创新论坛"
+        }
+      ],
+      "contact": {
+        "phone": "+86 (0)574-XXXX-XXXX",
+        "email": "contact@ningbo-park.com"
+      },
+      "markerColor": "amber",
+      "markerIcon": "🔧"
+    },
+    {
+      "id": 3,
+      "name": "佛山泛家居产业园",
+      "location": "佛山",
+      "region": "广东",
+      "coordinates": {
+        "lat": 23.0,
+        "lng": 113.1
+      },
+      "image": "https://private-us-east-1.manuscdn.com/sessionFile/R0c9ZhwmUyT2pJaWYw3mso/sandbox/LQiqLJd4pm6aTw6TMxrAkQ-img-3_1770687310000_na1fn_aW5kdXN0cmlhbC1wYXJrLWZvc2hhbg.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80",
+      "description": "全球最大的家居产业集群，汇聚6000+家居企业，涵盖家具、卫浴、建材等全品类。年产值超3000亿元。",
+      "stats": {
+        "factories": "6.0K+",
+        "categories": 5,
+        "growth": "+18%",
+        "coverage": "180+"
+      },
+      "products": ["家具", "卫浴", "建材", "家装配饰", "智能家居"],
+      "advantages": [
+        "产品品类最全",
+        "产业集群优势明显",
+        "国际品牌云集",
+        "展示平台完善",
+        "物流配套成熟"
+      ],
+      "opportunities": [
+        {
+          "title": "品牌展示",
+          "description": "在全球最大的家居展示平台展示产品"
+        },
+        {
+          "title": "采购对接",
+          "description": "与全球零售商和设计师对接"
+        },
+        {
+          "title": "产业升级",
+          "description": "参与智能家居和绿色家居创新"
+        }
+      ],
+      "contact": {
+        "phone": "+86 (0)757-XXXX-XXXX",
+        "email": "contact@foshan-park.com"
+      },
+      "markerColor": "emerald",
+      "markerIcon": "🏠"
+    },
+    {
+      "id": 4,
+      "name": "苏州纺织丝绸产业园",
+      "location": "苏州",
+      "region": "江苏",
+      "coordinates": {
+        "lat": 31.3,
+        "lng": 120.6
+      },
+      "image": "https://private-us-east-1.manuscdn.com/sessionFile/R0c9ZhwmUyT2pJaWYw3mso/sandbox/LQiqLJd4pm6aTw6TMxrAkQ-img-4_1770687315000_na1fn_aW5kdXN0cmlhbC1wYXJrLXN1emhvdQ.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80",
+      "description": "中国传统丝绸文化与现代纺织技术的完美结合，拥有2000+纺织企业，年产值超1500亿元。",
+      "stats": {
+        "factories": "5.0K+",
+        "categories": 4,
+        "growth": "+10%",
+        "coverage": "100+"
+      },
+      "products": ["丝绸面料", "化纤面料", "高端家纺", "服装面料"],
+      "advantages": [
+        "传统工艺与现代技术结合",
+        "高端面料品质卓越",
+        "产业文化底蕴深厚",
+        "国际认证完善",
+        "可持续发展领先"
+      ],
+      "opportunities": [
+        {
+          "title": "面料采购",
+          "description": "采购高品质纺织面料和丝绸制品"
+        },
+        {
+          "title": "品牌合作",
+          "description": "与国际时尚品牌建立长期合作"
+        },
+        {
+          "title": "文化交流",
+          "description": "参与丝绸文化和传统工艺传承"
+        }
+      ],
+      "contact": {
+        "phone": "+86 (0)512-XXXX-XXXX",
+        "email": "contact@suzhou-park.com"
+      },
+      "markerColor": "purple",
+      "markerIcon": "🧵"
+    }
+  ]
+}
